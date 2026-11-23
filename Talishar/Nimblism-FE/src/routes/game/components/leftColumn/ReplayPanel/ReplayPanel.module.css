@@ -1,0 +1,303 @@
+.replayTab {
+  position: fixed;
+  left: 0;
+  top: 47.5%;
+  width: 6rem;
+  height: 3rem;
+  background: rgba(255, 107, 107, 0.09) !important;
+  border: 1px solid rgba(255, 107, 107, 0.3) !important;
+  color: #ffb0b0 !important;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 11001;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease, box-shadow 0.2s ease;
+}
+.replayTab:hover {
+  background: rgba(255, 107, 107, 0.2) !important;
+  border-color: #ff7777 !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.12) !important;
+  transform: none !important;
+}
+.hidden {
+  display: none;
+}
+.replayPanel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 320px;
+  height: 100vh;
+  background: rgba(10, 10, 13, 0.97);
+  border-right: 2px solid rgba(255, 107, 107, 0.25);
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.7);
+  z-index: 11000;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out;
+  overflow-y: auto;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 107, 107, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+}
+.header h3 {
+  margin: 0;
+  color: #ff8383;
+  font-size: 1.1rem;
+}
+.subheading {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.72rem;
+}
+.replayPanel .closeButton {
+  flex: 0 0 2rem;
+  width: 2rem !important;
+  height: 2rem !important;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+  border: 0;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.replayPanel .closeButton:hover {
+  background: rgba(255, 107, 107, 0.2) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.12) !important;
+  transform: none !important;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  flex: 1;
+}
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.sectionHeading span:last-child {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 400;
+}
+.timeline {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding: 0.1rem 0 0.65rem;
+  scroll-snap-type: x proximity;
+  scrollbar-color: rgba(255, 131, 131, 0.55) rgba(255, 255, 255, 0.06);
+  scrollbar-width: thin;
+}
+.timeline::-webkit-scrollbar {
+  height: 6px;
+}
+.timeline::-webkit-scrollbar-thumb {
+  background: rgba(255, 131, 131, 0.55);
+  border-radius: 4px;
+}
+.timeline::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+.turnMarker {
+  min-width: 5.5rem;
+  padding: 0.42rem 0.25rem;
+  border: 1px solid rgba(255, 107, 107, 0.23);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.08rem;
+  text-align: left;
+  scroll-snap-align: start;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease, box-shadow 0.2s ease;
+}
+.replayPanel .turnMarker:hover:not(:disabled),
+.activeTurn {
+  border-color: #ff7777 !important;
+  background: rgba(255, 107, 107, 0.2) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.12) !important;
+  transform: none !important;
+}
+.turnMarker:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+.turnNumber {
+  font-weight: 700;
+}
+.turnPlayer {
+  font-size: 0.68rem;
+  color: #ffb1b1;
+}
+.turnEvents {
+  display: none;
+}
+.turnEventSummary {
+  margin-top: 0.15rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.61rem;
+  line-height: 1.15;
+}
+.emptyTimeline {
+  color: rgba(255, 255, 255, 0.53);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  margin: 0;
+}
+.navButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.navButton,
+.eventButton,
+.submitButton,
+.actionButton {
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 107, 107, 0.09);
+  color: #ffb0b0;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.68rem 0.55rem;
+  font-size: 0.78rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease, box-shadow 0.2s ease;
+}
+.navButton {
+  display: grid;
+  grid-template-columns: 1rem 1fr 1rem;
+  justify-items: center;
+  align-items: center;
+  min-height: 3.75rem;
+  text-align: center;
+}
+.navArrow,
+.navArrowPlaceholder {
+  width: 1rem;
+  line-height: 1;
+}
+.eventButton {
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.035);
+}
+.replayPanel .navButton:hover:not(:disabled),
+.replayPanel .eventButton:hover:not(:disabled),
+.replayPanel .actionButton:hover:not(:disabled),
+.replayPanel .submitButton:hover:not(:disabled) {
+  border-color: #ff7777 !important;
+  background: rgba(255, 107, 107, 0.2) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.12) !important;
+  transform: none !important;
+}
+.navButton:disabled,
+.eventButton:disabled,
+.actionButton:disabled,
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 107, 107, 0.25),
+    transparent
+  );
+  margin: 0.2rem 0;
+}
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.formGroup label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+}
+.jumpRow {
+  display: flex;
+  align-items: stretch;
+  gap: 0.4rem;
+  width: 100%;
+}
+.replayPanel .jumpRow input {
+  box-sizing: border-box;
+  width: auto !important;
+  min-width: 0;
+  flex: 1 1 0;
+  padding: 0.58rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 107, 107, 0.25);
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 0;
+}
+.replayPanel .jumpRow .submitButton {
+  box-sizing: border-box;
+  flex: 0 0 4rem;
+  width: 4rem !important;
+  min-height: 0;
+  margin: 0;
+  padding: 0.58rem 0.4rem;
+}
+.actionButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .replayPanel {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    border-right: 0;
+  }
+  .replayTab {
+    width: 3.25rem;
+    height: 2.5rem;
+    font-size: 0.72rem;
+  }
+  .content {
+    padding: 0.85rem;
+  }
+}

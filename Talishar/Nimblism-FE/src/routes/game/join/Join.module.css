@@ -1,0 +1,102 @@
+.pageWrapper {
+  --landing-surface: var(--theme-contrast-inverse, #000000);
+  background: var(--theme-background);
+  min-height: 100vh;
+}
+
+.button {
+  color: black;
+}
+
+.LoginPageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  max-width: var(--aspect);
+  margin: 0 auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+.leftRail,
+.rightRail {
+  flex-shrink: 0;
+  width: 300px;
+  position: sticky;
+  top: 80px;
+  margin-top: var(--block-spacing-vertical);
+}
+
+.mobileAd {
+  display: none !important;
+}
+
+.fieldError {
+  color: red;
+}
+
+.formContainer {
+  background: transparent;
+  width: 460px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --form-element-background-color: var(--theme-form-background, #33383d);
+}
+
+.alarm {
+  color: var(--alarm);
+}
+
+.backButton {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--theme-primary);
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  text-decoration: underline;
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.backButton:hover,
+.backButton:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  background: none;
+  color: var(--theme-primary);
+}
+
+@media (max-width: 768px) {
+  .LoginPageContainer {
+    padding: 16px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .leftRail,
+  .rightRail {
+    display: none !important;
+  }
+
+  .mobileAd {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .formContainer {
+    width: calc(100% - 32px);
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25);
+    --form-element-background-color: var(--theme-form-background, #33383d);
+  }
+}

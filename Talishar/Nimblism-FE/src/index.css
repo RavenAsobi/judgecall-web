@@ -1,0 +1,56 @@
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+html,
+body {
+  overflow-y: auto;
+  --primary-inverse: #000000;
+  padding-top: 80px;
+}
+
+/* Scrollbar styling for main body */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1d21;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #5a5f66;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+body > [data-ad='video'] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Link styling to differentiate from headings */
+a {
+  color: var(--theme-primary, #d4af37) !important;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+a:hover {
+  opacity: 0.85;
+  text-decoration-thickness: 3px;
+}
+
+a:visited {
+  opacity: 0.7;
+}

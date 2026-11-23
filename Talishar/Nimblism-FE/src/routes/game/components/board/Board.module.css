@@ -1,0 +1,28 @@
+.gameBoard {
+  position: relative; /* anchor for the AmbientParticles overlay */
+  justify-self: center;
+  display: flex;
+  width: 95%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.chainMiddleContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.healthContainer {
+  flex-shrink: 1;
+  min-width: 20vw;
+  min-width: 20dvw;
+}
+
+.chainContainer {
+  flex-grow: 2;
+}

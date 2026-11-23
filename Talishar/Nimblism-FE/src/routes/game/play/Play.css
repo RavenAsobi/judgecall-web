@@ -1,0 +1,162 @@
+/* :root {
+  --aspect: 1920px;
+} */
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
+  --card-size: calc(min(13vh, 7.8vw) * var(--card-scale));
+  --card-size: calc(min(13dvh, 7.8dvw) * var(--card-scale));
+}
+
+@media (orientation: portrait) {
+  html,
+  body {
+    --card-size: calc(12vw * var(--card-scale));
+    --card-size: calc(12dvw * var(--card-scale));
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+.centering {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+@media (orientation: landscape) {
+  .app {
+    height: 100%;
+    width: 100%;
+    font-size: min(calc(1.5vh - 2px), calc(0.9vw - 1px));
+    font-size: min(calc(1.5dvh - 2px), calc(0.9dvw - 1px));
+  }
+}
+
+@media (orientation: portrait) {
+  .app {
+    aspect-ratio: 16/9;
+    font-size: calc(1.5vw + 3px);
+    font-size: calc(1.5dvw + 3px);
+  }
+}
+
+.app {
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: auto;
+}
+
+.gameZone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  order: 2;
+  width: 100%;
+  margin-bottom: 1.5vh;
+  margin-bottom: 1.5dvh;
+}
+
+@media (orientation: portrait) {
+  .gameZone {
+    margin-bottom: 0;
+  }
+}
+
+/* For fold and square phones in portrait mode (wider aspect ratio) */
+@media (orientation: portrait) and (min-aspect-ratio: 3/4) {
+  .gameZone {
+    padding-bottom: 6dvh;
+  }
+}
+
+/* Near-square landscape screens (fold phones, ~1:1 to 3:2 ratio).
+   The min(vh, vw) card-size and font-size over-shrink on these
+   because vw ≈ vh, so the vw cap dominates. Use pure vh instead. */
+@media (orientation: landscape) and (max-aspect-ratio: 3/2) {
+  html,
+  body {
+    --card-size: calc(13vh * var(--card-scale));
+    --card-size: calc(13dvh * var(--card-scale));
+  }
+
+  .app {
+    font-size: calc(1.5vh - 2px);
+    font-size: calc(1.5dvh - 2px);
+  }
+}
+
+/* Font-size is now fluid via min(dvh, dvw) in the landscape .app rule above.
+   No stepped breakpoints needed - scaling is continuous. */
+
+.defaultToast {
+  background-color: var(--near-black);
+  padding: 1.5vh;
+  border: 1px solid var(--theme-primary);
+  border-radius: 10px;
+  color: var(--theme-primary);
+}
+
+.replayAdvanceButton {
+  display: none;
+  position: fixed;
+  z-index: 61;
+  left: 50%;
+  bottom: max(
+    calc(var(--card-size) * 0.5),
+    calc(0.75rem + env(safe-area-inset-bottom))
+  );
+  width: min(20rem, calc(100vw - 1.5rem));
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #8da9bc;
+  border-radius: 0.55rem;
+  background: linear-gradient(to bottom, #243b4e 0%, #152634 100%);
+  background-color: #152634;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  font: 700 1rem/1 system-ui, sans-serif;
+  letter-spacing: 0.03em;
+  touch-action: manipulation;
+  transition: none !important;
+}
+
+.replayAdvanceButton:hover,
+.replayAdvanceButton:active,
+.replayAdvanceButton:focus,
+.replayAdvanceButton:focus-visible {
+  --background-color: #152634 !important;
+  --border-color: #8da9bc !important;
+  --box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45) !important;
+  transform: translateX(-50%) !important;
+  outline: none !important;
+  border-color: #8da9bc !important;
+  background: linear-gradient(to bottom, #243b4e 0%, #152634 100%) !important;
+  background-color: #152634 !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45) !important;
+  color: #fff !important;
+}
+
+@media (max-width: 1200px) {
+  .replayAdvanceButton {
+    display: block;
+    transform: translateX(-50%);
+  }
+}

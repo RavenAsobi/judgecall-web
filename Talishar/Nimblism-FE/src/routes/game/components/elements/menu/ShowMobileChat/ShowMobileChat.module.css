@@ -1,0 +1,44 @@
+@keyframes chatPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0);
+  }
+}
+
+.chatBtnUnread {
+  animation: chatPulse 2.5s ease-in-out infinite;
+}
+
+.chatBadge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 9px;
+  height: 9px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  border: 1.5px solid #111;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.rightColumn {
+  order: 3;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 20%;
+  min-width: 20vh;
+  min-width: 20dvh;
+  max-width: 20vh;
+  max-width: 20dvh;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  align-content: stretch;
+  background-color: rgba(50, 50, 50, 0.5);
+}

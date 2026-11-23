@@ -1,0 +1,298 @@
+.card {
+  border-radius: 10px;
+  object-fit: cover;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: visible;
+  height: 100%;
+  width: 100%;
+  aspect-ratio: 1;
+  transition: transform 0.18s ease;
+}
+
+.normalSize {
+  max-height: var(--card-size);
+  max-width: var(--card-size);
+}
+
+.floatTint {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  border-radius: 0.5em;
+  border-radius: 7%;
+}
+
+.text {
+  color: black;
+}
+
+.img {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  object-fit: cover;
+  height: 100%;
+  border-radius: 15px;
+  border-radius: 7%;
+  max-height: 100%;
+  max-width: 100%;
+  transition: box-shadow 0.25s, border-color 0.25s, filter 0.25s;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+.disabled {
+  background-color: black;
+  opacity: 0.5;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.isBroken {
+  background-image: url('../../../../../img/symbols/symbol-brokenEquip.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 1.5vh -0.5vh;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.onChain {
+  background-image: url('../../../../../img/symbols/symbol-onChain.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0px -5vh;
+}
+
+.isFrozen {
+  background-image: url('../../../../../img/elements/frozenOverlay.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.holoCounters {
+  background-image: url('../../../../../img/elements/holoOverlay.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.marked {
+  animation: glitch 0.1s;
+  animation-delay: 0.2s;
+  background-image: url('../../../../../img/elements/markedOverlay.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: 0.8;
+}
+
+@keyframes glitch {
+  50% {
+    filter: blur(20px);
+    transform: skew(45deg);
+  }
+}
+
+.isTargeted {
+  border: 2px solid rgba(255, 60, 60, 0.9);
+  border-radius: 7%;
+  will-change: filter;
+  animation: targetedPulse 2s ease-in-out infinite;
+}
+
+@keyframes targetedPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(255, 40, 40, 0.75));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 40, 40, 1));
+  }
+}
+
+.tapped {
+  animation: rotate 0.3s;
+  transform: rotate(90deg);
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(90deg);
+  }
+}
+
+.numUses {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  margin-top: 1px;
+}
+
+.numUsesCircle {
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+  border: 2px solid var(--near-black);
+}
+
+.border1 {
+  border-color: deepskyblue;
+  box-shadow: 0 0 2px 2px deepskyblue;
+}
+
+.border2 {
+  border-color: red;
+  box-shadow: 0 0 2px 2px red;
+}
+
+.border3 {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 2px 2px var(--theme-primary);
+}
+
+.border4 {
+  border-color: #c5cbcf;
+  box-shadow: 0 0 3px 3px #c5cbcf;
+}
+
+.border5 {
+  border-color: tan;
+  box-shadow: 0 0 3px 3px tan;
+}
+
+.border6 {
+  border-color: chartreuse;
+  box-shadow: 0 0 3px 3px chartreuse;
+}
+
+.border7 {
+  border-color: purple;
+  box-shadow: 0 0 3px 3px purple;
+}
+
+.border8 {
+  border-color: #FFD700;
+  box-shadow: 0 0 3px 3px #FFD700;
+}
+
+.border9 {
+  border-color: rgb(192, 6, 6);
+  box-shadow: 0 0 3px 3px rgb(192, 6, 6);
+}
+
+.border10 {
+  border-color: rgb(21, 155, 25);
+  box-shadow: 0 0 5px 5px rgba(24, 177, 29, 0.5);
+}
+
+/* Playable card (border6) hover lift animation */
+.card:has(.img.border6):hover {
+  transform: translateY(-3px) scale(1.02);
+  z-index: 10;
+}
+
+.card:has(.img.border6):hover .img.border6 {
+  box-shadow: 0 0 4px 4px chartreuse, 0 4px 4px rgba(0, 0, 0, 0.45);
+}
+
+.subCard {
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  animation: subCardSlideUp 0.18s ease-out both;
+}
+
+@keyframes subCardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.subcard-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.subcard-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.subcard-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subcard-transition-exit-active {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+@media (orientation: portrait) {
+  .normalSize {
+    max-height: 16dvw;
+    max-width: 16dvw;
+    max-height: 16dvw;
+    max-width: 16dvw;
+  }
+
+  .biggerSize {
+    height: 7em;
+    width: 7em;
+    aspect-ratio: 1;
+  }
+
+  .isBroken {
+    background-position: 1em -0.5em;
+  }
+
+  .onChain {
+    background-position: 0em -2.5em;
+  }
+}
+
+.showCountersOnHover {
+  --counters-opacity: 0;
+  --counters-pointer-events: none;
+}
+
+.showCountersOnHover:hover {
+  --counters-opacity: 1;
+  --counters-pointer-events: auto;
+}

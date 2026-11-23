@@ -1,0 +1,528 @@
+.friendsListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.title {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--theme-text, #e0e0e0);
+}
+
+.subtitle {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--theme-text, #e0e0e0);
+}
+
+.addFriendSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.searchContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--theme-form-border, rgba(255, 255, 255, 0.2));
+  border-radius: 4px;
+  background: var(--theme-form-background, rgba(255, 255, 255, 0.05));
+  color: var(--theme-text, #e0e0e0);
+  font-size: 0.95rem;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.searchInput::placeholder {
+  color: var(--theme-text-muted, rgba(255, 255, 255, 0.4));
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--theme-primary, #d4af37);
+  background: var(--theme-form-active, rgba(255, 255, 255, 0.08));
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--theme-form-border, rgba(255, 255, 255, 0.2));
+  border-radius: 4px;
+  background: var(--theme-form-background, rgba(255, 255, 255, 0.05));
+}
+
+.resultsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.resultItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--theme-border-light, rgba(255, 255, 255, 0.1));
+  transition: background-color 0.2s;
+}
+
+.resultItem:last-child {
+  border-bottom: none;
+}
+
+.resultItem:hover {
+  background-color: var(--theme-primary-focus, rgba(212, 175, 55, 0.1));
+}
+
+.resultItem span {
+  color: var(--theme-text, #e0e0e0);
+  font-weight: 500;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: var(--theme-primary, #d4af37);
+  border: none;
+  border-radius: 4px;
+  color: var(--theme-primary-inverse, #000);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.addButton:hover {
+  background-color: var(--theme-primary-hover, #e8c547);
+  transform: scale(1.05);
+}
+
+.addButton:active {
+  transform: scale(0.95);
+}
+
+.addButtonDisabled {
+  background-color: var(--theme-secondary, #888);
+  color: var(--theme-secondary-inverse, #ccc);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.addButtonDisabled:hover {
+  background-color: var(--theme-secondary, #888);
+  transform: none;
+}
+
+.addButtonDisabled:active {
+  transform: none;
+}
+
+.loadingText {
+  padding: 1rem;
+  text-align: center;
+  color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+  font-style: italic;
+}
+
+.noResults {
+  padding: 1rem;
+  text-align: center;
+  color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+  margin-bottom: 0;
+}
+
+.friendsTableContainer {
+  overflow-x: auto;
+}
+
+.friendsTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  table-layout: fixed;
+  margin-bottom: 0 !important;
+}
+
+.friendsTable thead {
+  border-bottom: 1px solid var(--theme-border, rgba(255, 255, 255, 0.15));
+}
+
+.friendsTable th {
+  padding: 0.5rem 1rem;
+  text-align: left;
+  color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.actionColumnHeader {
+  width: 112px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.friendsTable td {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--theme-border-light, rgba(255, 255, 255, 0.07));
+  color: var(--theme-text, #e0e0e0);
+  text-align: left;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friendsTable td:last-child {
+  overflow: visible;
+  text-overflow: unset;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.friendsTable tbody tr {
+  transition: background-color 0.2s;
+}
+
+.friendsTable tbody tr:hover {
+  background-color: var(--theme-primary-focus, rgba(212, 175, 55, 0.08));
+}
+
+.deleteColumn {
+  text-align: center;
+}
+
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  margin-left: 0.25rem;
+  background: var(--theme-danger, #dc3545);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  font-size: 1em;
+  margin-bottom: 0;
+}
+
+.deleteButton:hover {
+  background-color: var(--theme-danger, #c82333);
+  transform: scale(1.05);
+}
+
+.deleteButton:active {
+  transform: scale(0.95);
+}
+
+.acceptButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: var(--theme-success, #28a745);
+  margin-left: 0.25rem;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  font-size: 1em;
+  margin-bottom: 0;
+}
+
+.acceptButton:hover {
+  background-color: var(--theme-success, #218838);
+  transform: scale(1.05);
+}
+
+.acceptButton:active {
+  transform: scale(0.95);
+}
+
+.rejectButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  margin-left: 0.25rem;
+  background: var(--theme-danger, #dc3545);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  font-size: 1em;
+  margin-bottom: 0;
+}
+
+.rejectButton:hover {
+  background-color: var(--theme-danger, #c82333);
+  transform: scale(1.05);
+}
+
+.rejectButton:active {
+  transform: scale(0.95);
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: var(--theme-primary, #d4af37);
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  font-size: 1em;
+  margin-bottom: 0;
+}
+
+.editButton:hover {
+  background-color: var(--theme-primary-hover, #e8c547);
+  transform: scale(1.05);
+}
+
+.editButton:active {
+  transform: scale(0.95);
+}
+
+.friendNameContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.friendIcons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.25rem;
+}
+
+.friendIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.friendIcon img {
+  height: 1.4rem;
+  width: 1.4rem;
+  display: block;
+}
+
+.friendIcon:hover {
+  opacity: 0.8;
+}
+
+.username {
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.nickname {
+  color: var(--theme-text-muted, #888888);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.95em;
+  margin-left: 0.4rem;
+  display: inline-block;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: var(--theme-card-background, var(--card-background-color));
+  border: 2px solid var(--theme-border, rgba(255, 255, 255, 0.2));
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  color: var(--theme-text, #e0e0e0);
+}
+
+.modalContent h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  color: var(--theme-text, #e0e0e0);
+}
+
+.nicknameInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--theme-form-border, rgba(255, 255, 255, 0.2));
+  border-radius: 4px;
+  background: var(--theme-form-background, rgba(255, 255, 255, 0.05));
+  color: var(--theme-text, #e0e0e0);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.nicknameInput::placeholder {
+  color: var(--theme-text-muted, rgba(255, 255, 255, 0.4));
+}
+
+.nicknameInput:focus {
+  outline: none;
+  border-color: var(--theme-primary, #d4af37);
+  background: var(--theme-form-active, rgba(255, 255, 255, 0.08));
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  background: var(--theme-success, #28a745);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.saveButton:hover {
+  background-color: var(--theme-success, #218838);
+  transform: scale(1.05);
+}
+
+.saveButton:active {
+  transform: scale(0.95);
+}
+
+.cancelButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  background: var(--theme-secondary, #6c757d);
+  border: none;
+  border-radius: 4px;
+  color: var(--theme-secondary-inverse, white);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.cancelButton:hover {
+  background-color: var(--theme-secondary-hover, #5a6268);
+  transform: scale(1.05);
+}
+
+.cancelButton:active {
+  transform: scale(0.95);
+}
+
+.emptyText {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .friendsListContainer {
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .searchResults {
+    max-height: 250px;
+  }
+
+  .friendsTable {
+    font-size: 0.9rem;
+    table-layout: fixed;
+  }
+
+  .friendsTable th,
+  .friendsTable td {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .friendsTable th:first-child,
+  .friendsTable td:first-child {
+    width: auto;
+    min-width: 0;
+  }
+
+  .friendsTable th:last-child,
+  .friendsTable td:last-child {
+    width: 96px;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .deleteColumn {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .modalContent {
+    padding: 1.5rem;
+  }
+}

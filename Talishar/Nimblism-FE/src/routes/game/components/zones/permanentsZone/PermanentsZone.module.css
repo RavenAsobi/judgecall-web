@@ -1,0 +1,123 @@
+.permanentsWrapper {
+  position: relative;
+  display: flex;
+  flex: 0 1 100%;
+  border-radius: 0.5em;
+  color: var(--white);
+  grid-area: permanents;
+  overflow: visible;
+  max-width: 100%;
+  height: 100%;
+}
+
+.permanentsZone {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-start;
+  align-items: flex-end;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: max-content;
+  min-width: 100%;
+}
+
+.permanentsInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: clip;
+  display: flex;
+  align-items: flex-end;
+  padding: 4px;
+}
+
+.permanentsInner::-webkit-scrollbar {
+  height: 4px;
+}
+
+.permanentsInner::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.permanentsInner::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.permanentsInner::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.permanentsText {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.counter {
+  position: absolute;
+  z-index: 10;
+  bottom: 2em;
+  height: 2em;
+  left: -0.5em;
+  min-width: 2em;
+  width: auto;
+  background-color: black;
+  border: var(--theme-primary) solid 1px;
+  color: var(--white);
+  border-radius: 5px;
+  font-size: max(8px, 0.75em);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35em;
+}
+
+.counterOpponent {
+  position: absolute;
+  z-index: 10;
+  top: 2em;
+  height: 2em;
+  left: -0.5em;
+  min-width: 2em;
+  width: auto;
+  background-color: black;
+  border: var(--theme-primary) solid 1px;
+  color: var(--white);
+  border-radius: 5px;
+  font-size: max(8px, 0.75em);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35em;
+}
+
+.cardContainer {
+  display: block;
+  position: relative;
+  aspect-ratio: 1;
+  min-width: var(--card-size);
+  flex-shrink: 0;
+  cursor: grab;
+}
+
+.cardContainer:active {
+  cursor: grabbing;
+}
+
+.stacked {
+  display: block;
+  aspect-ratio: 1;
+}
+
+.stacked:first-child {
+  margin-left: 1em;
+}

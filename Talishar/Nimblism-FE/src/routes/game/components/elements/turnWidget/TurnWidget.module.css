@@ -1,0 +1,68 @@
+.widgetContainer {
+  top: 0px;
+  right: 0px;
+  position: relative;
+  width: var(--card-size);
+  height: 18vh;
+  height: 18dvh;
+  z-index: 15;
+  user-select: none;
+}
+
+.widget {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 9vh;
+  width: 9dvh;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 1fr 1.35fr 1fr;
+  gap: 0.8dvh;
+  padding: 0.9dvh;
+  border-radius: 6px;
+  background: linear-gradient(to bottom, #1a1c23 0%, #0f1015 100%);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+  font-family: 'Rajdhani', 'Segoe UI', 'Inter', system-ui, sans-serif;
+}
+
+.widget > * {
+  min-width: 0;
+}
+
+.myTurn {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08), 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.apBadge {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-245%, -50%);
+  z-index: 3;
+}
+
+@media (orientation: portrait) {
+  .widgetContainer {
+    top: 0px;
+    right: 0px;
+    width: 21vw;
+    height: 26vw;
+    user-select: none;
+  }
+
+  .widget {
+    width: 65%;
+    gap: 1.2vw;
+    padding: 1.4vw;
+  }
+
+  .apBadge {
+    left: auto;
+    right: 103%;
+    transform: translateY(-50%);
+  }
+}

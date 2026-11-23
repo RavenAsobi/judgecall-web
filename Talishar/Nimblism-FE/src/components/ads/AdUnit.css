@@ -1,0 +1,76 @@
+/* AdUnit Styles */
+
+/* Base ad unit container */
+.ad-unit {
+  margin: 10px 0;
+  min-height: 50px; /* Minimum height before ad loads */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Rail ad units (sidebar placements) */
+.ad-unit[data-ad^='left-rail'],
+.ad-unit[data-ad^='right-rail'] {
+  width: 300px;
+}
+
+.ad-unit[data-ad='left-rail-1'],
+.ad-unit[data-ad='right-rail-1'],
+.ad-unit[data-ad='left-rail-2'],
+.ad-unit[data-ad='right-rail-2'] {
+  height: fit-content;
+}
+
+/* Billboard ad units */
+.ad-unit[data-ad^='billboard'] {
+  width: 100%;
+  max-width: 970px;
+  height: 250px;
+  margin: 15px auto;
+}
+
+.ad-unit[data-ad^='leaderboard'] {
+  width: 100%;
+  max-width: 728px;
+  min-height: 90px;
+  margin: 15px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile ad units */
+.ad-unit[data-ad^='mobile-unit'] {
+  width: 300px;
+  height: 250px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  /* Hide rail ads on mobile */
+  .ad-unit[data-ad^='left-rail'],
+  .ad-unit[data-ad^='right-rail'] {
+    display: none;
+  }
+
+  /* Adjust billboard units for mobile */
+  .ad-unit[data-ad^='billboard'] {
+    width: 100%;
+    height: auto;
+    max-width: none;
+  }
+
+  /* Hide leaderboard on mobile - a mobile-unit is shown instead */
+  .ad-unit[data-ad^='leaderboard'] {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Mobile unit adjustments */
+  .ad-unit[data-ad^='mobile-unit'] {
+    width: 100%;
+    max-width: 300px;
+  }
+}

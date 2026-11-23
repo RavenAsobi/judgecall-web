@@ -1,0 +1,360 @@
+/* ── Backdrop ─────────────────────────────────────────── */
+.emptyOutside {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewOutside {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.previewOutside .cardListBox {
+  width: clamp(280px, 30vw, 360px);
+  max-height: min(68vh, 540px);
+}
+
+.allLinksBox {
+  width: min(94vw, 1320px);
+  max-height: min(86vh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--near-black, #0d0d0f);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.14));
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.allLinksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.allLinksGrid .cardListBox {
+  width: 100%;
+  max-height: none;
+}
+
+@media (max-width: 700px), (orientation: portrait) {
+  .allLinksBox {
+    width: 100vw;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .allLinksGrid {
+    display: block;
+    padding: 8px;
+  }
+
+  .allLinksGrid .cardListBox {
+    max-height: none;
+    margin-bottom: 8px;
+  }
+
+  .allLinksGrid .body {
+    overflow: visible;
+  }
+
+  .allLinksGrid .cardListBox:last-child {
+    margin-bottom: 0;
+  }
+
+  .previewOutside {
+    display: none;
+  }
+}
+
+/* ── Modal shell ──────────────────────────────────────── */
+.cardListBox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: clamp(320px, 34vw, 400px);
+  max-height: min(82vh, 660px);
+  background: var(--near-black, #0d0d0f);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.14));
+  border-radius: 12px;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.75),
+    0 2px 0 rgba(255, 255, 255, 0.04) inset;
+  overflow: hidden;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.cardListTitleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 15px;
+  flex-shrink: 0;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  color: var(--theme-primary, #c9a84c);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow:
+    0 0 22px rgba(201, 168, 76, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* ── Hit / no-hit badge ───────────────────────────────── */
+.badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  line-height: 1;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+
+.hit {
+  color: #fca5a5;
+  background: rgba(220, 55, 55, 0.16);
+  border-color: rgba(220, 55, 55, 0.5);
+}
+
+.noHit {
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.cardListCloseIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  transition: background 0.15s ease, color 0.15s ease;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.cardListCloseIcon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Stat ledger (hero) ───────────────────────────────── */
+.ledger {
+  display: flex;
+  align-items: stretch;
+  margin: 14px 15px 2px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 11px 6px;
+}
+
+.statNum {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.statLabel {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Damage is the result - the only tinted number, in the theme gold. */
+.dmgNum {
+  color: var(--theme-primary, #c9a84c);
+  text-shadow: 0 0 18px rgba(201, 168, 76, 0.4);
+}
+
+.op {
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Card sections ────────────────────────────────────── */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 15px 15px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sectionLabel {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+  padding: 10px 2px 4px;
+}
+
+.info {
+  padding: 24px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Rows ─────────────────────────────────────────────── */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.rowIcon {
+  width: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rowName {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.86);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowVal {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.92);
+  font-variant-numeric: tabular-nums;
+  padding-right: 4px;
+}
+
+.rowValPos {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #4ade80;
+  font-variant-numeric: tabular-nums;
+  padding-right: 4px;
+}
+
+.rowValNeg {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #f87171;
+  font-variant-numeric: tabular-nums;
+  padding-right: 4px;
+}
+
+.rowValNeutral {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+  padding-right: 4px;
+}
+
+.emptyRow {
+  padding: 6px 8px;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Card art, bordered by pitch colour (red / yellow / blue) ── */
+.pitchArt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Applied directly to the <img> via Effect's imgClassName, so it overrides
+   Effect's own player/opponent border regardless of CSS-module hashing. */
+.pitchImg {
+  width: 40px !important;
+  height: 40px !important;
+  max-width: unset !important;
+  max-height: unset !important;
+  object-fit: cover;
+  border-radius: 4px !important;
+  display: block;
+  border: 2px solid var(--pitch-color, rgba(219, 209, 163, 0.5)) !important;
+  box-shadow: 0 0 8px var(--pitch-glow, transparent);
+}
+
+.attackSymbol {
+  width: 26px;
+  height: 26px;
+  display: block;
+  margin: auto;
+  opacity: 0.9;
+}
+
+/* ── Error ────────────────────────────────────────────── */
+.error {
+  color: #f87171;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.78rem;
+  word-break: break-word;
+}

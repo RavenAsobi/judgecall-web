@@ -1,0 +1,141 @@
+.deckZone {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  right: 0px;
+  border-radius: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(50, 50, 50, 0.5);
+  color: var(--white);
+  grid-area: deck;
+}
+
+@media (max-width: 1200px) {
+  .deckZone {
+    border-radius: 0;
+  }
+}
+
+.zoneStack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cardWrapper {
+  position: relative;
+  width: var(--card-size);
+  height: var(--card-size);
+  z-index: 100;
+}
+
+.zoneLayer {
+  position: absolute;
+  width: var(--card-size);
+  height: var(--card-size);
+  background: var(--theme-contrast);
+  border: 2px solid var(--theme-contrastHover);
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow: inset 0 0 2px var(--theme-overlay),
+    1px 1px 2px var(--theme-overlay);
+}
+
+.zoneLayer:nth-child(1),
+.zoneLayer:nth-child(2),
+.zoneLayer:nth-child(3) {
+  background: transparent;
+}
+
+.zoneLayerShuffling {
+  position: absolute;
+  width: var(--card-size);
+  height: var(--card-size);
+  background: var(--theme-contrast);
+  border: 2px solid var(--theme-contrastHover);
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow: inset 0 0 2px var(--theme-overlay),
+    1px 1px 2px var(--theme-overlay);
+  animation: shuffle-animation 0.8s ease-in-out;
+  animation-delay: inherit;
+}
+
+.zoneLayerShuffling:nth-child(1),
+.zoneLayerShuffling:nth-child(2),
+.zoneLayerShuffling:nth-child(3) {
+  background: transparent;
+}
+
+@keyframes shuffle-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(540deg);
+  }
+  50% {
+    transform: rotate(1080deg);
+  }
+  75% {
+    transform: rotate(540deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.addBotDeckAnimationCard {
+  position: absolute;
+  width: var(--card-size);
+  height: var(--card-size);
+  animation: addBotDeckSlide 1s ease-in-out forwards;
+}
+
+@keyframes addBotDeckSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-150px) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.clashRevealCard {
+  position: absolute;
+  width: var(--card-size);
+  height: var(--card-size);
+  animation: clashFlip 5.6s ease-in-out forwards;
+  transform-style: preserve-3d;
+  z-index: 200;
+}
+
+@keyframes clashFlip {
+  0% {
+    transform: translateY(var(--deckOffsetY, 0))
+      translateX(var(--deckOffsetX, 0)) rotateY(-90deg);
+    opacity: 0;
+  }
+  5% {
+    transform: translateY(var(--deckOffsetY, 0))
+      translateX(var(--deckOffsetX, 0)) rotateY(0deg);
+    opacity: 1;
+  }
+  85% {
+    transform: translateY(var(--deckOffsetY, 0))
+      translateX(var(--deckOffsetX, 0)) rotateY(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(var(--deckOffsetY, 0))
+      translateX(var(--deckOffsetX, 0)) rotateY(-90deg);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "lynx-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lynx TCG 赛事工具 - 多人在线联机版后端",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "hash-password": "node scripts/hash-password.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.10.0",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.6.1",
+    "helmet": "^8.3.0",
+    "ws": "^8.18.0"
+  }
+}

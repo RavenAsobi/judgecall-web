@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lynx Beta - TCG 赛事工具</title>
+<link rel="stylesheet" href="/src/style.css">
+<script type="module" src="/src/main.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="logo" onclick="goTo('page-login')" aria-label="Lynx 首页">
+    <img class="logo-image" src="/Lynx.png" alt="Lynx">
+  </a>
+  <!-- 权限用户的保留比赛快速入口 -->
+  <div id="nav-pins" class="hidden"></div>
+  <div class="right">
+    <button id="nav-username" type="button" class="hidden nav-user-switch" onclick="toggleJudgeMode()" title="在巡场裁判与套牌检查视角间切换"></button>
+    <span id="nav-role-badge" class="badge hidden"></span>
+    <button id="nav-admin-btn" class="btn-secondary text-sm hidden" onclick="goTo('page-admin')">管理后台</button>
+    <button id="nav-logout-btn" class="btn-secondary text-sm hidden" onclick="logout()">退出</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== 界面1：登录 ==================== -->
+<div id="page-login" class="page active">
+  <div class="login-wrapper">
+    <div class="login-box">
+      <div class="card">
+        <div style="text-align:center;margin-bottom:24px">
+          <img class="login-logo-image" src="/Lynx.png" alt="Lynx">
+          <p class="text-sm text-gray mt-1">TCG 赛事工具 · 比赛轮次配对与管理</p>
+        </div>
+        <div class="tab-bar">
+          <button id="tab-guest" class="active" onclick="switchTab('guest')">普通用户</button>
+          <button id="tab-admin" onclick="switchTab('admin')">权限用户</button>
+        </div>
+
+        <form id="form-guest" onsubmit="event.preventDefault();guestLogin()">
+          <div class="mb-4">
+            <label>用户名</label>
+            <input id="guest-name" class="input-field" type="text" placeholder="输入你的用户名" required>
+            <p class="text-xs text-gray-4 mt-1">无需注册，输入用户名即可进入</p>
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%">进入工具</button>
+        </form>
+
+        <form id="form-admin" class="hidden" onsubmit="event.preventDefault();adminLogin()">
+          <div class="mb-3">
+            <label>用户名</label>
+            <input id="admin-name" class="input-field" type="text" placeholder="输入用户名" required>
+          </div>
+          <div class="mb-4">
+            <label>权限密码</label>
+            <input id="admin-pass" class="input-field" type="password" placeholder="输入权限密码" required>
+            <p class="text-xs text-gray-4 mt-1">由权限用户生成的 6 位密码</p>
+          </div>
+          <div id="login-error" class="text-red mb-3 hidden">密码无效或已过期</div>
+          <button type="submit" class="btn-primary" style="width:100%" id="admin-login-btn">登录管理后台</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 界面2：管理后台 ==================== -->
+<div id="page-admin" class="page">
+  <div class="container" style="max-width:768px">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 style="font-size:24px;font-weight:700;color:#111827">管理后台</h1>
+        <p class="text-sm text-gray mt-1">
+          当前用户：<span id="admin-display-name" style="font-weight:500;color:#374151"></span>
+          <span id="admin-role-badge" class="badge ml-2"></span>
+        </p>
+      </div>
+    </div>
+
+    <div class="perm-info mb-6">
+      <p class="text-sm" style="font-weight:600;color:#374151;margin-bottom:4px">我的权限</p>
+      <p class="text-xs text-gray" id="perm-desc"></p>
+    </div>
+
+    <div class="admin-tabs">
+      <button id="atab-create" class="active" onclick="switchAdminTab('create')">创建比赛</button>
+      <button id="atab-grant" onclick="switchAdminTab('grant')">发放权限</button>
+      <button id="atab-passwords" class="hidden" onclick="switchAdminTab('passwords')">密码管理</button>
+    </div>
+
+    <!-- 创建比赛 -->
+    <div id="admin-create">
+      <div class="card">
+        <h2 style="font-size:18px;font-weight:600;margin-bottom:16px">创建比赛</h2>
+        <form onsubmit="event.preventDefault();createTournament()">
+          <div class="mb-4">
+            <label>游戏 <span class="text-red">*</span></label>
+            <div class="game-btns">
+              <button type="button" id="game-fab" class="active-fab" onclick="selectGame('FAB')">FAB</button>
+              <button type="button" id="game-mtg" onclick="selectGame('MTG')">MTG</button>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label>比赛名称 <span class="text-red">*</span></label>
+            <input id="t-name" class="input-field" required oninput="document.getElementById('create-error').classList.add('hidden')">
+          </div>
+          <div class="mb-4">
+            <label>进入密码 <span class="text-red">*</span></label>
+            <input id="t-pass" class="input-field" placeholder="裁判输入此密码进入比赛" required>
+          </div>
+          <div class="mb-4">
+            <label>比赛时间 <span class="text-red">*</span></label>
+            <input id="t-date" class="input-field" type="datetime-local" required>
+          </div>
+          <div class="mb-4">
+            <label>赛制</label>
+            <select id="t-format" class="input-field" data-beta-format onchange="selectFabFormat(this.value)">
+              <option>Classic Constructed</option>
+              <option>Silver Age</option>
+              <option>Living Legend</option>
+              <option>Sealed Deck</option>
+              <option>Draft</option>
+              <option>Other</option>
+            </select>
+            <p id="t-format-timer-hint" class="text-xs text-gray-4 mt-1">每轮计时将自动设置为 55 分钟</p>
+          </div>
+          <div class="grid mb-4" style="grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label>最大桌号数</label>
+              <input id="t-max-tables" class="input-field" type="number" min="1" max="999" placeholder="例如：16">
+            </div>
+            <div>
+              <label>起始桌号</label>
+              <input id="t-start-table" class="input-field" type="number" placeholder="默认 1">
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="flex items-center gap-2" style="cursor:pointer;font-weight:500">
+              <input type="checkbox" id="t-event-code" style="width:16px;height:16px;accent-color:#ea580c">
+              特定权限密码
+            </label>
+            <p class="text-xs text-gray-4 mt-1">勾选后生成该比赛专属的 6 位权限密码，使用此密码登录可获得本比赛（仅此一场）的权限</p>
+          </div>
+
+          <div id="create-error" class="text-red mb-3 hidden"></div>
+          <div class="flex gap-3">
+            <button type="submit" class="btn-primary" id="create-btn">创建比赛</button>
+            <button type="button" class="btn-secondary" onclick="goTo('page-tournaments')">前往赛事列表</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 发放权限 -->
+    <div id="admin-grant" class="hidden">
+      <div class="card mb-6">
+        <h2 style="font-size:18px;font-weight:600;margin-bottom:8px">发放权限</h2>
+        <p class="text-sm text-gray mb-4" id="grant-desc"></p>
+        <form onsubmit="event.preventDefault();generateGrant()">
+          <div class="mb-4">
+            <label>备注说明</label>
+            <input id="g-note" class="input-field" placeholder="例如：给 XX 的比赛管理权限">
+          </div>
+          <div class="mb-4" id="duration-section">
+            <label>有效期限</label>
+            <div class="duration-btns" id="duration-btns">
+              <button type="button" onclick="selectDuration(this,1)">1天</button>
+              <button type="button" class="active" onclick="selectDuration(this,7)">7天</button>
+              <button type="button" onclick="selectDuration(this,30)">30天</button>
+              <button type="button" onclick="selectDuration(this,90)">90天</button>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" id="grant-btn">生成权限密码</button>
+        </form>
+        <div id="grant-result" class="hidden mt-4" style="padding:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px">
+          <p class="text-sm" style="color:#15803d;font-weight:500;margin-bottom:8px">权限密码已生成</p>
+          <div class="code-display">
+            <code id="grant-code"></code>
+            <button class="btn-secondary text-sm" onclick="copyGrantCode()" style="flex-shrink:0">复制</button>
+          </div>
+          <p class="text-xs mt-2" style="color:#16a34a">有效期至：<span id="grant-expiry"></span></p>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="text-sm" style="font-weight:600;color:#374151;margin-bottom:12px">我发放的权限</h3>
+        <div id="grant-list">
+          <p class="text-sm text-gray-4" style="text-align:center;padding:16px 0">暂无发放记录</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 密码管理（仅原初权限用户） -->
+    <div id="admin-passwords" class="hidden">
+      <div class="card mb-6">
+        <h3 class="text-sm" style="font-weight:600;color:#374151;margin-bottom:12px">普通权限密码</h3>
+        <div id="pw-list-2"></div>
+      </div>
+      <div class="card">
+        <h3 class="text-sm" style="font-weight:600;color:#374151;margin-bottom:12px">单次比赛权限密码</h3>
+        <div id="pw-list-event"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 界面3：赛事列表 ==================== -->
+<div id="page-tournaments" class="page">
+  <div class="container">
+    <div class="flex items-center justify-between mb-6" style="flex-wrap:wrap;gap:16px">
+      <div>
+        <h1 style="font-size:24px;font-weight:700;color:#111827">选择比赛</h1>
+        <p class="text-sm text-gray mt-1" id="tournament-greeting">你好，点击比赛输入密码进入</p>
+      </div>
+    </div>
+    <div class="search-box">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input class="input-field" type="text" placeholder="搜索比赛名称..." id="search-input" oninput="renderTournaments()">
+    </div>
+    <div class="filter-tabs" id="game-filter" style="display:flex;gap:8px;margin-bottom:16px">
+      <button type="button" id="filter-all" class="filter-tab active" onclick="setGameFilter('ALL')">全部</button>
+      <button type="button" id="filter-fab" class="filter-tab" onclick="setGameFilter('FAB')">仅 FAB</button>
+      <button type="button" id="filter-mtg" class="filter-tab" onclick="setGameFilter('MTG')">仅 MTG</button>
+    </div>
+    <div id="tournament-list" class="tournament-grid"></div>
+  </div>
+</div>
+
+<!-- ==================== 界面4：比赛详情 ==================== -->
+<div id="page-tournament-detail" class="page">
+  <!-- 桌面端顶部栏目 -->
+  <div class="container desktop-only" style="max-width:900px">
+    <!-- 顶栏：左计时器+旋转 / 右退回 -->
+    <div class="flex items-center justify-between mb-4 detail-topbar">
+      <div class="flex items-center gap-2">
+        <span id="round-display" class="round-display">R1</span>
+        <div id="timer-display" class="timer">50:00</div>
+        <span id="detail-sync-status" class="sync-status" role="status" aria-live="polite"></span>
+        <button id="timer-gear" class="gear-btn hidden" onclick="openTimerSettings()" title="倒计时设置">⚙</button>
+      </div>
+      <button class="btn-secondary text-sm" onclick="leaveTournament()">退回赛事列表</button>
+    </div>
+
+    <!-- 比赛信息 -->
+    <div class="card mb-4">
+      <div class="flex items-center justify-between" style="flex-wrap:wrap;gap:16px">
+        <div>
+          <h1 id="detail-name" style="font-size:22px;font-weight:700;color:#111827"></h1>
+          <div class="flex items-center gap-3 mt-2" style="flex-wrap:wrap">
+            <span id="detail-game" class="badge"></span>
+            <span id="detail-date" class="text-sm text-gray"></span>
+            <span id="detail-format" class="badge badge-gray"></span>
+            <span id="detail-status" class="badge"></span>
+            <span id="table-range-info" class="text-sm" style="color:#374151;font-weight:500"></span>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button id="detail-import-btn" class="btn-secondary hidden" onclick="openImportModal()">导入</button>
+          <button id="detail-next-round-btn" class="btn-secondary hidden" onclick="startNextRound()">开始下一轮</button>
+          <button id="detail-resetall-btn" class="btn-secondary hidden" onclick="resetAllTables()">重置</button>
+          <button id="detail-redall-btn" class="btn-secondary hidden" onclick="markAllRed()">批量标红</button>
+          <button id="detail-show-names" class="btn-secondary hidden" onclick="togglePlayerNames()">显示姓名</button>
+          <button id="detail-settings-btn" class="btn-secondary hidden" onclick="openTournamentSettings()">比赛设置</button>
+        </div>
+      </div>
+      <!-- 比赛权限密码（仅权限用户可见） -->
+      <div id="detail-event-code" class="hidden mt-4" style="padding:12px 16px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px">
+        <div class="flex items-center justify-between" style="flex-wrap:wrap;gap:12px">
+          <div>
+            <p class="text-xs" style="color:#c2410c;font-weight:500">比赛权限密码</p>
+            <p class="text-xs text-gray mt-1">使用此密码登录可获得本比赛的权限</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <code id="detail-event-code-text" style="font-family:monospace;font-size:18px;font-weight:700;color:#c2410c;letter-spacing:3px"></code>
+            <button class="btn-secondary text-sm" onclick="copyEventCode()">复制</button>
+          </div>
+        </div>
+      </div>
+      <!-- 桌数控制（权限用户） -->
+      <div id="table-count-control" class="hidden mt-4 flex items-center gap-3">
+        <span class="text-sm text-gray">桌号数量：</span>
+        <button class="cnt-btn" onclick="changeTableCount(-1)">−</button>
+        <span id="table-count-num" style="font-weight:700;min-width:36px;text-align:center;font-size:16px">8</span>
+        <button class="cnt-btn" onclick="changeTableCount(1)">+</button>
+        <span class="text-xs text-gray-4">变更将实时同步给本场所有用户</span>
+      </div>
+    </div>
+
+    <!-- 颜色图例 + 筛选 -->
+    <div id="floor-search" class="table-search-row">
+      <input id="detail-table-search" class="input-field" type="search" placeholder="搜索牌手姓名或桌号" oninput="searchTables(this.value)">
+      <button type="button" class="btn-secondary" onclick="clearTableSearch()" aria-label="清除桌台搜索">×</button>
+    </div>
+    <div id="floor-legend" class="flex items-center gap-4 mb-3" style="flex-wrap:wrap">
+      <span class="legend-item"><i class="legend-dot" style="background:#fff;border:1px solid #e5e7eb"></i>未回报</span>
+      <span class="legend-item"><i class="legend-dot" style="background:#fee2e2"></i>仍在对局</span>
+      <span class="legend-item"><i class="legend-dot" style="background:#fef9c3"></i>有裁判</span>
+      <span class="legend-item"><i class="legend-dot" style="background:#bbf7d0"></i>已提交</span>
+      <span class="legend-item"><i class="legend-dot" style="background:#111827"></i>双方均未出席（Ghost）</span>
+      <span style="margin-left:auto"></span>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-4">不显示：</span>
+        <button class="filter-btn" id="filter-playing" aria-pressed="false" onclick="toggleFilter('playing')">仍在对局</button>
+        <button class="filter-btn" id="filter-judge" aria-pressed="false" onclick="toggleFilter('judge')">有裁判</button>
+        <button class="filter-btn" id="filter-timeext" aria-pressed="false" onclick="toggleFilter('timeext')">有加时</button>
+        <button class="filter-btn" id="filter-submitted" aria-pressed="false" onclick="toggleFilter('submitted')">已提交</button>
+        <button class="filter-btn hidden" id="filter-sort" onclick="toggleSortOrder()" title="暂时忽略桌号编码布局，回默认桌号排序；再点恢复">排序</button>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-4">分块：</span>
+        <button class="filter-btn sel" id="block-1" onclick="setBlocks(1)">1</button>
+        <button class="filter-btn" id="block-4" onclick="setBlocks(4)">4</button>
+        <button class="filter-btn" id="block-9" onclick="setBlocks(9)">9</button>
+      </div>
+      <span class="text-xs text-gray-4">点击换色 · 长按详细设置</span>
+    </div>
+  </div>
+
+  <!-- 移动端顶部栏目 -->
+  <div class="mobile-only" style="padding: 0 12px;">
+    <!-- 顶栏：轮数+计时器+旋转+设置 -->
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span id="m-round-display" class="round-display">R1</span>
+        <div id="m-timer-display" class="timer">50:00</div>
+        <span id="m-detail-sync-status" class="sync-status" role="status" aria-live="polite"></span>
+      </div>
+      <button class="gear-btn" onclick="openDrawer()" title="设置" style="width:36px;height:36px;font-size:18px">☰</button>
+    </div>
+
+    <!-- 比赛信息（精简） -->
+    <div class="card mobile-info mb-3">
+      <h1 id="m-detail-name"></h1>
+      <div class="mobile-legend mt-2">
+        <span><i class="legend-dot" style="background:#fff;border:1px solid #e5e7eb"></i>白色：无回报</span>
+        <span><i class="legend-dot" style="background:#fee2e2"></i>红色：仍在对局</span>
+        <span><i class="legend-dot" style="background:#fef9c3"></i>黄色：有裁判</span>
+        <span><i class="legend-dot" style="background:#bbf7d0"></i>绿色：已提交</span>
+        <span><i class="legend-dot" style="background:#111827"></i>黑色：双方未出席</span>
+      </div>
+      <div class="mobile-filter-row">
+        <span class="text-xs text-gray-4" style="line-height:26px">不显示：</span>
+        <button class="filter-btn" id="m-filter-playing" aria-pressed="false" onclick="toggleFilter('playing')">仍在对局</button>
+        <button class="filter-btn" id="m-filter-judge" aria-pressed="false" onclick="toggleFilter('judge')">有裁判</button>
+        <button class="filter-btn" id="m-filter-timeext" aria-pressed="false" onclick="toggleFilter('timeext')">有加时</button>
+        <button class="filter-btn" id="m-filter-submitted" aria-pressed="false" onclick="toggleFilter('submitted')">已提交</button>
+        <span style="margin-left:auto"></span>
+        <button class="filter-btn" id="m-filter-zone" onclick="openZoneFilter()" style="border-radius:6px;padding:3px 10px">区域</button>
+      </div>
+      <div class="table-search-row">
+        <input id="m-detail-table-search" class="input-field" type="search" placeholder="搜索牌手姓名或桌号" oninput="searchTables(this.value)">
+        <button type="button" class="btn-secondary" onclick="clearTableSearch()" aria-label="清除桌台搜索">×</button>
+      </div>
+
+
+    </div>
+  </div>
+
+  <section id="deck-view" class="deck-view hidden" aria-label="套牌检查视角">
+    <div class="deck-head">
+      <div><h2>套牌检查</h2><p id="deck-standings-status" class="text-sm text-gray"></p></div>
+      <button id="deck-standings-btn" class="btn-secondary hidden" onclick="openStandingsModal()">积分校正／恢复</button>
+    </div>
+    <div class="deck-random card">
+      <h3>随机选择桌号</h3>
+      <div class="deck-random-inputs">
+        <label>抽选桌数<input id="deck-pick-count" class="input-field" type="number" min="1" step="1" value="1"></label>
+        <label>最低分数<input id="deck-min-points" class="input-field" type="number" min="0" step="1" value="0"></label>
+      </div>
+      <div class="deck-filter" role="group" aria-label="套牌检查筛选">
+        <button class="filter-btn sel" data-deck-filter="none" onclick="setDeckFilter('none')">双方均未DC</button>
+        <button class="filter-btn" data-deck-filter="one" onclick="setDeckFilter('one')">仅一方有DC</button>
+        <button class="filter-btn" data-deck-filter="all" onclick="setDeckFilter('all')">无限制</button>
+      </div>
+      <button class="btn-primary" onclick="pickDeckTables()">随机抽选</button>
+      <p id="deck-pick-result" class="text-sm" role="status"></p>
+    </div>
+    <div id="deck-table-list" class="deck-table-list"></div>
+  </section>
+
+  <!-- 桌面区域：全宽，超出整体缩放；rotator 用于 90° 旋转 -->
+  <div id="tables-area" style="width:100%;padding:0 16px 32px">
+    <div id="tables-rotator">
+      <div id="tables-grid" class="tables-grid"></div>
+    </div>
+  </div>
+
+  <!-- 成绩回报面板（仅 PC 端且对本场有管理权的用户；空时收缩细条，不遮桌子——tables-area 留 gutter） -->
+  <div id="report-panel" class="hidden">
+    <div id="report-panel-head">
+      <span class="report-title">成绩回报 <b id="report-count">0</b></span>
+      <span style="margin-left:auto"></span>
+      <button class="report-head-btn" onclick="openReportHistory()">历史</button>
+      <button class="report-head-btn report-clear-btn" onclick="clearAllReports()">全部确认</button>
+    </div>
+    <div id="report-list"></div>
+  </div>
+</div>
+
+<!-- 移动端侧边抽屉 -->
+<div id="drawer-overlay" class="drawer-overlay hidden" onclick="closeDrawer()"></div>
+<div id="drawer" class="drawer">
+  <h3>设置</h3>
+  <button class="drawer-item" onclick="closeDrawer();leaveTournament()">退回赛事列表</button>
+  <button class="drawer-item desktop-only-btn" id="drawer-admin" onclick="closeDrawer();goTo('page-admin')">管理后台</button>
+  <button class="drawer-item" id="drawer-import" onclick="closeDrawer();openImportModal()">导入</button>
+  <button class="drawer-item" id="drawer-next-round" onclick="closeDrawer();startNextRound()">开始下一轮</button>
+  <button class="drawer-item" id="drawer-resetall" onclick="closeDrawer();resetAllTables()">重置</button>
+  <button class="drawer-item" id="drawer-redall" onclick="closeDrawer();markAllRed()">批量标红</button>
+  <button class="drawer-item" id="drawer-show-names" onclick="closeDrawer();togglePlayerNames()">显示姓名</button>
+  <button class="drawer-item" id="drawer-settings" onclick="closeDrawer();openTournamentSettings()">比赛设置</button>
+  <button class="drawer-item" id="drawer-timer" onclick="closeDrawer();openTimerSettings()">倒计时设置</button>
+  <button class="drawer-item" id="drawer-eventcode" onclick="closeDrawer();copyEventCode()">复制比赛权限密码</button>
+</div>
+
+</main>
+
+<!-- 密码弹窗 -->
+<div id="password-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 id="modal-title" style="font-size:18px;font-weight:600;color:#111827;margin-bottom:4px"></h3>
+    <p class="text-sm text-gray mb-4">请输入比赛密码进入</p>
+    <input id="modal-password" class="input-field mb-3" type="password" placeholder="输入密码"
+      onkeydown="if(event.key==='Enter')verifyTournamentPassword()">
+    <div id="modal-error" class="text-red mb-3 hidden">密码错误，请重试</div>
+    <div class="flex" style="justify-content:flex-end;gap:12px">
+      <button class="btn-secondary" onclick="closePasswordModal()">取消</button>
+      <button class="btn-primary" id="modal-verify-btn" onclick="verifyTournamentPassword()">进入比赛</button>
+    </div>
+  </div>
+</div>
+
+<!-- 桌子详细设置弹窗 -->
+<div id="table-modal" class="modal-overlay hidden">
+  <div class="modal" style="max-width:440px;max-height:90vh;overflow-y:auto">
+    <h3 id="tm-title" style="font-size:18px;font-weight:600;color:#111827"></h3>
+    <p id="tm-players" class="text-sm text-gray mb-4"></p>
+
+    <!-- FAB 结果 -->
+    <div id="tm-fab-result" class="mb-4">
+      <label>比赛结果</label>
+      <div class="flex gap-2" id="tm-fab-options">
+        <button type="button" class="tm-opt" data-r="p1" onclick="setFabResult('p1')"></button>
+        <button type="button" class="tm-opt" data-r="p2" onclick="setFabResult('p2')"></button>
+        <button type="button" class="tm-opt" data-r="draw" onclick="setFabResult('draw')">平局</button>
+      </div>
+    </div>
+
+    <!-- MTG 结果 -->
+    <div id="tm-mtg-result" class="mb-4 hidden">
+      <label>比赛结果（三局两胜）</label>
+      <div class="grid" style="grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div>
+          <span class="text-xs text-gray" id="tm-p1-label">牌手1胜场</span>
+          <select id="tm-p1-wins" class="input-field" onchange="onWinsChange()"></select>
+        </div>
+        <div>
+          <span class="text-xs text-gray" id="tm-p2-label">牌手2胜场</span>
+          <select id="tm-p2-wins" class="input-field" onchange="onWinsChange()"></select>
+        </div>
+        <div>
+          <span class="text-xs text-gray">平局数</span>
+          <input id="tm-draws" type="number" min="0" class="input-field" value="0" onchange="applyMtgResult()">
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label>特殊赛果（用于轮次积分结算）</label>
+      <div class="flex gap-2" style="flex-wrap:wrap">
+        <button type="button" id="tm-special-bye" class="btn-secondary" onclick="setSpecialOutcome('BYE')">轮空（牌手1）</button>
+        <button type="button" id="tm-special-lossall" class="btn-secondary" onclick="setSpecialOutcome('LOSSALL')">双方判负</button>
+        <button type="button" id="tm-special-clear" class="btn-secondary" onclick="setSpecialOutcome(null)">取消特殊赛果</button>
+      </div>
+      <p class="text-xs text-gray-4 mt-1">Drop 不等于比赛判负；只有明确赛果才计入积分。</p>
+    </div>
+
+    <!-- 补时 -->
+    <div class="mb-4">
+      <label>补时时长（分钟）</label>
+      <input id="tm-time-ext" type="number" min="0" class="input-field" placeholder="0" onchange="onTimeExtInput()">
+    </div>
+
+    <!-- 我在盯这桌 / 离开这桌 -->
+    <div class="mb-4">
+      <button type="button" class="btn-secondary" id="tm-watch-btn" style="width:100%" onclick="watchTable()">我在盯这桌</button>
+      <p id="tm-watcher" class="text-xs text-gray mt-1 hidden"></p>
+    </div>
+    <div class="mb-4">
+      <button type="button" class="btn-secondary hidden" id="tm-focus-btn" style="width:100%" onclick="toggleFocusTable()">设为焦点桌</button>
+    </div>
+
+    <!-- Drop -->
+    <div class="mb-4">
+      <label style="cursor:pointer;font-weight:500" onclick="document.getElementById('tm-drop-area').classList.toggle('hidden')">
+        Drop 回报 <span class="text-xs text-gray-4" style="font-weight:400">（点击展开）</span>
+      </label>
+      <div id="tm-drop-area" class="hidden mt-2" style="padding:12px;background:#f9fafb;border-radius:8px">
+        <label class="flex items-center gap-2" style="cursor:pointer;font-weight:400">
+          <input type="checkbox" id="tm-drop1" style="width:16px;height:16px;accent-color:#ea580c" onchange="onDropChange()">
+          <span id="tm-drop1-name"></span>
+        </label>
+        <label class="flex items-center gap-2 mt-2" style="cursor:pointer;font-weight:400">
+          <input type="checkbox" id="tm-drop2" style="width:16px;height:16px;accent-color:#ea580c" onchange="onDropChange()">
+          <span id="tm-drop2-name"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <button type="button" class="btn-secondary" id="tm-ghost-btn" style="width:100%" onclick="toggleGhostTable()">双方均未出席（Ghost）</button>
+      <p class="text-xs text-gray-4 mt-1">黑底白字，并自动勾选两位玩家 Drop；再次点击可取消。</p>
+    </div>
+
+    <div class="mb-4">
+      <button type="button" class="btn-secondary" style="width:100%" onclick="openPenaltyModal()">添加判罚</button>
+    </div>
+
+    <details id="tm-penalty-history" class="deck-history mb-4">
+      <summary id="tm-penalty-summary">判罚记录</summary>
+      <div id="tm-penalty-records" class="text-sm"></div>
+    </details>
+
+    <p class="text-xs text-gray-4 mb-3" style="text-align:center">所有变更实时生效并同步</p>
+    <div class="flex items-center" style="justify-content:space-between">
+      <button id="tm-reset-btn" class="btn-danger hidden" onclick="resetTable()">重置该桌</button>
+      <button class="btn-primary" onclick="closeTableModal()">完成</button>
+    </div>
+  </div>
+</div>
+
+<div id="standings-modal" class="modal-overlay hidden">
+  <div class="modal judge-modal">
+    <h3>积分校正／恢复（管理权限）</h3>
+    <p id="standings-round-hint" class="text-sm text-gray mb-3"></p>
+    <textarea id="standings-json" class="input-field" rows="10" placeholder="粘贴 Lynx 插件导出的 lynx-standings-v1 JSON"></textarea>
+    <label class="settlement-check"><input id="standings-confirm" type="checkbox"> 我已核对轮次、玩家 ID 和积分；导入将覆盖该轮自动积分，并留下逐玩家审计记录</label>
+    <details><summary>最近校正记录</summary><div id="standings-audit" class="text-xs text-gray"></div></details>
+    <p id="standings-error" class="text-sm text-red" role="alert"></p>
+    <div class="judge-actions"><button class="btn-secondary" onclick="closeStandingsModal()">取消</button><button class="btn-primary" onclick="submitStandings()">覆盖并记录</button></div>
+  </div>
+</div>
+
+<div id="settlement-modal" class="modal-overlay hidden">
+  <div class="modal judge-modal">
+    <h3 id="settlement-title">本轮结算预览</h3>
+    <p id="settlement-summary" class="text-sm"></p>
+    <div id="settlement-unresolved" class="settlement-warning hidden"></div>
+    <div id="settlement-baseline" class="settlement-warning hidden"></div>
+    <div id="settlement-policy" class="settlement-policy">
+      <p class="text-sm">本场积分规则（单位：分；首次结算后锁定）</p>
+      <div class="settlement-policy-grid">
+        <label>胜<input id="settlement-win" class="input-field" type="number" min="0" max="100" step="1"></label>
+        <label>平<input id="settlement-draw" class="input-field" type="number" min="0" max="100" step="1"></label>
+        <label>负<input id="settlement-loss" class="input-field" type="number" min="0" max="100" step="1"></label>
+        <label>轮空<input id="settlement-bye" class="input-field" type="number" min="0" max="100" step="1"></label>
+        <label>双方判负／Ghost<input id="settlement-double-loss" class="input-field" type="number" min="0" max="100" step="1"></label>
+      </div>
+      <label id="settlement-policy-confirm-row" class="settlement-check"><input id="settlement-policy-confirm" type="checkbox"> 我已核对本场的实际计分规则；上方数字仅为建议值</label>
+    </div>
+    <label id="settlement-baseline-confirm-row" class="settlement-check hidden"><input id="settlement-baseline-confirm" type="checkbox"> 我确认缺少历史积分，先从本轮起累计并标记为不完整</label>
+    <p id="settlement-error" class="text-sm text-red" role="alert"></p>
+    <div class="judge-actions"><button class="btn-secondary" onclick="closeSettlementModal()">取消</button><button id="settlement-submit" class="btn-primary" onclick="confirmSettlement()">结算并开始下一轮</button></div>
+  </div>
+</div>
+
+<div id="penalty-modal" class="modal-overlay hidden">
+  <div class="modal judge-modal">
+    <h3 id="penalty-title">添加判罚</h3>
+    <label>玩家<select id="penalty-player" class="input-field"></select></label>
+    <label>违规类型<select id="penalty-infraction" class="input-field"></select></label>
+    <label>判罚<select id="penalty-value" class="input-field"></select></label>
+    <label>备注<textarea id="penalty-note" class="input-field" rows="3" maxlength="2000"></textarea></label>
+    <label>加时（分钟）<input id="penalty-time" class="input-field" type="number" min="0" step="1" value="0"></label>
+    <p id="penalty-error" class="text-sm text-red" role="alert"></p>
+    <div class="judge-actions"><button class="btn-secondary" onclick="closePenaltyModal()">取消</button><button class="btn-primary" onclick="submitPenalty()">提交</button></div>
+  </div>
+</div>
+
+<div id="deck-modal" class="modal-overlay hidden">
+  <div class="modal judge-modal">
+    <h3 id="deck-modal-title">套牌检查</h3>
+    <div id="deck-modal-players"></div>
+    <label>添加补时（分钟）<input id="deck-time" class="input-field" type="number" min="0" step="1" value="10"></label>
+    <p id="deck-modal-error" class="text-sm text-red" role="alert"></p>
+    <div class="judge-actions"><button class="btn-secondary" onclick="closeDeckModal()">取消</button><button class="btn-primary" onclick="submitDeckCheck()">提交</button></div>
+  </div>
+</div>
+
+<!-- 回报历史弹窗 -->
+<div id="report-history-modal" class="modal-overlay hidden">
+  <div class="modal" style="max-width:480px;max-height:80vh;display:flex;flex-direction:column">
+    <h3 style="font-size:18px;font-weight:600;color:#111827;margin-bottom:12px">回报历史</h3>
+    <div id="report-history-list" style="overflow-y:auto;flex:1;min-height:60px"></div>
+    <div class="flex" style="justify-content:flex-end;margin-top:12px">
+      <button class="btn-primary" onclick="closeReportHistory()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 比赛设置弹窗 -->
+<div id="tsettings-modal" class="modal-overlay hidden">
+  <div class="modal" style="max-width:560px;max-height:90vh;overflow-y:auto">
+    <h3 style="font-size:18px;font-weight:600;color:#111827;margin-bottom:16px">比赛设置</h3>
+
+    <div class="mb-4">
+      <label>游戏</label>
+      <div class="game-btns">
+        <button type="button" id="ts-game-fab" onclick="selectSettingsGame('FAB')">FAB</button>
+        <button type="button" id="ts-game-mtg" onclick="selectSettingsGame('MTG')">MTG</button>
+      </div>
+    </div>
+    <div class="mb-4">
+      <label>比赛名称</label>
+      <input id="ts-name" class="input-field">
+    </div>
+    <div class="mb-4">
+      <label>进入密码</label>
+      <input id="ts-pass" class="input-field" placeholder="裁判输入此密码进入比赛">
+    </div>
+    <div class="mb-4">
+      <label>比赛时间</label>
+      <input id="ts-date" class="input-field" type="datetime-local">
+    </div>
+    <div class="mb-4">
+      <label>赛制</label>
+      <select id="ts-format" class="input-field" data-beta-format onchange="selectSettingsFabFormat(this.value)">
+        <option>Classic Constructed</option>
+        <option>Silver Age</option>
+        <option>Living Legend</option>
+        <option>Sealed Deck</option>
+        <option>Draft</option>
+        <option>Other</option>
+      </select>
+      <p id="ts-format-timer-hint" class="text-xs text-gray-4 mt-1">保存后每轮计时将自动设置为 55 分钟</p>
+    </div>
+    <div class="grid mb-4" style="grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div>
+        <label>最大桌号数</label>
+        <input id="ts-max-tables" class="input-field" type="number" min="1" max="999">
+      </div>
+      <div>
+        <label>起始桌号</label>
+        <input id="ts-start-table" class="input-field" type="number" placeholder="默认 1">
+      </div>
+      <div>
+        <label>当前轮数</label>
+        <input id="ts-round" class="input-field" type="number" min="1" placeholder="1">
+      </div>
+    </div>
+    <div class="mb-4">
+      <label class="flex items-center gap-2" style="cursor:pointer;font-weight:500">
+        <input type="checkbox" id="ts-reversed" style="width:16px;height:16px;accent-color:#ea580c">
+        倒序排列
+      </label>
+      <p class="text-xs text-gray-4 mt-1">勾选后桌号从起始桌号开始递减（如 16、15、14…）</p>
+    </div>
+    <div class="mb-4">
+      <label class="flex items-center gap-2" style="cursor:pointer;font-weight:500">
+        <input type="checkbox" id="ts-manual-only" style="width:16px;height:16px;accent-color:#ea580c">
+        仅手动开始下一轮
+      </label>
+      <p class="text-xs text-gray-4 mt-1">勾选后，带新一轮代码头的导入不会自动增加轮数。</p>
+    </div>
+    <div class="mb-4">
+      <label class="flex items-center gap-2" style="cursor:pointer;font-weight:500">
+        <input type="checkbox" id="ts-event-code" style="width:16px;height:16px;accent-color:#ea580c">
+        特定权限密码
+      </label>
+      <p id="ts-event-code-display" class="text-xs text-gray mt-1 hidden">
+        当前密码：<code id="ts-event-code-text" style="font-family:monospace;font-weight:700;color:#c2410c;letter-spacing:2px"></code>
+      </p>
+    </div>
+
+    <!-- 桌号排序 -->
+    <div class="mb-4" style="padding-top:12px;border-top:1px solid #f3f4f6">
+      <label>桌号排列</label>
+      <button type="button" class="btn-secondary" style="width:100%" onclick="openOrderModal()">输入桌号排序</button>
+    </div>
+
+    <!-- 保留到顶端 -->
+    <div class="mb-4" style="padding-top:12px;border-top:1px solid #f3f4f6">
+      <label>快速入口</label>
+      <button type="button" id="ts-pin-btn" class="btn-secondary" style="width:100%" onclick="togglePin()">保留到顶端</button>
+      <p class="text-xs text-gray-4 mt-1">保留后该比赛入口显示在页面顶部，跟随你的权限密码保存</p>
+    </div>
+
+    <div class="flex items-center" style="justify-content:space-between">
+      <button id="ts-delete-btn" class="btn-danger" style="padding:8px 16px;font-size:14px" onclick="closeTournamentSettings();deleteCurrentTournament()">删除比赛</button>
+      <div class="flex gap-3">
+        <button class="btn-secondary" onclick="closeTournamentSettings()">取消</button>
+        <button class="btn-primary" onclick="saveTournamentSettings()">保存设置</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 导入数据弹窗 -->
+<div id="import-modal" class="modal-overlay hidden">
+  <div class="modal" style="max-width:560px;max-height:90vh;overflow-y:auto">
+    <h3 style="font-size:18px;font-weight:600;color:#111827;margin-bottom:4px">导入比赛数据</h3>
+    <p class="text-sm text-gray mb-3">粘贴网页拓展导出的比赛结果 JSON（支持 GEM / melee / EventLink 格式）</p>
+    <textarea id="import-text" class="import-textarea" style="min-height:180px" placeholder='[{"tableNumber":1,"playerName1":"张伟","playerName2":"李娜","result":"1WIN",...}]'></textarea>
+    <div id="import-msg" class="mt-2"></div>
+    <details class="format-hint mt-2">
+      <summary>导入规则说明</summary>
+      <pre>· 没回报成绩的桌保留原有颜色与状态
+· 回报成绩的桌 → 绿色；Ghost → 黑底白字、双方 Drop
+· 加时信息会更新，但不覆盖桌子颜色
+· 插件 v0.3.0 的新一轮代码头 → 全部桌子刷白、轮数 +1
+· 每轮第一次导入 JSON → 按导入桌号清单重设总桌数，不受开赛最大桌号限制
+· 首次导入前请确认 JSON 包含本轮全部桌台；筛选或分页结果也会直接重设桌数
+· 本轮后续导入 → 只更新现有桌子，不改变总桌数
+· MTG 精确比分优先使用 p1Wins / p2Wins / draws
+· 选手姓名、Drop 状态会同步更新
+· 首次导入桌数变化时，自定义桌位布局会恢复默认
+· 后续导入若包含现有桌台以外的桌号，会提示检查数据
+· 导入的最小桌号必须与设置的起始桌号一致，
+  否则显示"导入失败：起始桌号不对"</pre>
+    </details>
+    <div class="flex mt-4" style="justify-content:space-between">
+      <button class="btn-secondary" onclick="readClipboard()">从剪贴板读取</button>
+      <div class="flex gap-3">
+        <button class="btn-secondary" onclick="closeImportModal()">取消</button>
+        <button class="btn-primary" onclick="applyImport()">导入</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 桌号排序弹窗（编码规律输入） -->
+<div id="order-modal" class="modal-overlay hidden">
+  <div class="modal" style="max-width:680px;width:100%">
+    <h3 style="font-size:18px;font-weight:600;color:#111827;margin-bottom:4px">桌号排序</h3>
+    <p class="text-sm text-gray mb-4">按编码规律输入，桌号方块将按此布局排列</p>
+    <textarea id="order-input" class="input-field" style="min-height:160px;font-size:16px;font-family:monospace;line-height:1.6;resize:vertical" placeholder="例如：&#10;100X000&#10;000X002&#10;300X000&#10;000X004"></textarea>
+    <details class="format-hint mt-2">
+      <summary>查看编码规律说明</summary>
+      <pre>· 起始标记：1-9 表示 1-9，A-Z 表示 10-35
+  （起始桌号 = 上一个标记的截止桌号 + 1）
+· 0：顺序桌，按方向依次排列
+· X：过道，在该位置隔一个桌位
+· XX：分段符，同一行被 XX 隔开的两边不视为同行
+  （多段之间蛇形编号：第1段从上往下，第2段从下往上…）
+
+【横向】标记在行首=从左往右排，在行尾=从右往左排：
+100X000      →  1  2  3  过道  4  5  6
+000X002      → 12 11 10  过道  9  8  7
+300X000      → 13 14 15  过道 16 17 18
+000X004      → 24 23 22  过道 21 20 19
+
+【纵向】每列一个标记，列顶=从上往下，列底=从下往上：
+103          →  1  8  9
+000             2  7 10
+00X             3  6  过道
+02X             4  5  过道</pre>
+    </details>
+    <p id="order-error" class="text-red text-sm mt-2 hidden"></p>
+    <div class="flex mt-4" style="justify-content:space-between">
+      <button class="btn-secondary" onclick="clearTableOrder()">清除排序</button>
+      <div class="flex gap-3">
+        <button class="btn-secondary" onclick="closeOrderModal()">取消</button>
+        <button class="btn-primary" onclick="applyTableOrder()">应用排序</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 区域筛选弹窗（移动端） -->
+<div id="zone-filter-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 style="font-size:18px;font-weight:600;color:#111827;margin-bottom:4px">区域筛选</h3>
+    <p class="text-sm text-gray mb-4">输入桌号条件，仅显示符合条件的桌子</p>
+    <textarea id="zone-filter-input" class="input-field" style="min-height:120px;font-size:16px;font-family:monospace;line-height:1.6;resize:vertical" placeholder="例如：&#10;100&#10;102-105&#10;200-&#10;-50"></textarea>
+    <details class="format-hint mt-2">
+      <summary>查看格式说明</summary>
+      <pre>· 输入 X：仅显示 X 桌
+· 输入 X-Y：显示 X 到 Y 桌
+· 输入 X-：显示 X 及之后所有桌
+· 输入 -X：显示 X 及之前所有桌
+· 多行表示多个条件，结果取并集</pre>
+    </details>
+    <div class="flex mt-4" style="justify-content:space-between">
+      <button class="btn-secondary" onclick="clearZoneFilter()">清空</button>
+      <div class="flex gap-3">
+        <button class="btn-secondary" onclick="closeZoneFilter()">取消</button>
+        <button class="btn-primary" onclick="applyZoneFilter()">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 计时器设置弹窗 -->
+<div id="timer-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 style="font-size:18px;font-weight:600;color:#111827;margin-bottom:16px">倒计时设置</h3>
+    <div class="mb-4">
+      <label>时长（分钟）</label>
+      <input id="timer-minutes" class="input-field" type="number" min="0" max="999" oninput="applyTimerMinutes()">
+    </div>
+    <div class="grid mb-4" style="grid-template-columns:1fr 1fr;gap:8px">
+      <button id="timer-toggle-btn" class="btn-primary" onclick="timerToggle()">暂停</button>
+      <button class="btn-secondary" onclick="timerReset()">重置</button>
+    </div>
+    <div class="flex" style="justify-content:flex-end">
+      <button class="btn-secondary" onclick="document.getElementById('timer-modal').classList.add('hidden')">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div id="delete-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 style="font-size:18px;font-weight:600;color:#111827;margin-bottom:4px">确认删除</h3>
+    <p class="text-sm text-gray mb-4" id="delete-msg"></p>
+    <div class="flex" style="justify-content:flex-end;gap:12px">
+      <button class="btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn-danger" style="padding:8px 16px;font-size:14px" onclick="confirmDelete()">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <span>Lynx — TCG 赛事工具</span>
+  <a class="filing-link" href="https://beian.mps.gov.cn/#/query/webSearch?code=21011202001362" rel="noreferrer" target="_blank">
+    <img src="/police.png" alt="" width="18" height="20" />
+    <span>辽公网安备21011202001362号</span>
+  </a>
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">辽ICP备2026017181号</a>
+</footer>
+
+</body>
+</html>

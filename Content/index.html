@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="JudgeCall 精选 Flesh and Blood 视频与内容创作者。"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <title>FAB 内容创作者｜JudgeCall</title>
+    <link rel="icon" href="./assets/jc.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./content-data.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <header class="site-header">
+      <a class="brand" href="https://index.judgecall.net/cn" aria-label="返回 JudgeCall 首页">
+        <span class="brand-logo-crop">
+          <img src="./assets/judgecall-logo.png" alt="JudgeCall 裁判通" width="4096" height="4096" />
+        </span>
+      </a>
+      <nav aria-label="主要导航">
+        <a class="home-link" href="https://index.judgecall.net/cn">返回首页<svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-6 6 6-6 6" /></svg></a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="video-section" id="featured-video" aria-labelledby="page-title">
+        <div class="technical-grid" aria-hidden="true"></div>
+        <div class="video-section-inner">
+          <div class="hero-copy">
+            <h1 id="page-title">发现值得关注的 FAB 创作者</h1>
+            <p>精选视频与创作者指南，连接 Flesh and Blood 中文社群。</p>
+          </div>
+
+          <div class="video-frame" id="video-frame" role="region" aria-roledescription="轮播" aria-label="精选 Bilibili 视频" data-playing="false">
+            <div class="video-stage" id="video-stage">
+              <img class="video-cover" id="video-cover" src="./assets/videos/BV1rxKV6sESU.jpg" alt="【赤魂战纪 FAB】现在就去用！直播/录播比赛观感大升级！" width="1672" height="940" fetchpriority="high" />
+              <div class="video-cover-overlay">
+                <span class="video-label">BILIBILI VIDEO</span>
+                <button class="play-button" id="video-play" type="button" aria-label="播放当前视频">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M9 7.4v9.2L16.2 12 9 7.4Z" fill="currentColor" /></svg>
+                </button>
+                <div class="video-caption">
+                  <p class="video-owner" id="video-owner">瑞文文创</p>
+                  <h2 id="video-title">【赤魂战纪 FAB】现在就去用！直播/录播比赛观感大升级！</h2>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-arrow carousel-arrow-prev" id="video-prev" type="button" aria-label="查看上一个视频">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="m15 5-7 7 7 7" /></svg>
+            </button>
+            <button class="carousel-arrow carousel-arrow-next" id="video-next" type="button" aria-label="查看下一个视频">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="m9 5 7 7-7 7" /></svg>
+            </button>
+            <div class="carousel-dots" id="video-dots" aria-label="选择视频"></div>
+            <span class="video-counter" id="video-counter" aria-live="polite">01 / 06</span>
+            <div class="video-progress" aria-hidden="true"><span id="video-progress-bar"></span></div>
+            <div class="video-corner video-corner-top" aria-hidden="true"></div>
+            <div class="video-corner video-corner-bottom" aria-hidden="true"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="creator-section" id="creators" aria-labelledby="creator-heading">
+        <div class="creator-section-inner">
+          <header class="section-heading">
+            <h2 id="creator-heading">创作者目录</h2>
+            <p>来自 Bilibili 的六位创作者，点击卡片即可访问个人空间。</p>
+          </header>
+          <div class="creator-grid" id="creator-grid" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="tome-section" aria-labelledby="tome-heading">
+        <div class="tome-inner">
+          <div class="tome-visual" aria-hidden="true">
+            <div class="tome-grid"></div>
+            <img src="./assets/tome.png" alt="" width="512" height="512" loading="lazy" />
+          </div>
+          <div class="tome-copy">
+            <h2 id="tome-heading">Streaming Tome</h2>
+            <p>面向 Flesh and Blood 赛事直播的本地比赛控制、直播叠加与卡牌查询工具。</p>
+            <p class="tome-meta">Windows 10 / 11 · v1.2 beta</p>
+            <a class="tome-link" href="https://download.judgecall.net/?lang=cn#streaming-tome-title">前往下载页面<svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-6 6 6-6 6" /></svg></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-main">
+        <a class="brand footer-brand" href="https://index.judgecall.net/cn" aria-label="返回 JudgeCall 首页">
+          <span class="brand-logo-crop"><img src="./assets/judgecall-logo.png" alt="JudgeCall 裁判通" width="4096" height="4096" /></span>
+        </a>
+        <nav aria-label="页脚导航">
+          <a href="https://index.judgecall.net/cn/terms">服务条款</a>
+          <a href="https://index.judgecall.net/cn/privacy">隐私条款</a>
+        </nav>
+      </div>
+      <div class="footer-copyright-notice">
+        <p>JudgeCall is in no way affiliated with Legend Story Studios®. Flesh and Blood™ is a registered trademark of Legend Story Studios. Flesh and Blood™ and all associated images are copyright © Legend Story Studios. All rights reserved.</p>
+        <p>Portions of JudgeCall are unofficial Fan Content permitted under the Wizards of the Coast Fan Content Policy. The literal and graphical information presented on this site about Magic: The Gathering, including card images and mana symbols, is copyright Wizards of the Coast, LLC. JudgeCall is not produced by or endorsed by Wizards of the Coast.</p>
+        <p>JudgeCall was created under Riot Games' “Legal Jibber Jabber” policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
+        <p>The information presented on this site about Disney Lorcana, both literal and graphical, is copyrighted by Disney and Ravensburger. JudgeCall is not produced, supported, or affiliated with Disney or Ravensburger.</p>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 JUDGECALL · 裁判通</span>
+        <a class="public-security-filing" href="https://beian.mps.gov.cn/#/query/webSearch?code=21011202001362" rel="noreferrer" target="_blank"><img src="./assets/police.png" alt="" width="18" height="20" /><span>辽公网安备21011202001362号</span></a>
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">辽ICP备2026017181号</a>
+        <span>为每一场认真对待的比赛而做</span>
+      </div>
+    </footer>
+  </body>
+</html>

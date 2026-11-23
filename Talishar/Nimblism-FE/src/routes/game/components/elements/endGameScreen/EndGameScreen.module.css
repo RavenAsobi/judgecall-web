@@ -1,0 +1,298 @@
+.cardListBox {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 9vh;
+  bottom: 10vh;
+  left: 8vw;
+  right: 12vw;
+  background-color: black;
+  padding: 1.5rem;
+  border: 2px solid var(--theme-border);
+  border-radius: 10px;
+  z-index: 950;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.fullLog {
+  overflow-y: scroll;
+  font-size: medium;
+  -moz-user-select: text;
+  -khtml-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.cardListBox.reduced {
+  bottom: auto;
+  z-index: 10;
+}
+
+.cardListTitleContainer {
+  position: sticky;
+  top: -1.5rem;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: calc(100% + 3rem);
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem 0.5em 1.5rem;
+  margin: -1.5rem -1.5rem 0.5em -1.5rem;
+  background-color: var(--near-black);
+  z-index: 1000;
+}
+
+.cardListTitle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+/* Push the More/Eye button group to the far right */
+.buttonGroup {
+  margin-left: auto;
+}
+
+.title {
+  padding: 0;
+  margin: 0;
+  font-size: 1.5em;
+  font-weight: 600;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.cardListCloseIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 4vh;
+  height: 4vh;
+  border-radius: 5px;
+}
+
+.cardListCloseIcon:hover {
+  background-color: var(--theme-primary);
+  color: black;
+}
+
+.menuOptionsWrapper {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.buttonDiv {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.15));
+  white-space: nowrap;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 1;
+  transition: all 0.2s;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
+
+.buttonDiv:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.buttonDiv:active {
+  transform: translateY(0);
+}
+
+/* --- Dropdown --- */
+.dropdownBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1099;
+}
+
+.dropdownMenu {
+  z-index: 1100;
+  min-width: 210px;
+  background: #1c1c20;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65);
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.65rem 1rem;
+  font-size: 0.75em;
+  font-family: inherit;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+  width: 100%;
+  white-space: nowrap;
+  margin-bottom: 0;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.dropdownIcon {
+  font-size: 1.15em;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.dropdownItem:hover .dropdownIcon {
+  opacity: 1;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.3rem 0.5rem;
+}
+
+.supportCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: calc(100% + 3rem);
+  margin: 0 -1.5rem 1rem -1.5rem;
+  background: black;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.supportCta:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.supportCtaLogo {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.supportCtaText {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 1em;
+  letter-spacing: 0.01em;
+}
+
+.supportCtaAction {
+  font-size: 0.8em;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #D4F2FE, #FFE7B7, #F9CED5);
+  color: #111;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 1080px) {
+  .cardListBox {
+    bottom: 10vh;
+    left: 2vw;
+    right: 2vw;
+    padding: 0.75rem;
+  }
+
+  .cardListTitleContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Row 1: title + controls stay on one line */
+  .cardListTitle {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .title {
+    font-size: 1.1em;
+    flex: 0 0 auto;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  /* buttonGroup (More + Eye) stays inline with title */
+  .buttonGroup {
+    flex-shrink: 0;
+    gap: 0.4rem;
+    order: 0;
+    margin-left: auto;
+  }
+
+  /* Action buttons wrap to their own full-width row */
+  .menuOptionsWrapper {
+    display: block;
+    width: 100%;
+    order: 99;
+    flex-basis: 100%;
+  }
+
+  .buttonDiv {
+    min-height: 2.25rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 1em;
+  }
+
+  div.buttonDiv {
+    flex: 0 0 auto;
+    min-width: 2.25rem;
+    padding: 0.4rem;
+  }
+
+  .buttonDiv svg {
+    font-size: 1em;
+  }
+}

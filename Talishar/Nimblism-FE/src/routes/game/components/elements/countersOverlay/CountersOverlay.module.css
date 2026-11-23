@@ -1,0 +1,800 @@
+.label.label {
+  background-color: var(--near-black);
+  color: var(--theme-primary);
+  order: 99;
+  position: absolute;
+  bottom: 10px;
+  left: 5px;
+  right: 3px;
+  text-align: center;
+  border: 0.5px solid var(--theme-primary);
+  border-radius: 5px;
+  z-index: 100;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: 500;
+  padding: 2px 4px;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+@media only screen and (max-width: 768px) {
+  .label.label {
+    font-size: 0.55rem;
+    padding: 1px 3px;
+    bottom: 6px;
+    left: 3px;
+    right: 2px;
+    border-radius: 3px;
+    border: 0.25px solid var(--theme-primary);
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .label.label {
+    font-size: 0.45rem;
+    padding: 1px 2px;
+    bottom: 4px;
+    left: 2px;
+    right: 1px;
+    border-radius: 2px;
+    border: 0.25px solid var(--theme-primary);
+  }
+}
+
+.countersCover.countersCover {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  inset: 0;
+  z-index: 2;
+  cursor: default;
+  align-content: center;
+  opacity: var(--counters-opacity, 1);
+  transition: opacity 0.2s ease;
+  pointer-events: var(--counters-pointer-events, auto);
+  overflow: visible !important;
+}
+
+.number.number {
+  border-radius: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid #1b1b1b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  max-height: 1.7em;
+  min-height: 1em;
+  width: 100%;
+  max-width: 1.7em;
+  min-width: 1em;
+  font-size: 1.45em;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #171717;
+  background: #f6f2e9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  text-align: center;
+  cursor: default;
+}
+
+.defCounter.defCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-defense.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+  overflow: visible;
+}
+
+.steamCounter.steamCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-steamCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.energyCounter.energyCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-energyCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.hauntCounter.hauntCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-hauntCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.verseCounter.verseCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-verseCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.doomCounter.doomCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-doomCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.lessonCounter.lessonCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-lessonCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.rustCounter.rustCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-rustCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.flowCounter.flowCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-flowCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.frostCounter.frostCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-frostCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.balanceCounter.balanceCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-balanceCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.bindCounter.bindCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-bindCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.stainCounter.stainCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-stainCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.stormCounter.stormCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-stainCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.goldCounter.goldCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-goldCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.suspenseCounter.suspenseCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-suspenseCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.sandCounter.sandCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-sandCounter.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.powerCounter.powerCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-attack.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+  border: 0px;
+}
+
+.enduranceCounter.enduranceCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background: radial-gradient(circle at 28% 25%, #ffffff 0%, #9eb8cc 40%, #3a5a72 100%);
+  border: 2px solid #2a4a60;
+  box-shadow: 0 0 7px 2px rgba(160, 210, 255, 0.6),
+    inset 0 1px 5px rgba(255, 255, 255, 0.5);
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  z-index: -1;
+  cursor: default;
+}
+
+.lifeCounter.lifeCounter {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75em;
+  width: 1.75em;
+  background-image: url('../../../../../img/symbols/symbol-health.png');
+  background-position: center;
+  background-size: contain;
+  text-align: center;
+  font-size: 1.5em;
+  color: var(--white);
+  text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  cursor: default;
+  border: 0px;
+}
+
+.wateryGraveIcon.wateryGraveIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--near-black);
+  border: var(--theme-primary) solid 1px;
+  color: var(--white);
+  border-radius: 8px;
+  min-width: 1.5em;
+  height: 1.5em;
+  font-size: 1.4em;
+  padding: 2px;
+  margin: 0.1em;
+  pointer-events: auto;
+  user-select: none;
+  cursor: default;
+}
+
+.facing {
+  height: 1.75em;
+  width: 1.75em;
+  background-position: center;
+  background-size: contain;
+}
+
+.facingUp {
+  background-image: url('../../../../../img/symbols/symbol-faceUp.png');
+}
+
+.facingDown {
+  background-image: url('../../../../../img/symbols/symbol-faceDown.png');
+}
+
+.text {
+  color: black;
+}
+
+.floatCover {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.icon.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0);
+  border: var(--theme-primary) solid 1px;
+  color: var(--white);
+  border-radius: 5px;
+  min-width: 1.5em;
+  height: 1.5em;
+  font-size: 1.75em;
+  padding: 2px;
+  margin: 0.1em;
+  pointer-events: auto;
+  user-select: none;
+  cursor: default;
+}
+
+.iconText {
+  padding: 2px;
+}
+
+.iconTextCombatChain {
+  padding: 2px;
+  padding-bottom: 5px;
+}
+
+.iconTextEffect {
+  padding: 2px;
+}
+
+@media only screen and (max-width: 1200px) {
+  .number.number {
+    max-height: 1.8em;
+    max-width: 1.8em;
+  }
+
+  .text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .icon.icon {
+    min-width: 1.4em;
+    height: 1.4em;
+    font-size: 1.5em;
+    padding: 1px;
+    margin: 0.05em;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .number.number {
+    max-height: 1.5em;
+    max-width: 1.5em;
+    min-height: 0.9em;
+    min-width: 0.9em;
+    font-size: 1.1em;
+    border-width: 1.5px;
+  }
+
+  .defCounter.defCounter,
+  .steamCounter.steamCounter,
+  .energyCounter.energyCounter,
+  .hauntCounter.hauntCounter,
+  .verseCounter.verseCounter,
+  .doomCounter.doomCounter,
+  .lessonCounter.lessonCounter,
+  .rustCounter.rustCounter,
+  .flowCounter.flowCounter,
+  .frostCounter.frostCounter,
+  .balanceCounter.balanceCounter,
+  .bindCounter.bindCounter,
+  .stainCounter.stainCounter,
+  .stormCounter.stormCounter,
+  .goldCounter.goldCounter,
+  .suspenseCounter.suspenseCounter,
+  .sandCounter.sandCounter,
+  .powerCounter.powerCounter,
+  .lifeCounter.lifeCounter {
+    height: 1.5em;
+    width: 1.5em;
+    font-size: 1.1em;
+  }
+
+  .wateryGraveIcon.wateryGraveIcon {
+    min-width: 1.3em;
+    height: 1.3em;
+    font-size: 1.2em;
+    padding: 1px;
+    margin: 0.05em;
+  }
+
+  .icon.icon {
+    min-width: 1.3em;
+    height: 1.3em;
+    font-size: 1.4em;
+    padding: 1px;
+    margin: 0.05em;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .countersCover.countersCover {
+    flex-wrap: nowrap;
+    gap: 2px;
+    overflow: hidden;
+    flex-direction: row;
+  }
+
+  .number.number {
+    max-height: 1.2em;
+    max-width: 1.2em;
+    min-height: 0.8em;
+    min-width: 0.8em;
+    font-size: 0.9em;
+    border-width: 1px;
+    flex-shrink: 0;
+  }
+
+  .defCounter.defCounter,
+  .steamCounter.steamCounter,
+  .energyCounter.energyCounter,
+  .hauntCounter.hauntCounter,
+  .verseCounter.verseCounter,
+  .doomCounter.doomCounter,
+  .lessonCounter.lessonCounter,
+  .rustCounter.rustCounter,
+  .flowCounter.flowCounter,
+  .frostCounter.frostCounter,
+  .balanceCounter.balanceCounter,
+  .bindCounter.bindCounter,
+  .stainCounter.stainCounter,
+  .stormCounter.stormCounter,
+  .goldCounter.goldCounter,
+  .suspenseCounter.suspenseCounter,
+  .sandCounter.sandCounter,
+  .powerCounter.powerCounter,
+  .lifeCounter.lifeCounter {
+    height: 1.2em;
+    width: 1.2em;
+    font-size: 0.9em;
+    flex-shrink: 0;
+  }
+
+  .wateryGraveIcon.wateryGraveIcon {
+    min-width: 1em;
+    height: 1em;
+    font-size: 0.9em;
+    padding: 0px;
+    margin: 0.02em;
+    border-width: 0.5px;
+    flex-shrink: 0;
+  }
+
+}
+
+/* Keyframe animation for tooltip entrance */
+@keyframes tooltipSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tooltip box for portal-based tooltips */
+.tooltipBox {
+  background-color: var(--near-black);
+  color: #fff;
+  padding: 0.5em 0.75em;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.95);
+  line-height: 1.4;
+  animation: tooltipSlideIn 0.3s ease-out;
+}
+
+/* Tooltip arrow for portal-based tooltips */
+.tooltipArrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(0, 0, 0, 0.95);
+  animation: tooltipSlideIn 0.3s ease-out;
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .number.number {
+    height: 4.5dvw;
+    max-height: 4.5dvw;
+    min-height: 3dvw;
+    width: 4.5dvw;
+    max-width: 4.5dvw;
+    min-width: 3dvw;
+    font-size: 2.5dvw;
+    border-width: 1.5px;
+    flex-shrink: 0;
+  }
+
+  .defCounter.defCounter,
+  .steamCounter.steamCounter,
+  .energyCounter.energyCounter,
+  .hauntCounter.hauntCounter,
+  .verseCounter.verseCounter,
+  .doomCounter.doomCounter,
+  .lessonCounter.lessonCounter,
+  .rustCounter.rustCounter,
+  .flowCounter.flowCounter,
+  .frostCounter.frostCounter,
+  .balanceCounter.balanceCounter,
+  .bindCounter.bindCounter,
+  .stainCounter.stainCounter,
+  .stormCounter.stormCounter,
+  .goldCounter.goldCounter,
+  .suspenseCounter.suspenseCounter,
+  .sandCounter.sandCounter,
+  .powerCounter.powerCounter,
+  .lifeCounter.lifeCounter,
+  .enduranceCounter.enduranceCounter {
+    height: 4.5dvw;
+    width: 4.5dvw;
+    font-size: 2.5dvw;
+    flex-shrink: 0;
+  }
+
+  .wateryGraveIcon.wateryGraveIcon {
+    min-width: 4dvw;
+    height: 4dvw;
+    font-size: 2.5dvw;
+    padding: 1px;
+    margin: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .icon.icon {
+    min-width: 4dvw;
+    height: 4dvw;
+    font-size: 2.5dvw;
+    padding: 1px;
+    margin: 0.05em;
+  }
+
+  .label.label {
+    font-size: 1.8dvw;
+    padding: 1px 2px;
+    bottom: 4px;
+    left: 2px;
+    right: 1px;
+    border-radius: 2px;
+    border: 0.25px solid var(--theme-primary);
+  }
+}

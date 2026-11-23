@@ -1,0 +1,150 @@
+import React, { useCallback, useEffect, useRef } from 'react';
+import { useAppSelector, useAppDispatch } from 'app/Hooks';
+import { RootState } from 'app/Store';
+import Displayrow from 'interface/Displayrow';
+import CardDisplay from '../../elements/cardDisplay/CardDisplay';
+import DamagePopup from '../../elements/damagePopup/DamagePopup';
+import HealingPopup from '../../elements/healingPopup/HealingPopup';
+import { Card } from 'features/Card';
+import {
+  removeDamagePopup,
+  addDamagePopup,
+  addHealingPopup,
+  removeHealingPopup
+} from 'features/game/GameSlice';
+import HeroTransformEventCard from '../../elements/eventsHandler/HeroTransformEventCard';
+import styles from './HeroZone.module.css';
+
+export const HeroZone = React.memo((prop: Displayrow) => {
+  const { isPlayer } = prop;
+  const dispatch = useAppDispatch();
+  const previousHealthRef = useRef<number | undefined>();
+
+  const cardToDisplay = useAppSelector((state: RootState) =>
+    isPlayer ? state.game.playerOne.Hero : state.game.playerTwo.Hero
+  );
+
+  const soulCards = useAppSelector((state: RootState) =>
+    isPlayer ? state.game.playerOne.Soul : state.game.playerTwo.Soul
+  );
+
+  const cardWithSoul = React.useMemo(() => {
+    if (!cardToDisplay) return cardToDisplay;
+    const soulSubcards = soulCards?.map((c: Card) => c.cardNumber) ?? [];
+    if (soulSubcards.length === 0) return cardToDisplay;
+    return { ...cardToDisplay, subcards: soulSubcards };
+  }, [cardToDisplay, soulCards]);
+
+  const { transformCard, transformTrigger } = useAppSelector(
+    (state: RootState) => {
+      const viewerPlayerID = state.game.gameInfo.playerID;
+      const displayedPlayerID =
+        viewerPlayerID === 1 || viewerPlayerID === 2
+          ? isPlayer
+            ? viewerPlayerID
+            : 3 - viewerPlayerID
+          : isPlayer
+          ? 1
+          : 2;
+
+      return {
+        transformCard:
+          displayedPlayerID === 1
+            ? state.game.heroTransformP1Card
+            : state.game.heroTransformP2Card,
+        transformTrigger: state.game.heroTransformTrigger
+      };
+    }
+  );
+
+  // Use the same logic as HealthDisplay/TurnWidget - isPlayer determines the health
+  const health = useAppSelector((state: RootState) =>
+    isPlayer ? state.game.playerOne.Health : state.game.playerTwo.Health
+  );
+
+  const damagePopups = useAppSelector((state: RootState) => {
+    const popups = isPlayer
+      ? state.game.damagePopups?.playerOne
+      : state.game.damagePopups?.playerTwo;
+    return Array.isArray(popups) ? popups : [];
+  });
+
+  const healingPopups = useAppSelector((state: RootState) => {
+    const popups = isPlayer
+      ? state.game.healingPopups?.playerOne
+      : state.game.healingPopups?.playerTwo;
+    return Array.isArray(popups) ? popups : [];
+  });
+
+  // Track health changes and spawn damage/healing popups
+  useEffect(() => {
+    if (previousHealthRef.current !== undefined && health !== undefined) {
+      const healthDifference = previousHealthRef.current - health;
+      if (healthDifference > 0) {
+        dispatch(
+          addDamagePopup({
+            isPlayer,
+            amount: healthDifference
+          })
+        );
+      } else if (healthDifference < 0) {
+        dispatch(
+          addHealingPopup({
+            isPlayer,
+            amount: Math.abs(healthDifference)
+          })
+        );
+      }
+    }
+    previousHealthRef.current = health;
+  }, [health, dispatch, isPlayer]);
+
+  const handleDamagePopupComplete = useCallback(
+    (id: string) => {
+      dispatch(removeDamagePopup({ isPlayer, id }));
+    },
+    [dispatch, isPlayer]
+  );
+
+  const handleHealingPopupComplete = useCallback(
+    (id: string) => {
+      dispatch(removeHealingPopup({ isPlayer, id }));
+    },
+    [dispatch, isPlayer]
+  );
+
+  return (
+    <div className={styles.heroZone}>
+      {transformCard ? (
+        <HeroTransformEventCard
+          key={`heroTransform-${transformTrigger}`}
+          cardNumber={transformCard}
+        >
+          <CardDisplay card={cardWithSoul} isPlayer={isPlayer} />
+        </HeroTransformEventCard>
+      ) : (
+        <CardDisplay card={cardWithSoul} isPlayer={isPlayer} />
+      )}
+      {damagePopups.map((popup) => (
+        <DamagePopup
+          key={popup.id}
+          id={popup.id}
+          amount={popup.amount}
+          onComplete={handleDamagePopupComplete}
+        />
+      ))}
+      {healingPopups.map((popup) => (
+        <HealingPopup
+          key={popup.id}
+          id={popup.id}
+          amount={popup.amount}
+          onComplete={handleHealingPopupComplete}
+        />
+      ))}
+    </div>
+  );
+});
+
+HeroZone.displayName = 'HeroZone';
+
+export default HeroZone;

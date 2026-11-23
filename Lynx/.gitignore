@@ -1,0 +1,11 @@
+.env
+server/.env
+**/node_modules/
+**/.npm-cache/
+web/dist/
+server/lynx.db
+server/lynx.db-*
+server/lynx.db.*
+*.timestamp-*.mjs
+*.log
+

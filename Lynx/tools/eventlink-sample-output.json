@@ -1,0 +1,122 @@
+[
+  {
+    "game": "mtg",
+    "tableNumber": 1,
+    "playerName1": "天悦 朱",
+    "playerGameId1": null,
+    "playerName2": "明旭 张",
+    "playerGameId2": null,
+    "result": null,
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 2,
+    "playerName1": "俊逸 边",
+    "playerGameId1": null,
+    "playerName2": "银溪 崔",
+    "playerGameId2": null,
+    "result": null,
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 3,
+    "playerName1": "定勤 喻",
+    "playerGameId1": null,
+    "playerName2": "湛铭 王",
+    "playerGameId2": null,
+    "result": "DRAW",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 4,
+    "playerName1": "平通逊 平通逊",
+    "playerGameId1": null,
+    "playerName2": "震博 富",
+    "playerGameId2": null,
+    "result": "2WIN",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 5,
+    "playerName1": "高歌 空",
+    "playerGameId1": null,
+    "playerName2": "泽宇 王",
+    "playerGameId2": null,
+    "result": "1WIN",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 6,
+    "playerName1": "星晖 长",
+    "playerGameId1": null,
+    "playerName2": "那浩壤 那浩壤",
+    "playerGameId2": null,
+    "result": "DRAW",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 7,
+    "playerName1": "瑶岑 斐",
+    "playerGameId1": null,
+    "playerName2": "惠鸿禧 惠鸿禧",
+    "playerGameId2": null,
+    "result": "1WIN",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 8,
+    "playerName1": "海伦 端木",
+    "playerGameId1": null,
+    "playerName2": "海毅 孙",
+    "playerGameId2": null,
+    "result": "2WIN",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 9,
+    "playerName1": "yimei zhong",
+    "playerGameId1": null,
+    "playerName2": "悦 赫",
+    "playerGameId2": null,
+    "result": "1WIN",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  },
+  {
+    "game": "mtg",
+    "tableNumber": 10,
+    "playerName1": "公叔 光明",
+    "playerGameId1": null,
+    "playerName2": "尹才捷 尹才捷",
+    "playerGameId2": null,
+    "result": "2WIN",
+    "dropped1": false,
+    "dropped2": false,
+    "timeExtension": null
+  }
+]

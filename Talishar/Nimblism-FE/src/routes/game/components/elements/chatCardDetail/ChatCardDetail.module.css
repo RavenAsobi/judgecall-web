@@ -1,0 +1,13 @@
+.cardDetailContainer {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  box-shadow: 3px 3px 5px black;
+  border-radius: 7%;
+  pointer-events: none;
+  will-change: left, top;
+}
+
+.cardDetailContainer img {
+  display: block;
+}

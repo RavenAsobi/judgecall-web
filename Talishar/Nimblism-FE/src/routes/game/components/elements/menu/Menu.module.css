@@ -1,0 +1,259 @@
+.btn {
+  margin-bottom: 0;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  padding: 0.2em;
+  font-size: 0.9em;
+  background-color: var(--theme-secondary);
+  color: var(--secondary-inverse);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 3vh;
+  height: 3vh;
+  min-width: 3vh;
+  border-radius: 0.4em;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  flex-basis: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.btn svg {
+  font-size: 1.3em !important;
+  width: 1.1em !important;
+  height: 1.1em !important;
+}
+
+.btn:hover {
+  background-color: black;
+  color: var(--theme-secondary);
+  border: 2px solid var(--theme-secondary);
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 215, 0, 0.3);
+  transform: translateY(-1px);
+  z-index: 10;
+}
+
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.menuList {
+  margin-top: 0.5em;
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .btn {
+    width: 2.6vh;
+    height: 2.6vh;
+    min-width: 0;
+    padding: 0.15em;
+    font-size: 0.8em;
+    flex-shrink: 1;
+  }
+
+  .btn svg {
+    font-size: 1.1em !important;
+    width: 1em !important;
+    height: 1em !important;
+  }
+
+  .menuList {
+    gap: 0.3em;
+    margin-top: 0.3em;
+  }
+}
+
+@media (max-width: 1000px) {
+  .btn {
+    width: 2.4vh;
+    height: 2.4vh;
+    padding: 0.1em;
+    font-size: 0.75em;
+  }
+
+  .menuList {
+    gap: 0.2em;
+    margin-top: 0.25em;
+  }
+}
+
+.menuRow {
+  position: relative;
+}
+
+.spectatorFloating {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  pointer-events: auto;
+  margin-right: 0.5em;
+}
+
+.buttonActive {
+  background-color: rgba(59, 130, 246, 0.85);
+  border-color: rgba(59, 130, 246, 0.9);
+  color: var(--snow);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+.buttonActive:hover {
+  background-color: rgba(29, 100, 216, 0.95);
+  border-color: rgba(59, 130, 246, 1);
+  cursor: pointer;
+  transform: translateY(-1px);
+  z-index: 10;
+}
+
+.buttonActive:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Fix tooltip positioning to prevent off-screen issues */
+.btn[data-tooltip]::before,
+.btn[data-tooltip]::after {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  white-space: nowrap !important;
+}
+
+.btn[data-tooltip][data-placement='bottom']::before,
+.btn[data-tooltip][data-placement='bottom']::after {
+  bottom: auto !important;
+  top: 100% !important;
+  margin-top: 0.5em !important;
+}
+
+.btn[data-tooltip]::before {
+  z-index: 100 !important;
+}
+
+.btn[data-tooltip]::after {
+  z-index: 99 !important;
+}
+
+/* === Mobile-specific button sizing === */
+@media (orientation: portrait), (max-width: 1200px) {
+  .btn {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    margin-bottom: 0;
+    padding: 0;
+    font-size: 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn svg {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .menuList {
+    margin-top: 0;
+    gap: 6px;
+  }
+
+  /* Hide tooltips on mobile - buttons are touch targets, labels not needed */
+  .btn[data-tooltip]::before,
+  .btn[data-tooltip]::after {
+    display: none !important;
+  }
+}
+
+/* === Overflow menu === */
+.overflowWrapper {
+  position: relative;
+}
+
+.overflowBtn {
+  composes: btn;
+}
+
+.overflowPanel {
+  /* position/top/right are set via inline style from getBoundingClientRect */
+  background-color: var(--near-black);
+  border: 1px solid var(--theme-border, rgba(100, 100, 100, 0.5));
+  border-radius: 8px;
+  padding: 6px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.overflowItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary-inverse, #e0e0e0);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  touch-action: manipulation;
+  text-align: left;
+  width: 100%;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.overflowItem:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Overflow items have text labels - never show tooltips */
+.overflowItem[data-tooltip]::before,
+.overflowItem[data-tooltip]::after {
+  display: none !important;
+}
+
+.overflowItem svg {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.overflowItemActive {
+  composes: overflowItem;
+  color: var(--alarm);
+}
+
+.overflowBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99998;
+}

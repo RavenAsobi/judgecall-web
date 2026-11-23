@@ -1,5 +1,5 @@
 import { cp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { extname, join, resolve } from "node:path";
+import { dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const projectRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
@@ -50,21 +50,39 @@ async function main() {
   const workerUrl = pathToFileURL(workerPath);
   workerUrl.searchParams.set("static-export", `${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
-  const response = await worker.fetch(
-    new Request("https://judgecall.net/", { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: assetResponse } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
-  if (!response.ok) {
-    throw new Error(`JudgeCall render failed: ${response.status} ${await response.text()}`);
-  }
-
   const localFontRoot = `${projectRoot.replaceAll("\\", "/")}/.vinext/fonts/`;
-  const html = (await response.text()).replaceAll(localFontRoot, "/assets/_vinext_fonts/");
-  if (!html.includes("JudgeCall") || !html.includes("https://lynx.judgecall.net/")) {
-    throw new Error("Rendered homepage is missing JudgeCall or the Lynx public URL.");
+  const routes = [
+    { pathname: "/", output: "index.html", required: ["/cn", "window.location.replace"] },
+    { pathname: "/cn", output: join("cn", "index.html"), required: ["让每一场比赛", "https://lynx.judgecall.net/"] },
+    { pathname: "/en", output: join("en", "index.html"), required: ["Make every match", "https://lynx.judgecall.net/"] },
+    { pathname: "/cn/terms", output: join("cn", "terms", "index.html"), required: ["JudgeCall服务条款", "support@judgecall.net"] },
+    { pathname: "/en/terms", output: join("en", "terms", "index.html"), required: ["JudgeCall Terms of Service", "support@judgecall.net"] },
+    { pathname: "/cn/privacy", output: join("cn", "privacy", "index.html"), required: ["JudgeCall隐私政策", "support@judgecall.net"] },
+    { pathname: "/en/privacy", output: join("en", "privacy", "index.html"), required: ["JudgeCall Privacy Policy", "support@judgecall.net"] },
+  ];
+
+  for (const route of routes) {
+    const response = await worker.fetch(
+      new Request(`https://index.judgecall.net${route.pathname}`, { headers: { accept: "text/html" } }),
+      { ASSETS: { fetch: assetResponse } },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
+    if (!response.ok) {
+      throw new Error(`JudgeCall render failed for ${route.pathname}: ${response.status} ${await response.text()}`);
+    }
+
+    const html = (await response.text())
+      .replaceAll(localFontRoot, "/assets/_vinext_fonts/")
+      .replaceAll("http://localhost:3000/", "https://index.judgecall.net/")
+      .replaceAll("https://index.judgecall.net/lynx.png", "/lynx.png")
+      .replaceAll("http:\\\\/\\\\/index.judgecall.net\\\\/lynx.png", "\\\\/lynx.png");
+    if (!route.required.every((marker) => html.includes(marker))) {
+      throw new Error(`Rendered ${route.pathname} is missing required content.`);
+    }
+    const outputPath = join(outputRoot, route.output);
+    await mkdir(dirname(outputPath), { recursive: true });
+    await writeFile(outputPath, html, "utf8");
   }
-  await writeFile(join(outputRoot, "index.html"), html, "utf8");
   console.log(`Tencent static export written to ${outputRoot}`);
 }
 

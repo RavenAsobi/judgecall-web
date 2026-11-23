@@ -1,0 +1,647 @@
+.optionsContainer {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  min-width: 30%;
+  max-width: 90%;
+  min-height: max(22vh, 150px);
+  left: 15%;
+  right: 28%;
+  max-height: 40vh;
+  height: auto;
+  background-color: var(--near-black);
+  --container-padding: 1vh;
+  padding: var(--container-padding);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.2));
+  border-radius: 10px;
+  z-index: 900;
+}
+
+.optionsContainer.aboveEndGameScreen {
+  z-index: 1150;
+}
+
+.optionsTitleContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 1vh;
+  padding-bottom: 1vh;
+}
+
+.title {
+  font-size: 0.9em;
+  padding: 0px;
+  margin: 0px;
+}
+
+.subtitle {
+  font-size: 0.7em;
+  padding: 0px;
+  margin: 2px;
+  font-weight: normal;
+}
+
+.buttonList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding-left: 0.45em;
+  gap: 1.2dvw;
+}
+
+.buttonDiv {
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(6dvw * var(--card-scale));
+  height: 32px;
+  border-radius: 6px; 
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-basis: auto;
+  padding: 8px 16px;
+  width: auto;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.buttonDiv:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.numberInputRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75em;
+  padding-left: 0.45em;
+}
+
+.numberInputField {
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #e0e0e0;
+  height: 40px;
+  flex: 1;
+  min-width: 0;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 12px;
+  font-size: 1em;
+  transition: border-color 0.2s ease;
+}
+
+.numberInputField:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Match the Submit button to the input field's box model and height */
+.numberInputSubmit.numberInputSubmit {
+  box-sizing: border-box;
+  height: 40px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.buttonDiv:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.multiChooseActions {
+  margin-top: 0.35rem;
+  padding: 0.75rem 0.45rem 0.65rem;
+}
+
+.multiChooseSubmit.buttonDiv {
+  box-sizing: border-box;
+  min-height: 40px;
+  margin-bottom: 0;
+  background: var(--theme-primary, #d4af37);
+  border-color: var(--theme-primary, #d4af37);
+  color: #111;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.multiChooseSubmit.buttonDiv:hover:not(:disabled) {
+  background: var(--theme-primary-hover, #e2c45c);
+  border-color: var(--theme-primary-hover, #e2c45c);
+  color: #000;
+}
+
+.multiChooseSubmit.buttonDiv:disabled {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.55);
+  box-shadow: none;
+}
+
+.numberInputHint {
+  padding-left: 0.45em;
+  margin-top: 0.4em;
+  font-size: 0.85em;
+  color: rgba(224, 224, 224, 0.6);
+}
+
+.optionsMenuCloseIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 4vh;
+  height: 4vh;
+  border-radius: 5px;
+}
+
+.optionsMenuCloseIcon:hover {
+  background-color: var(--theme-primary);
+  color: black;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  align-content: flex-start;
+  justify-content: flex-start;
+  row-gap: 10px;
+  column-gap: 10px;
+  flex-wrap: wrap;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  max-height: 100%;
+  padding: 0.5em;
+  -webkit-overflow-scrolling: touch;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+}
+
+.cardSearchContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex: 1 1 24rem;
+  min-width: 10rem;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  padding-left: 1rem;
+}
+
+.cardSearchInput.cardSearchInput {
+  box-sizing: border-box;
+  width: 100%;
+  height: 38px;
+  margin-bottom: 0;
+  padding: 7px 11px;
+  color: #e0e0e0;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.cardSearchInput.cardSearchInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(236, 236, 236, 0.28);
+}
+
+.cardSearchCount,
+.noSearchResults {
+  color: rgba(224, 224, 224, 0.7);
+  font-size: 0.85rem;
+}
+
+.noSearchResults {
+  padding: 1.25rem 0.25rem;
+}
+
+@media (max-width: 600px) {
+  .optionsTitleContainer {
+    flex-wrap: wrap;
+  }
+
+  .cardSearchContainer {
+    order: 2;
+    flex: 1 0 calc(100% - 0.5rem);
+    min-width: 0;
+    max-width: none;
+    margin: 0.4rem 0.5rem 0 0;
+    padding-left: 0;
+  }
+
+  .cardSearchInput.cardSearchInput {
+    height: 34px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+.optForm.optForm {
+  flex-direction: row;
+  margin-bottom: 0;
+}
+
+.optForm.buttonRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+.buttonRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  justify-content: center;
+  width: 90%;
+  margin-left: 5%;
+}
+
+.newOptForm.buttonRow {
+  margin-top: 0.25rem;
+  justify-content: center;
+  width: 90%;
+}
+.optForm.buttonDiv {
+  margin: 0 0.25em;
+}
+
+.newOptForm.topBottomButtonDiv {
+  min-width: 0;
+}
+
+.newOptForm.submitButtonDiv {
+  min-width: 0;
+  width: var(--card-size);
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.optForm.cardDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: none;
+  max-width: none;
+  height: 100%;
+}
+
+.optForm.buttonDiv {
+  margin: 0;
+}
+
+.cardList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1vh;
+}
+
+.checkBoxRow:last-child {
+  padding-bottom: 2vh;
+}
+
+.cardDiv {
+  flex-basis: var(--card-size);
+  max-width: var(--card-size);
+  width: var(--card-size);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .optionsContainer,
+  .optOptionsContainer {
+    left: 50%;
+    translate: -50% 0;
+    width: min(88dvw, 320px);
+    max-width: 92dvw;
+    right: auto;
+  }
+
+  .cardDiv {
+    max-width: 14vw;
+    max-width: 14dvw;
+    max-height: 14vw;
+    max-height: 14dvw;
+  }
+}
+
+@media (orientation: portrait) and (min-width: 601px) {
+  .optOptionsContainer {
+    left: 18%;
+    right: 5%;
+    translate: none;
+    width: auto;
+  }
+}
+
+.topAndBottomContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.topAndBottomText {
+  display: flex;
+  align-items: center; /* Vertically centers the text */
+  justify-content: center;
+  width: 50px;
+}
+
+.reorderCards {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 2;
+  gap: 0.5em;
+  padding: 0 0.5em;
+  width: 100%;
+  margin: 0;
+  margin-top: 10px;
+  height: auto;
+}
+
+.reorderItem {
+  margin: 0;
+  color: rgba(0, 0, 0, 0);
+  width: var(--card-size);
+}
+
+.optOptionsContainer {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  min-width: 30%;
+  max-width: 90%;
+  min-height: max(22vh, 150px);
+  left: 20%;
+  right: 30%;
+  max-height: 52.5vh;
+  height: auto;
+  background-color: var(--near-black);
+  --container-padding: 1.5vh;
+  padding: var(--container-padding);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.2));
+  border-radius: 10px;
+  z-index: 900;
+}
+
+.optOptionsContainer.aboveEndGameScreen {
+  z-index: 1150;
+}
+
+.optFormContainer {
+  height: 100%;
+  width: 100%;
+}
+
+.newOptForm.optFormContainer {
+  height: auto;
+}
+
+.newOptForm.cardsContainer {
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Card position indicators */
+.cardWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.positionLabel {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  z-index: 10;
+}
+
+.firstLabel {
+  background-color: var(--theme-primary);
+  color: black;
+  border: 1px solid var(--near-black);
+}
+
+.lastLabel {
+  background-color: black;
+  color: var(--theme-primary);
+  border: 1px solid var(--theme-primary);
+}
+
+/* Responsive styles for mobile and tablet */
+@media (orientation: portrait) {
+  .positionLabel {
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .positionLabel {
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .positionLabel {
+    font-size: 7px;
+    padding: 1px 3px;
+    border-radius: 2px;
+    letter-spacing: 0.3px;
+  }
+}
+
+/* Submit button responsive fixes */
+@media (orientation: portrait) {
+  .newOptForm.submitButtonDiv {
+    width: auto;
+    min-width: 120px;
+    max-width: 200px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .optOptionsContainer {
+    left: 45%;
+    translate: -50% 0;
+    right: auto;
+    width: min(85dvw, 380px);
+    max-width: 95dvw;
+  }
+
+  .newOptForm.submitButtonDiv {
+    width: auto;
+    min-width: 80px;
+    max-width: 160px;
+    margin-bottom: 10px;
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+
+  .topAndBottomText {
+    font-size: 0.7em;
+  }
+
+  .reorderCards {
+    margin-top: 0;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .optOptionsContainer {
+    width: min(92dvw, 340px);
+    max-width: 92dvw;
+  }
+
+  .newOptForm.submitButtonDiv {
+    width: auto;
+    min-width: 64px;
+    max-width: 130px;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .topAndBottomText {
+    font-size: 0.7em;
+  }
+
+  .reorderCards {
+    margin-top: 0;
+    height: auto;
+  }
+}
+
+/* Touch device overrides - larger tap targets for fat-finger friendliness */
+@media (pointer: coarse) {
+  .buttonList {
+    gap: 0.6rem;
+  }
+
+  .buttonDiv {
+    min-height: 44px;
+    min-width: 44px;
+    height: auto;
+    padding: 8px 12px;
+    font-size: 0.75em;
+    border-radius: 8px;
+  }
+}
+
+.popupContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.grabbyHandle {
+  width: calc(var(--card-size) * 0.2);
+  background-color: color-mix(in srgb, var(--theme-tertiary) 55%, transparent);
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s ease;
+  padding: 0.5em;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-self: stretch;
+  margin-top: calc(-1 * var(--container-padding));
+  margin-right: calc(-1 * var(--container-padding));
+  margin-bottom: calc(-1 * var(--container-padding));
+  font-size: min(calc(1.5vh - 2px), calc(0.9vw - 1px));
+  font-size: min(calc(1.5dvh - 2px), calc(0.9dvw - 1px));
+}
+
+@media (orientation: portrait) {
+  .grabbyHandle {
+    font-size: calc(1.5vw + 3px);
+    font-size: calc(1.5dvw + 3px);
+  }
+}
+
+@media (orientation: landscape) and (max-aspect-ratio: 3/2) {
+  .grabbyHandle {
+    font-size: calc(1.5vh - 2px);
+    font-size: calc(1.5dvh - 2px);
+  }
+}
+
+.grabbyHandle:active {
+  cursor: grabbing;
+}
+
+.grabbyHandleDragging {
+  background-color: color-mix(in srgb, var(--theme-secondary) 45%, transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.gripIcon {
+  color: var(--white);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.grabbyHandle:hover .gripIcon {
+  opacity: 1;
+}

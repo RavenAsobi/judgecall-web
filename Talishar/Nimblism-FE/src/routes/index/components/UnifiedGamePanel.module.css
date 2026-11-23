@@ -1,0 +1,107 @@
+.panel {
+  width: 100%;
+  max-width: 900px;
+  border: none;
+  border-radius: 0;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--theme-text, #ededed);
+  flex: 1;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: var(--theme-text, #ededed);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+.toggleButton:hover {
+  transform: scale(1.1);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.quickJoinSection {
+  flex-shrink: 0;
+}
+
+.createGameSection {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.createGameSection > div {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--theme-border, rgba(255, 255, 255, 0.15));
+  margin: auto 0;
+}
+
+.createGameAd {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.removeAdsLink {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.38);
+  text-decoration: none;
+  font-size: 0.58rem;
+  font-weight: 500;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 0 0 0 3px;
+}
+
+.removeAdsLink:hover {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: underline;
+}
+
+

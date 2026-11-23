@@ -1,0 +1,337 @@
+.matchupContainer {
+  margin: 0 auto;
+  height: auto;
+  display: flex;
+  width: 100%;
+  max-width: 260px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow-y: auto;
+  grid-area: matchups;
+  overflow-x: hidden;
+  background: transparent;
+  padding: 0rem 0.5rem;
+  gap: 0.25rem;
+  position: relative;
+  z-index: 1001;
+  overflow-y: auto;
+}
+
+.matchupContainer h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.matchupContainer input[type='text'] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  font-family: inherit;
+  line-height: 1.25 !important;
+  box-sizing: border-box;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.matchupContainer input[type='text']::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.matchupContainer input[type='text']:focus {
+  outline: none;
+  border-color: var(--theme-primary, #d4af37);
+}
+
+.emptyMatchupContainer {
+  margin: 0 auto;
+  height: auto;
+  display: flex;
+  width: 100px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow-y: auto;
+  grid-area: matchups;
+  overflow-x: hidden;
+  opacity: 0;
+}
+
+.matchups {
+  width: 100%;
+  position: relative;
+}
+
+.matchupButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.matchupButtonSelected {
+  background-color: var(--theme-secondary, #606569) !important;
+  border-color: var(--theme-secondary-hover, #757a7f) !important;
+  color: var(--theme-secondary-inverse, #ffffff) !important;
+  box-shadow: 0 0 0 2px var(--theme-primary, #d4af37) inset;
+}
+
+.selectedBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border-radius: 0.35rem;
+  padding: 0.16rem 0.34rem;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.matchupButtonSuggested {
+  background-color: var(--theme-secondary, #606569) !important;
+  border-color: var(--theme-secondary-hover, #757a7f) !important;
+  color: var(--theme-secondary-inverse, #ffffff) !important;
+  box-shadow: 0 0 0 2px var(--theme-primary, #d4af37) inset;
+}
+
+.suggestedBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border-radius: 0.35rem;
+  padding: 0.16rem 0.34rem;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.autoApplyingStatus {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--theme-primary, #d4af37);
+  opacity: 0.9;
+}
+
+.matchups button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: visible;
+  margin-bottom: 0;
+}
+
+.matchups button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--theme-primary, #d4af37);
+  color: #fff;
+  transform: none;
+}
+
+.matchups button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.matchups button:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: none;
+}
+
+.matchupName {
+  text-align: left;
+  font-weight: 400;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.turnOrderBadge {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--theme-primary, #d4af37);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: none;
+  min-width: 2.2rem;
+  width: 2.2rem;
+  margin-left: auto;
+}
+
+/* Tablet: 3 columns, uniform sizing - also applies to touch devices above 1200px */
+@media (max-width: 1200px) and (min-width: 769px),
+       (min-width: 769px) and (pointer: coarse) {
+  .matchupContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+    padding: 0rem 0.5rem;
+    gap: 0.5rem;
+    height: auto;
+    max-height: calc(100vh - var(--sticky-footer-height, 80px) - 130px - 120px);
+    overflow-y: auto;
+  }
+
+  .matchupContainer h4 {
+    display: none;
+  }
+
+  .matchupContainer input[type='text'] {
+    display: none;
+  }
+
+  .matchups {
+    width: 100%;
+  }
+
+  .matchups button {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.75rem;
+    margin-bottom: 0;
+    flex-direction: row;
+    gap: 0.4rem;
+    height: auto;
+    min-height: unset;
+  }
+
+  .matchupName {
+    text-align: left;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.85em;
+  }
+
+  .turnOrderBadge {
+    min-width: unset;
+    flex-shrink: 0;
+  }
+
+  .autoApplyingStatus {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobile: 2-column grid, uniform sizing */
+@media (max-width: 768px) {
+  .matchupContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+    width: 100%;
+    padding: 0rem 0.5rem;
+    gap: 0.4rem;
+    height: auto;
+    max-height: calc(100vh - var(--sticky-footer-height, 80px) - 130px - 120px);
+    overflow-y: auto;
+  }
+
+  .matchupContainer h4 {
+    display: none;
+  }
+
+  .matchupContainer input[type='text'] {
+    display: none;
+  }
+
+  .matchups {
+    width: 100%;
+  }
+
+  .matchups button {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.8rem;
+    margin-bottom: 0;
+    flex-direction: row;
+    gap: 0.4rem;
+    height: auto;
+    min-height: unset;
+  }
+
+  .matchupName {
+    text-align: left;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.85em;
+  }
+
+  .turnOrderBadge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.25rem;
+    min-width: unset;
+    flex-shrink: 0;
+  }
+
+  .autoApplyingStatus {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Small mobile: 2 columns with fixed height */
+@media (max-width: 480px) {
+  .matchupContainer {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0.5rem 0.4rem;
+    gap: 0.3rem;
+  }
+
+  .matchupContainer h4 {
+    display: none;
+  }
+
+  .matchupContainer input[type='text'] {
+    display: none;
+  }
+
+  .matchups button {
+    padding: 0.4rem 0.4rem;
+    font-size: 0.8rem;
+    gap: 0.3rem;
+    height: auto;
+    min-height: unset;
+  }
+
+  .matchupName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.85em;
+  }
+
+  .turnOrderBadge {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.2rem;
+  }
+}

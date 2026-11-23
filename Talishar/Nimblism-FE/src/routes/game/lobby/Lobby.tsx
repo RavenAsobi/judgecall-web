@@ -1,0 +1,1385 @@
+import React, { useEffect, useLayoutEffect, useState, useMemo, useRef } from 'react';
+import { usePageTitle } from 'hooks/usePageTitle';
+import { useTranslation } from 'react-i18next';
+import Deck from './components/deck/Deck';
+import LobbyChat from './components/lobbyChat/LobbyChat';
+import testData from './mockdata.json';
+import styles from './Lobby.module.css';
+import Equipment from './components/equipment/Equipment';
+import classNames from 'classnames';
+import { FaExclamationCircle, FaLock, FaGlobeAmericas } from 'react-icons/fa';
+import { GiCapeArmor } from 'react-icons/gi';
+import { SiBookstack } from 'react-icons/si';
+import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
+import { Form, Formik, useFormikContext } from 'formik';
+import deckValidation from './validation';
+import StickyFooter from './components/stickyFooter/StickyFooter';
+import { toast } from 'react-hot-toast';
+import useAuth from 'hooks/useAuth';
+import useAdScript from 'hooks/useAdScript';
+import { useCookies } from 'react-cookie';
+import {
+  useGetLobbyInfoQuery,
+  useSubmitSideboardMutation,
+  useSubmitLobbyInputMutation,
+  useGetUserProfileQuery,
+  useUpdateBazaarMatchupMutation,
+  useKickPlayerMutation
+} from 'features/api/apiSlice';
+import { useAppSelector } from 'app/Hooks';
+import { shallowEqual } from 'react-redux';
+import { Matchup } from 'interface/API/GetLobbyRefresh.php';
+import { RootState } from 'app/Store';
+import { createPatreonIconMap } from 'utils/patronIcons';
+import { DeckResponse, Weapon } from 'interface/API/GetLobbyInfo.php';
+import LobbyUpdateHandler from './components/updateHandler/SideboardUpdateHandler';
+import {
+  GAME_FORMAT,
+  BREAKPOINT_EXTRA_LARGE,
+  QUERY_STATUS,
+  FAB_BAZAAR_DECK_URL_BASE,
+  FABRARY_DECK_URL_BASE
+} from 'appConstants';
+import { JUDGE_HUB_DISCORD_URL } from 'constants/socialLinks';
+import { getReadableFormatName } from 'utils/formatUtils';
+
+const COMPETITIVE_FORMATS = new Set([
+  GAME_FORMAT.COMPETITIVE_CC,
+  GAME_FORMAT.COMPETITIVE_BLITZ,
+  GAME_FORMAT.COMPETITIVE_LL,
+  GAME_FORMAT.COMPETITIVE_SAGE
+]);
+import ChooseFirstTurn from './components/chooseFirstTurn/ChooseFirstTurn';
+import useWindowDimensions from 'hooks/useWindowDimensions';
+import { SubmitSideboardAPI } from 'interface/API/SubmitSideboard.php';
+import { useNavigate } from 'react-router-dom';
+import CardPortal from '../components/elements/cardPortal/CardPortal';
+import Matchups from './components/matchups/Matchups';
+import { GameLocationState } from 'interface/GameLocationState';
+import { saveGameAuthKey } from 'utils/LocalKeyManagement';
+import CardPopUp from '../components/elements/cardPopUp/CardPopUp';
+import { clearGetLobbyRefresh, getGameInfo, setHeroInfo } from 'features/game/GameSlice';
+import useSound from 'use-sound';
+import playerJoined from 'sounds/playerJoinedSound.mp3';
+import { createPortal } from 'react-dom';
+import { useAppDispatch } from 'app/Hooks';
+import { generateCroppedImageUrl } from 'utils/cropImages';
+import {
+  getSettingsEntity,
+  fetchAllSettings,
+  getSettingsStatus
+} from 'features/options/optionsSlice';
+
+const FAB_BAZAAR_LEARN_MORE_URL = 'https://fabbazaar.app/tutorials/talishar';
+
+// FaBrary uses hyphens (e.g. "briar-warden-of-thorns"), Talishar uses underscores.
+const normalizeHeroId = (id: string) => id.toLowerCase().replace(/-/g, '_');
+
+// Strip emoji and punctuation from a FaBrary matchup display name for fuzzy matching.
+// e.g. "🪴Briar" → "briar", "🏀 Vynnset" → "vynnset"
+const normalizeMatchupName = (name: string): string =>
+  name
+    .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}\uFE0F\u200D]/gu, '')
+    .replace(/[^a-zA-Z0-9\s]/g, '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '_');
+
+const extractBazaarDeckIdFromLink = (deckLink?: string): string | null => {
+  if (!deckLink) return null;
+  // Strip the "{index}<fav>" prefix that appears when a favorite deck link is stored
+  // e.g. "20<fav>https://fabrary.net/decks/..." → "https://fabrary.net/decks/..."
+  const favMarker = deckLink.indexOf('<fav>');
+  const cleanedLink = favMarker !== -1 ? deckLink.slice(favMarker + 5) : deckLink;
+  const bases = [FAB_BAZAAR_DECK_URL_BASE, FABRARY_DECK_URL_BASE];
+  for (const base of bases) {
+    const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+    if (cleanedLink.startsWith(normalizedBase)) {
+      const deckId = cleanedLink.slice(normalizedBase.length).split('?')[0].trim();
+      return deckId || null;
+    }
+  }
+  return null;
+};
+
+ const Lobby = () => {
+  const { t } = useTranslation();
+  usePageTitle(t('PAGES.LOBBY'));
+  useAdScript(false);
+  const [activeTab, setActiveTab] = useState<string>('equipment');
+  const [unreadChat, setUnreadChat] = useState<boolean>(false);
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [width, height] = useWindowDimensions();
+  const [isWideScreen, setIsWideScreen] = useState<boolean>(false);
+  const [isDeckValid, setIsDeckValid] = useState(true);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [selectedMatchupId, setSelectedMatchupId] = useState<string | null>(
+    null
+  );
+  const deckLinkTrackingRef = useRef<{ link: string | undefined; gameKey: string }>({
+    link: undefined,
+    gameKey: ''
+  });
+  const [cookies] = useCookies(['hoverImageSize']);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--hover-img-scale',
+      cookies.hoverImageSize ? String(cookies.hoverImageSize) : '1'
+    );
+  }, [cookies.hoverImageSize]);
+
+  const settingsStatus = useAppSelector(getSettingsStatus);
+  const {
+    isLoggedIn,
+    isPatron,
+    metafyId,
+    metafyHash,
+    metafyTimestamp,
+    refreshAuth
+  } = useAuth();
+  const gameInfo = useAppSelector(getGameInfo, shallowEqual);
+  const { playerID, gameID, authKey } = gameInfo;
+  const [acceptedDisclaimer, setAcceptedDisclaimer] = useState<boolean>(
+    () => localStorage.getItem('openFormatDisclaimerAccepted') === 'true'
+  );
+  const gameLobby = useAppSelector(
+    (state: RootState) => state.game.gameLobby,
+    shallowEqual
+  );
+  const initialGameLobbyRef = useRef(gameLobby);
+  const isBazaarDeckInLobby = !!extractBazaarDeckIdFromLink(
+    gameLobby?.myDeckLink
+  );
+  const shouldShowMatchupsUI = (gameLobby?.matchups?.length ?? 0) > 0;
+  const [playLobbyJoin] = useSound(playerJoined, { volume: 1 });
+  const settingsData = useAppSelector(getSettingsEntity);
+  const isMuted = settingsData['MuteSound']?.value === '1';
+  const isStreamerMode = String(settingsData['IsStreamerMode']?.value) === '1';
+
+  useLayoutEffect(() => {
+    dispatch(clearGetLobbyRefresh());
+  }, []);
+
+  // Load settings when in lobby (same approach as SettingsPage - no active game needed)
+  const dummyGameInfo = {
+    playerID: 0,
+    gameID: 0,
+    authKey: '',
+    isPrivateLobby: false
+  };
+  useEffect(() => {
+    if (
+      settingsStatus === QUERY_STATUS.IDLE ||
+      Object.keys(settingsData).length === 0
+    ) {
+      dispatch(fetchAllSettings({ game: dummyGameInfo }));
+    }
+  }, []);
+
+  // Get patron info for player 1 (you)
+  const yourPatronInfo = useAppSelector(
+    (state: RootState) => ({
+      isPatron: state.game.playerOne.isPatron,
+      isContributor: state.game.playerOne.isContributor,
+      isPvtVoidPatron: state.game.playerOne.isPvtVoidPatron,
+      metafyTiers: state.game.playerOne.metafyTiers
+    }),
+    shallowEqual
+  );
+
+  // Get patron info for player 2 (opponent)
+  const opponentPatronInfo = useAppSelector(
+    (state: RootState) => ({
+      isPatron: state.game.playerTwo.isPatron,
+      isContributor: state.game.playerTwo.isContributor,
+      isPvtVoidPatron: state.game.playerTwo.isPvtVoidPatron,
+      metafyTiers: state.game.playerTwo.metafyTiers
+    }),
+    shallowEqual
+  );
+
+  // Get user profile to access Metafy tiers (since Redux might not be populated in lobby)
+  const { data: userProfileData } = useGetUserProfileQuery(undefined, {
+    skip: !isLoggedIn
+  });
+
+  const extractMetafyTiers = () => {
+    const tiers: string[] = [];
+    const TALISHAR_COMMUNITY_ID = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
+    if (
+      userProfileData?.metafyCommunities &&
+      Array.isArray(userProfileData.metafyCommunities)
+    ) {
+      for (const community of userProfileData.metafyCommunities) {
+        if (
+          community.id === TALISHAR_COMMUNITY_ID &&
+          community.subscription_tier?.name
+        ) {
+          tiers.push(community.subscription_tier.name);
+        }
+      }
+    }
+    return tiers;
+  };
+
+  const userMetafyTiers = extractMetafyTiers();
+
+  // Extract patron status from profile data
+  const extractPatronStatus = () => {
+    return {
+      isContributor: userProfileData?.isContributor ?? false,
+      isPvtVoidPatron: userProfileData?.isPvtVoidPatron ?? false,
+      isPatron: userProfileData?.isPatreonLinked ?? false
+    };
+  };
+
+  const userPatronStatus = extractPatronStatus();
+
+  // Note tooltip state
+  const [opponentNote, setOpponentNote] = useState('');
+  const [isNoteTooltipOpen, setIsNoteTooltipOpen] = useState(false);
+  const [noteTooltipPosition, setNoteTooltipPosition] = useState({
+    top: 0,
+    left: 0
+  });
+  const opponentNameRef = React.useRef<HTMLHeadingElement>(null);
+
+  let { data, isLoading, refetch } = useGetLobbyInfoQuery({
+    gameName: gameID,
+    playerID: playerID,
+    authKey: authKey
+  });
+
+  useEffect(() => {
+    if (gameLobby?.sideboardWasReset) refetch();
+  }, [gameLobby?.sideboardWasReset, refetch]);
+
+  const [submitSideboardMutation, submitSideboardMutationData] =
+    useSubmitSideboardMutation();
+
+  const [updateBazaarMatchup] = useUpdateBazaarMatchupMutation();
+
+  const [submitLobbyInput, submitLobbyInputData] =
+    useSubmitLobbyInputMutation();
+
+  const [kickPlayerMutation] = useKickPlayerMutation();
+
+  const handleKickPlayer = async () => {
+    try {
+      await kickPlayerMutation({
+        gameName: gameID,
+        playerID: playerID,
+        authKey: authKey
+      }).unwrap();
+      toast.success('Opponent has been kicked from the lobby.');
+    } catch (err: any) {
+      toast.error(err?.error || 'Failed to kick opponent.');
+    }
+  };
+
+  const handleUnreadySideboard = async () => {
+    try {
+      await submitLobbyInput({
+        gameName: gameID,
+        playerID: playerID,
+        authKey: authKey,
+        action: 'Unready Sideboard'
+      }).unwrap();
+    } catch (err: any) {
+      toast.error(err?.error || 'Failed to unready sideboard');
+    }
+  };
+
+  useEffect(() => {
+    // Only play sound when opponent first joins (when theirName becomes populated)
+    // Don't play on other updates like messages, invites, etc.
+    if (gameLobby?.theirName && gameLobby.theirName !== '' && !isMuted) {
+      playLobbyJoin();
+    }
+  }, [gameLobby?.theirName, isMuted]);
+
+  useEffect(() => {
+    const hasMousePointer = window.matchMedia('(pointer: fine)').matches;
+    setIsWideScreen(width > BREAKPOINT_EXTRA_LARGE && hasMousePointer);
+  }, [width]);
+
+
+  useEffect(() => {
+    // New lobby/deck context: clear stale selected matchup from previous session.
+    // Skip when myDeckLink is transiently undefined (gameLobby cleared during polling reset on submit).
+    // Also skip when polling recovers with the same link - that is not a real deck change.
+    const newLink = gameLobby?.myDeckLink;
+    if (!newLink) return;
+    const gameKey = `${gameID}:${playerID}`;
+    const { link: prevLink, gameKey: prevGameKey } = deckLinkTrackingRef.current;
+    if (gameKey === prevGameKey && newLink === prevLink) return;
+    deckLinkTrackingRef.current = { link: newLink, gameKey };
+    setSelectedMatchupId(null);
+  }, [gameID, playerID, gameLobby?.myDeckLink]);
+
+  useEffect(() => {
+    // No opponent yet: clear any previous matchup selection.
+    if (!gameLobby?.theirHero || gameLobby.theirHero === 'CardBack') {
+      setSelectedMatchupId(null);
+    }
+  }, [gameLobby?.theirHero]);
+
+  const handleEquipmentClick = () => {
+    setActiveTab('equipment');
+  };
+
+  const handleDeckClick = () => {
+    setActiveTab('deck');
+  };
+
+  const handleChatClick = () => {
+    setUnreadChat(false);
+    setActiveTab('chat');
+  };
+
+  const handleMatchupClick = () => setActiveTab('matchups');
+
+  const selectedMatchup = useMemo(() => {
+    if (!selectedMatchupId) return null;
+    return (gameLobby?.matchups ?? []).find(
+      (matchup: Matchup) => matchup.matchupId === selectedMatchupId
+    );
+  }, [selectedMatchupId, gameLobby?.matchups]);
+
+  const suggestedMatchupId = useMemo(() => {
+    if (!gameLobby?.theirHero || gameLobby.theirHero === 'CardBack') return null;
+    if (!isBazaarDeckInLobby) return null;
+    const opponentHero = normalizeHeroId(gameLobby.theirHero ?? '');
+    const matchingMatchup = (gameLobby?.matchups ?? []).find((matchup: Matchup) => {
+      if (matchup.heroIdentifiers?.length) {
+        return matchup.heroIdentifiers.some((id: string) => normalizeHeroId(id) === opponentHero);
+      }
+      const normalizedId = normalizeHeroId(matchup.matchupId);
+      if (normalizedId === opponentHero) return true;
+      if (opponentHero.startsWith(normalizedId + '_')) return true;
+      const normalizedName = normalizeMatchupName(matchup.name);
+      if (normalizedName === opponentHero) return true;
+      return opponentHero.startsWith(normalizedName + '_');
+    });
+    return matchingMatchup?.matchupId ?? null;
+  }, [gameLobby?.theirHero, gameLobby?.matchups, isBazaarDeckInLobby]);
+
+  // Note functions
+  const getPlayerNoteKey = (username: string) => `player_note_${username}`;
+
+  const loadPlayerNote = (username: string) => {
+    try {
+      return localStorage.getItem(getPlayerNoteKey(username)) || '';
+    } catch {
+      return '';
+    }
+  };
+
+  const handleNoteTooltipOpen = () => {
+    if (opponentNameRef.current && gameLobby?.theirName) {
+      const note = loadPlayerNote(gameLobby.theirName);
+      if (note) {
+        const rect = opponentNameRef.current.getBoundingClientRect();
+        setNoteTooltipPosition({
+          top: rect.bottom + window.scrollY + 8,
+          left: rect.left + window.scrollX
+        });
+        setOpponentNote(note);
+        setIsNoteTooltipOpen(true);
+      }
+    }
+  };
+
+  const handleNoteTooltipClose = () => {
+    setIsNoteTooltipOpen(false);
+  };
+
+  if (!data || !data.deck || Object.keys(data).length === 0) {
+    data = testData;
+  }
+
+  if (!data || !data.deck) return null;
+
+  // Navigate to main game when ready - must be in useEffect to avoid setState during render
+  useEffect(() => {
+    if (gameLobby === initialGameLobbyRef.current) return;
+    if (gameLobby?.isMainGameReady) {
+      // Dispatch hero info to Redux before navigating
+      dispatch(
+        setHeroInfo({
+          heroName: data?.deck?.heroName,
+          yourHeroCardNumber: data?.deck?.hero,
+          opponentHeroName: gameLobby?.theirHeroName,
+          opponentHeroCardNumber: gameLobby?.theirHero
+        })
+      );
+
+      navigate(`/game/play/${gameID}`, {
+        state: {
+          playerID: playerID ?? 0,
+          authKey: authKey
+        } as GameLocationState
+      });
+    }
+  }, [
+    gameLobby?.isMainGameReady,
+    gameID,
+    playerID,
+    authKey,
+    navigate,
+    dispatch,
+    data?.deck?.heroName,
+    data?.deck?.hero,
+    gameLobby?.theirHeroName,
+    gameLobby?.theirHero
+  ]);
+
+  // Navigate home if the host kicked us
+  useEffect(() => {
+    if (playerID === 2 && gameLobby?.wasKicked) {
+      toast.error('You were kicked from the lobby.');
+      navigate('/');
+    }
+  }, [gameLobby?.wasKicked, navigate, playerID]);
+
+  const deckClone = [...data.deck.cards];
+  const deckSBClone = [...data.deck.cardsSB];
+  const deckIndexed = deckClone.sort().map((card, ix) => `${card}-${ix}`);
+  const deckSBIndexed = deckSBClone
+    .sort()
+    .map((card, ix) => `${card}-${ix + deckIndexed.length}`);
+  const headClone = [...data?.deck?.head];
+  const headSBClone = [...data?.deck?.headSB];
+  const legsClone = [...data?.deck?.legs];
+  const legsSBClone = [...data?.deck?.legsSB];
+  const armsClone = [...data?.deck?.arms];
+  const armsSBClone = [...data?.deck?.armsSB];
+  const chestClone = [...data?.deck?.chest];
+  const chestSBClone = [...data?.deck?.chestSB];
+
+  const leftHero =
+    data.deck.hero === 'CardBack' ? 'UNKNOWNHERO' : data.deck.hero;
+  const rightHero =
+    gameLobby?.theirHero === 'CardBack' ? 'UNKNOWNHERO' : gameLobby?.theirHero;
+
+  const leftPic = `url(${generateCroppedImageUrl(leftHero)})`;
+  const isWaitingForOpponent = !gameLobby?.theirHero || gameLobby.theirHero === 'CardBack';
+
+  const lobbyFormatName = getReadableFormatName(
+    String(gameLobby?.format ?? data.format ?? '')
+  );
+  const rawLobbyDescription = (gameLobby?.gameDescription ?? '').trim();
+  const lobbyDescription =
+    rawLobbyDescription && rawLobbyDescription !== 'Game #'
+      ? rawLobbyDescription
+      : '';
+  const lobbyVisibilityLabel =
+    gameLobby?.isPrivateLobby === undefined
+      ? ''
+      : gameLobby.isPrivateLobby
+      ? 'Private'
+      : 'Public';
+  const lobbyMetaLine = [lobbyVisibilityLabel, lobbyFormatName]
+    .filter(Boolean)
+    .join(' · ');
+  const lobbyTooltipParts = [
+    gameLobby?.isPrivateLobby === undefined
+      ? ''
+      : gameLobby.isPrivateLobby
+      ? 'Private: only players with the invite link can join'
+      : 'Public: anyone can join from the game list',
+    lobbyFormatName,
+    lobbyDescription
+  ].filter(Boolean);
+  const lobbyTooltip = lobbyTooltipParts.length
+    ? lobbyTooltipParts.join('\n')
+    : undefined;
+  const showLobbySettings = lobbyMetaLine !== '' || lobbyDescription !== '';
+  const lobbySettingsItems = (
+    <>
+      {lobbyVisibilityLabel !== '' && (
+        <span
+          className={classNames(styles.lobbySettingsItem, {
+            [styles.lobbySettingsPrivate]: gameLobby?.isPrivateLobby === true
+          })}
+        >
+          {gameLobby?.isPrivateLobby ? (
+            <FaLock aria-hidden="true" />
+          ) : (
+            <FaGlobeAmericas aria-hidden="true" />
+          )}
+          {lobbyVisibilityLabel}
+        </span>
+      )}
+      {lobbyFormatName !== '' && (
+        <span className={styles.lobbySettingsItem}>{lobbyFormatName}</span>
+      )}
+      {lobbyDescription !== '' && (
+        <span
+          className={classNames(
+            styles.lobbySettingsItem,
+            styles.lobbySettingsDescription
+          )}
+        >
+          {lobbyDescription}
+        </span>
+      )}
+    </>
+  );
+  const rightPic = `url(${generateCroppedImageUrl(rightHero ?? 'UNKNOWNHERO')})`;
+
+  const eqClasses = classNames(styles.tabButton, {
+    [styles.tabActive]: activeTab === 'equipment'
+  });
+  const deckClasses = classNames(styles.tabButton, {
+    [styles.tabActive]: activeTab === 'deck'
+  });
+  const chatClasses = classNames({});
+  const matchupClasses = classNames({});
+  const leaveClasses = classNames('outline');
+
+  const handleLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // TODO: Need a way to announce to the server that we are leaving
+    navigate(`/`);
+  };
+
+  const { deckSize, maxDeckSize } = useMemo(() => {
+    switch (data.format) {
+      case GAME_FORMAT.BLITZ:
+      case GAME_FORMAT.COMMONER:
+      case GAME_FORMAT.COMPETITIVE_BLITZ:
+      case GAME_FORMAT.COMMONER:
+      case GAME_FORMAT.CLASH:
+      case GAME_FORMAT.SAGE:
+      case GAME_FORMAT.COMPETITIVE_SAGE:
+      case GAME_FORMAT.OPEN_SAGE:
+        return { deckSize: 40, maxDeckSize: 40 };
+      case GAME_FORMAT.SEALED:
+      case GAME_FORMAT.DRAFT:
+        return { deckSize: 30, maxDeckSize: 30 };
+      case GAME_FORMAT.OPEN_BLITZ:
+      case GAME_FORMAT.OPEN:
+        return { deckSize: 0, maxDeckSize: 99999 };
+      case GAME_FORMAT.GAGE:
+        return { deckSize: 60, maxDeckSize: 60 };
+      default:
+        return { deckSize: 60, maxDeckSize: 99999 };
+    }
+  }, [data.format]);
+
+  const weaponsIndexed = [...data.deck.hands].map((card, ix) => {
+    return {
+      id: `${card.id}-${ix}`,
+      is1H: card.is1H,
+      img: `${card.id}`,
+      numHands: card.numHands !== undefined ? card.numHands : card.is1H ? 1 : 2,
+      isQuiver: card.isQuiver ?? false,
+      isOffhand: card.isOffhand ?? false,
+      isCompanion: card.isCompanion ?? false
+    } as Weapon;
+  });
+
+  const weaponsSBIndexed = [
+    ...data.deck.handsSB,
+    { id: `NONE00`, is1H: true, img: `NONE00`, numHands: 0 }
+  ].map((card, ix) => {
+    return {
+      id: `${card.id}-${ix + weaponsIndexed.length}`,
+      img: `${card.id}`,
+      is1H: card.is1H,
+      numHands: card.numHands !== undefined ? card.numHands : card.is1H ? 1 : 2,
+      isQuiver: card.isQuiver ?? false,
+      isOffhand: card.isOffhand ?? false,
+      isCompanion: card.isCompanion ?? false
+    } as Weapon;
+  });
+
+  const hasModular = (data.deck.modular?.length ?? 0) > 0;
+  const initialEquipment = (main: string[], side: string[]) => {
+    if (hasModular) {
+      return [...main, ...side, 'NONE00'].filter((id) => id !== 'EVO013')[0];
+    } else {
+      return [...main, ...side, 'NONE00'][0];
+    }
+  };
+
+  type EquipFieldName = 'head' | 'chest' | 'arms' | 'legs';
+
+  const [assigned, setAssigned] = React.useState<
+    Record<EquipFieldName, string[]>
+  >({
+    head: [],
+    chest: [],
+    arms: [],
+    legs: []
+  });
+
+  const hands = React.useMemo(
+    () => [...weaponsIndexed, ...weaponsSBIndexed],
+    [weaponsIndexed, weaponsSBIndexed]
+  );
+
+  const baseEquipment = React.useMemo(
+    () => ({
+      head: [...data.deck.head, ...data.deck.headSB],
+      chest: [...data.deck.chest, ...data.deck.chestSB],
+      arms: [...data.deck.arms, ...data.deck.armsSB],
+      legs: [...data.deck.legs, ...data.deck.legsSB],
+      demi: data.deck.demiHero ?? [],
+      modular: data.deck.modular ?? []
+    }),
+    [data.deck]
+  );
+
+  const [modularState, setModularState] = React.useState<string[]>(
+    baseEquipment.modular
+  );
+
+  React.useEffect(() => {
+    setAssigned({ head: [], chest: [], arms: [], legs: [] });
+    setModularState(baseEquipment.modular);
+  }, [baseEquipment.modular]);
+
+  const oneHandedHeroes = [
+    'kayo_armed_and_dangerous',
+    'kayo',
+    'kayo_underhanded_cheat',
+    'kayo_strong_arm'
+  ];
+  let handsTotal = oneHandedHeroes.includes(data.deck.hero) ? 1 : 2;
+  const mainClassNames = classNames(styles.lobbyClass);
+
+  const [showChatModal, setShowChatModal] = useState(true);
+  const [chatModal, setChatModal] = useState('');
+  const [modal, setModal] = useState('Do you want to enable chat?');
+
+  const clickYes = (e: any) => {
+    e.preventDefault();
+    setShowChatModal(false);
+    submitLobbyInput({
+      gameName: gameID,
+      playerID: playerID,
+      authKey: authKey,
+      action: 'Request Chat'
+    });
+  };
+
+  const clickNo = (e: any) => {
+    e.preventDefault();
+    setShowChatModal(false);
+  };
+  const needToDoDisclaimer =
+    !acceptedDisclaimer &&
+    (data.format === GAME_FORMAT.OPEN_CC ||
+      data.format === GAME_FORMAT.OPEN_BLITZ ||
+      data.format === GAME_FORMAT.OPEN_LL_CC ||
+      data.format === GAME_FORMAT.OPEN_SAGE ||
+      data.format === GAME_FORMAT.OPEN);
+  // data.format === GAME_FORMAT.OPEN_LL_BLITZ
+  //const needToDoDisclaimer = false;
+  const leaveLobby = classNames(styles.buttonClass, 'outline');
+
+  const handleFormSubmission = async (values: DeckResponse) => {
+    const matchupIdToRestore = selectedMatchupId;
+    setIsSubmitting(true);
+
+    const hands = values.weapons.map((item) => item.id.split('-')[0]);
+    const deck = values.deck.map((card) => card.split('-')[0]);
+    const modularOriginal = [...(data?.deck?.modular ?? [])];
+    const assigned = (values as any).assignedModulars || {
+      head: [],
+      chest: [],
+      arms: [],
+      legs: []
+    };
+
+    const removeOne = (arr: string[], val: string) => {
+      const i = arr.indexOf(val);
+      if (i === -1) return arr.slice();
+      const copy = arr.slice();
+      copy.splice(i, 1);
+      return copy;
+    };
+
+    let modularRemaining = modularOriginal.slice();
+    Object.keys(assigned).forEach((k) => {
+      const list: string[] = (assigned as any)[k] || [];
+      list.forEach((c) => {
+        modularRemaining = removeOne(modularRemaining, c);
+      });
+    });
+
+    const filterWeaponsSB = (
+      totalWeapons: Weapon[],
+      equippedWeapons: string[]
+    ) => {
+      const indexedWeapons: any = {};
+
+      for (const weaponName of equippedWeapons) {
+        indexedWeapons[weaponName] = (indexedWeapons[weaponName] || 0) + 1;
+      }
+
+      return totalWeapons.filter((weapon) => {
+        if (indexedWeapons[weapon.img]) {
+          //img = name = id
+          indexedWeapons[weapon.img]--;
+          return false;
+        }
+        return true;
+      });
+    };
+
+    const weaponsSB = filterWeaponsSB(
+      [...weaponsIndexed, ...weaponsSBIndexed],
+      [...hands]
+    )
+      .filter((item: { id: string }) => item.id !== 'NONE00')
+      .map((item: { id: string }) => item.id.split('-')[0]);
+
+
+    const inventory = [
+      ...weaponsSB,
+      ...(headClone
+        .concat(headSBClone)),
+      ...(chestClone
+        .concat(chestSBClone)),
+      ...(armsClone
+        .concat(armsSBClone)),
+      ...(legsClone
+        .concat(legsSBClone)),
+      ...(data?.deck?.demiHero ?? []),
+      ...modularRemaining,
+      ...(deckIndexed
+        .concat(deckSBIndexed)
+        .filter((x) => !values.deck.includes(x))
+        .map((card) => card.split('-')[0]) ?? [])
+    ].filter((item) => item !== 'NONE00');
+
+    const submitDeck = {
+      hero: data?.deck.hero,
+      hands,
+      head: values.head,
+      chest: values.chest,
+      arms: values.arms,
+      legs: values.legs,
+      deck,
+      inventory
+    };
+    const requestBody: SubmitSideboardAPI = {
+      gameName: gameID,
+      playerID: playerID,
+      authKey: authKey,
+      submission: JSON.stringify(submitDeck) // the API unmarshals the JSON inside the unmarshaled JSON.
+    };
+
+    // Save sideboard changes to FaB Bazaar (sticky sideboarding) BEFORE
+    // submitting to Talishar, because the Talishar submit may start the game
+    // immediately and any lobby refresh that follows could trigger the
+    // auto-apply matchup effect with a stale/new key.
+    const bazaarDeckId =
+      gameInfo.bazaarDeckId ??
+      extractBazaarDeckIdFromLink(gameLobby?.myDeckLink);
+    const opponentHeroId = gameLobby?.theirHero;
+    let resolvedMetafyId = metafyId;
+    let resolvedMetafyHash = metafyHash;
+    let resolvedMetafyTimestamp = metafyTimestamp;
+
+    // If Bazaar deck/opponent are known but metafy credentials are missing,
+    // force-refresh TryLoginAPI and retry with fresh values.
+    if (
+      bazaarDeckId &&
+      opponentHeroId &&
+      (!resolvedMetafyId || !resolvedMetafyHash || !resolvedMetafyTimestamp)
+    ) {
+      try {
+        const refreshedAuth: any = await refreshAuth();
+        const refreshed = refreshedAuth?.data;
+        resolvedMetafyId = refreshed?.metafyID ?? refreshed?.metafyId ?? resolvedMetafyId;
+        resolvedMetafyHash = refreshed?.metafyHash ?? resolvedMetafyHash;
+        resolvedMetafyTimestamp = refreshed?.timestamp ?? resolvedMetafyTimestamp;
+      } catch (authRefreshErr) {
+        // Auth refresh failed
+      }
+    }
+
+    const canSyncBazaarSideboard =
+      bazaarDeckId &&
+      opponentHeroId &&
+      resolvedMetafyId &&
+      resolvedMetafyHash &&
+      resolvedMetafyTimestamp;
+
+    if (canSyncBazaarSideboard) {
+      const multisetDiff = (have: string[], remove: string[]): string[] => {
+        const counts = new Map<string, number>();
+        for (const card of have) counts.set(card, (counts.get(card) ?? 0) + 1);
+        for (const card of remove) {
+          const c = counts.get(card) ?? 0;
+          if (c <= 1) counts.delete(card);
+          else counts.set(card, c - 1);
+        }
+        return Array.from(counts.entries()).flatMap(([card, n]) =>
+          Array(n).fill(card)
+        );
+      };
+      // Use lobby deck data to compute which cards moved in/out of main deck
+      const originalMain: string[] = data?.deck?.cards ?? [];
+      const sideboardIn = multisetDiff(deck, originalMain);
+      const sideboardOut = multisetDiff(originalMain, deck);
+      try {
+        const bazaarResponse = await updateBazaarMatchup({
+          deckId: bazaarDeckId,
+          heroId: opponentHeroId,
+          metafyId: resolvedMetafyId,
+          metafyHash: resolvedMetafyHash,
+          metafyTimestamp: resolvedMetafyTimestamp,
+          sideboard: { in: sideboardIn, out: sideboardOut }
+        }).unwrap();
+      } catch (bazaarErr) {
+        // Bazaar sync failure should not block the Talishar submit
+      }
+    }
+
+    try {
+      const submitResponse: any = await submitSideboardMutation(requestBody).unwrap();
+
+      // If game started, capture and store the auth key for future use
+      if (submitResponse?.gameStarted && submitResponse?.authKey && gameID) {
+        saveGameAuthKey(gameID, submitResponse.authKey, playerID);
+        // The existing useEffect in this component will navigate to /game/play/{gameID}
+        // when gameLobby?.isMainGameReady becomes true
+      }
+    } catch (err) {
+      // Sideboard submit failed
+    } finally {
+      setIsSubmitting(false);
+      if (matchupIdToRestore) {
+        setSelectedMatchupId(matchupIdToRestore);
+      }
+    }
+  };
+
+  return (
+    <main className={mainClassNames}>
+      {gameLobby?.chatInvited &&
+        showChatModal &&
+        createPortal(
+          <>
+            <dialog open className={styles.modal}>
+              <article>
+                <header>{modal}</header>
+                <button onClick={clickYes}>Yes</button>
+                <button onClick={clickNo}>No</button>
+              </article>
+            </dialog>
+          </>,
+          document.body
+        )}
+      {needToDoDisclaimer &&
+        createPortal(
+          <>
+            <dialog open={needToDoDisclaimer}>
+              <article className={styles.disclaimerArticles}>
+                <header className={styles.disclaimerHeader}>
+                  ⚠️ Open Format Disclaimer
+                </header>
+                <p style={{ marginBottom: '1em' }}>
+                  Note that new cards are added on a 'best-effort' basis and
+                  there may be more bugs and innacurate card interactions. It
+                  may not be a completely accurate representation of the Rules
+                  as written. If you have questions about interactions or
+                  rulings, please contact the{' '}
+                  <a
+                    href={JUDGE_HUB_DISCORD_URL}
+                    target="_blank"
+                  >
+                    {' '}
+                    JudgeHub Discord
+                  </a>{' '}
+                  for clarification.
+                </p>
+                <div className={styles.disclaimerAcceptButtons}>
+                  <button
+                    onClick={() => {
+                      localStorage.setItem('openFormatDisclaimerAccepted', 'true');
+                      setAcceptedDisclaimer(true);
+                    }}
+                  >
+                    I Accept!
+                  </button>
+                </div>
+                <div className={styles.disclaimerButtons}>
+                  <button
+                    onClick={() => {
+                      navigate('/');
+                    }}
+                    className={leaveLobby}
+                  >
+                    No Thanks!
+                  </button>
+                </div>
+              </article>
+            </dialog>
+          </>,
+          document.body
+        )}
+      <LobbyUpdateHandler isSubmitting={isSubmitting} />
+      <Formik
+        initialValues={{
+          hero: data?.deck.hero,
+          deck: deckIndexed,
+          weapons:
+            weaponsIndexed.length > 0
+              ? weaponsIndexed
+              : [weaponsSBIndexed.find((w) => w.img === 'NONE00')!],
+          head: initialEquipment(data.deck.head, data.deck.headSB),
+          chest: initialEquipment(data.deck.chest, data.deck.chestSB),
+          arms: initialEquipment(data.deck.arms, data.deck.armsSB),
+          legs: initialEquipment(data.deck.legs, data.deck.legsSB),
+          assignedModulars: { head: [], chest: [], arms: [], legs: [] }
+        }}
+        onSubmit={handleFormSubmission}
+        validationSchema={deckValidation(deckSize, maxDeckSize, handsTotal)}
+        validateOnChange={true}
+        validateOnBlur={true}
+        validateOnMount={true}
+        enableReinitialize
+      >
+        <Form className={styles.form}>
+          <FormikDebugLogger />
+          <div
+            className={styles.gridLayout}
+          >
+            <div className={styles.titleContainer}>
+              <CardPopUp
+                cardNumber={data.deck.hero}
+                containerClass={styles.leftCol}
+              >
+                <div
+                  className={styles.leftCol}
+                  style={{ backgroundImage: leftPic }}
+                >
+                  <div className={styles.dimPic}>
+                    <h3 aria-busy={isLoading}>
+                      {createPatreonIconMap(
+                        userPatronStatus.isContributor,
+                        userPatronStatus.isPvtVoidPatron,
+                        userPatronStatus.isPatron,
+                        false,
+                        userMetafyTiers.length > 0 ? userMetafyTiers : undefined
+                      )
+                        .filter((icon) => icon.condition)
+                        .map((icon, index) => (
+                          <a
+                            key={`${icon.src}-${index}`}
+                            href={icon.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={icon.title}
+                            className={styles.lobbyIconLink}
+                          >
+                            <img
+                              src={icon.src}
+                              alt={icon.title}
+                              className={styles.lobbyIcon}
+                            />
+                          </a>
+                        ))}
+                      <span className={styles.lobbyPlayerName}>
+                        {String(data.displayName ?? '').substring(0, 15)}
+                      </span>
+                    </h3>
+                  </div>
+                </div>
+              </CardPopUp>
+              <CardPopUp
+                cardNumber={gameLobby?.theirHero ?? 'CardBack'}
+                containerClass={styles.rightCol}
+              >
+                <div
+                  className={styles.rightCol}
+                  style={{ backgroundImage: rightPic }}
+                >
+                  {playerID === 1 &&
+                    gameLobby?.theirHero &&
+                    gameLobby.theirHero !== 'CardBack' &&
+                    !COMPETITIVE_FORMATS.has(data.format as string) &&
+                    !gameLobby?.amIChoosingFirstPlayer &&
+                    !gameLobby?.isOpponentAI && (
+                      <button
+                        type="button"
+                        className={styles.kickButton}
+                        onClick={handleKickPlayer}
+                        title={`Kick ${isStreamerMode ? 'opponent' : gameLobby.theirName} from the lobby`}
+                        aria-label="Kick opponent"
+                      >
+                        Kick
+                      </button>
+                    )}
+                  <div className={styles.dimPic}>
+                    {gameLobby?.theirHero && gameLobby.theirHero !== 'CardBack' && <h3
+                      ref={opponentNameRef}
+                      onMouseEnter={handleNoteTooltipOpen}
+                      onMouseLeave={handleNoteTooltipClose}
+                      aria-busy={!gameLobby}
+                      style={{ cursor: opponentNote ? 'help' : 'default' }}
+                    >
+                      {createPatreonIconMap(
+                        gameLobby?.theirIsContributor ?? false,
+                        gameLobby?.theirIsPvtVoidPatron ?? false,
+                        gameLobby?.theirIsPatron ? true : false,
+                        false,
+                        (gameLobby?.theirMetafyTiers?.length ?? 0) > 0 ? gameLobby!.theirMetafyTiers : undefined
+                      )
+                        .filter((icon) => icon.condition)
+                        .map((icon, index) => (
+                          <a
+                            key={`${icon.src}-${index}`}
+                            href={icon.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={icon.title}
+                            className={styles.lobbyIconLink}
+                          >
+                            <img
+                              src={icon.src}
+                              alt={icon.title}
+                              className={styles.lobbyIcon}
+                            />
+                          </a>
+                        ))}
+                      <span className={styles.lobbyPlayerName}>
+                        {isStreamerMode
+                          ? 'Opponent'
+                          : String(gameLobby?.theirName ?? '').substring(0, 15)}
+                      </span>
+                    </h3>}
+                    <div className={styles.heroName}>
+                      {gameLobby?.theirHeroName != ''
+                        ? ''
+                        : 'Waiting For Opponent'}
+                    </div>
+                  </div>
+                </div>
+              </CardPopUp>
+            </div>
+
+            {!isWideScreen && showLobbySettings && (
+              <div className={styles.lobbySettingsBar} title={lobbyTooltip}>
+                {lobbySettingsItems}
+              </div>
+            )}
+
+            {gameLobby?.amIChoosingFirstPlayer && !needToDoDisclaimer
+              ? createPortal(<ChooseFirstTurn />, document.body)
+              : !isWideScreen && (
+                  <nav className={styles.mobileNav}>
+                    <ul>
+                      {!isWideScreen && (
+                        <li>
+                          <button
+                            aria-label="Leave the lobby"
+                            className={leaveClasses}
+                            onClick={handleLeave}
+                            type="button"
+                          >
+                            Leave
+                          </button>
+                        </li>
+                      )}
+                    </ul>
+                    <ul>
+                      {shouldShowMatchupsUI && (
+                          <li>
+                            <button
+                              className={matchupClasses}
+                              onClick={handleMatchupClick}
+                              type="button"
+                            >
+                              Matchups
+                            </button>
+                          </li>
+                        )}
+                      <li>
+                        <button
+                          className={eqClasses}
+                          onClick={handleEquipmentClick}
+                          type="button"
+                        >
+                          <div className={styles.icon}>
+                            <GiCapeArmor />
+                          </div>
+                          Equipment
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className={deckClasses}
+                          onClick={handleDeckClick}
+                          type="button"
+                        >
+                          <div className={styles.icon}>
+                            <SiBookstack />
+                          </div>
+                          Deck
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className={chatClasses}
+                          onClick={handleChatClick}
+                          type="button"
+                        >
+                          {unreadChat && (
+                            <>
+                              <FaExclamationCircle />{' '}
+                            </>
+                          )}
+                          Chat
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                )}
+            {isWideScreen ? (
+              <div className={styles.deckSelectorContainer}>
+                <nav className={styles.inLineNav}>
+                  <ul>
+                    <li>
+                      <button
+                        className={eqClasses}
+                        onClick={handleEquipmentClick}
+                        type="button"
+                      >
+                        <div className={styles.icon}>
+                          <GiCapeArmor />
+                        </div>
+                        Equipment
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className={deckClasses}
+                        onClick={handleDeckClick}
+                        type="button"
+                      >
+                        <div className={styles.icon}>
+                          <SiBookstack />
+                        </div>
+                        Deck
+                      </button>
+                    </li>
+                  </ul>
+                  {showLobbySettings && (
+                    <div className={styles.inlineNavMeta} title={lobbyTooltip}>
+                      {lobbySettingsItems}
+                    </div>
+                  )}
+                  <div style={{ marginLeft: 'auto' }}>
+                    <DesktopDeckSelectionButtons
+                      deckIndexed={deckIndexed}
+                      deckSBIndexed={deckSBIndexed}
+                      activeTab={activeTab}
+                      filtersExpanded={filtersExpanded}
+                      setFiltersExpanded={setFiltersExpanded}
+                    />
+                  </div>
+                </nav>
+                {activeTab !== 'deck' && (
+                  <Equipment
+                    lobbyInfo={data}
+                    weapons={weaponsIndexed}
+                    weaponSB={weaponsSBIndexed}
+                    assigned={assigned}
+                    setAssigned={setAssigned}
+                    baseEquipment={baseEquipment}
+                    hands={hands}
+                    modularState={modularState}
+                    setModularState={setModularState}
+                  />
+                )}
+                {activeTab === 'deck' && (
+                  <Deck
+                    deck={[...deckIndexed, ...deckSBIndexed]}
+                    cardDictionary={data?.deck?.cardDictionary}
+                    filtersExpanded={filtersExpanded}
+                    setFiltersExpanded={setFiltersExpanded}
+                    isDesktop={true}
+                  />
+                )}
+              </div>
+            ) : (
+              <>
+                {activeTab === 'equipment' && (
+                  <Equipment
+                    lobbyInfo={data}
+                    weapons={weaponsIndexed}
+                    weaponSB={weaponsSBIndexed}
+                    assigned={assigned}
+                    setAssigned={setAssigned}
+                    baseEquipment={baseEquipment}
+                    hands={hands}
+                    modularState={modularState}
+                    setModularState={setModularState}
+                  />
+                )}
+                {activeTab === 'deck' && (
+                  <Deck
+                    deck={[...deckIndexed, ...deckSBIndexed]}
+                    cardDictionary={data?.deck?.cardDictionary}
+                    filtersExpanded={filtersExpanded}
+                    setFiltersExpanded={setFiltersExpanded}
+                    isDesktop={false}
+                  />
+                )}
+              </>
+            )}
+            {(activeTab === 'chat' || isWideScreen) && (
+              <div
+                className={
+                  !isDeckValid
+                    ? styles.chatAreaContainerRestrained
+                    : styles.chatAreaContainer
+                }
+              >
+                <LobbyChat />
+              </div>
+            )}
+
+            {!isWideScreen && activeTab !== 'chat' && (
+              <div className={styles.mobileBottomActions}></div>
+            )}
+
+            {!isWideScreen && activeTab !== 'chat' && (
+              <div className={styles.spacer}></div>
+            )}
+
+            {shouldShowMatchupsUI && (activeTab === 'matchups' || isWideScreen) && (
+              <Matchups
+                refetch={refetch}
+                selectedMatchupId={selectedMatchupId}
+                onMatchupSelected={setSelectedMatchupId}
+                suggestedMatchupId={suggestedMatchupId}
+                isReadied={!!(gameLobby?.canUnreadySideboard || gameLobby?.amIChoosingFirstPlayer)}
+              />
+            )}
+            <StickyFooter
+              deckSize={deckSize}
+              submitSideboard={gameLobby?.canSubmitSideboard ?? false}
+              canUnreadySideboard={gameLobby?.canUnreadySideboard ?? false}
+              isUnreadyLoading={submitLobbyInputData.isLoading}
+              isSubmitting={isSubmitting}
+              handleLeave={handleLeave}
+              isWidescreen={isWideScreen}
+              needToDoDisclaimer={needToDoDisclaimer}
+              onUnreadySideboard={handleUnreadySideboard}
+              onIsValidChange={setIsDeckValid}
+            />
+          </div>
+        </Form>
+      </Formik>
+      <CardPortal />
+
+      {/* Opponent note tooltip in lobby */}
+      {opponentNote &&
+        isNoteTooltipOpen &&
+        createPortal(
+          <div
+            className={styles.noteTooltip}
+            style={{
+              top: `${noteTooltipPosition.top}px`,
+              left: `${noteTooltipPosition.left}px`
+            }}
+          >
+            {opponentNote}
+          </div>,
+          document.body
+        )}
+    </main>
+  );
+};
+
+const FormikDebugLogger = () => {
+  const { submitCount, isValid, errors, values, isSubmitting } =
+    useFormikContext<DeckResponse>();
+  const previousSubmitCount = React.useRef(submitCount);
+
+  useEffect(() => {
+    if (submitCount > previousSubmitCount.current) {
+      previousSubmitCount.current = submitCount;
+    }
+  }, [submitCount, isValid, errors, values, isSubmitting]);
+
+  return null;
+};
+
+// Component to handle Filters, Select All/None buttons for desktop - has access to Formik context
+const DesktopDeckSelectionButtons = ({
+  deckIndexed,
+  deckSBIndexed,
+  activeTab,
+  filtersExpanded,
+  setFiltersExpanded
+}: {
+  deckIndexed: string[];
+  deckSBIndexed: string[];
+  activeTab: string;
+  filtersExpanded: boolean;
+  setFiltersExpanded: (value: boolean) => void;
+}) => {
+  const { setFieldValue } = useFormikContext<DeckResponse>();
+
+  const handleSelectAll = () => {
+    const allCards = [...deckIndexed, ...deckSBIndexed];
+    setFieldValue('deck', allCards);
+  };
+
+  const handleSelectNone = () => {
+    setFieldValue('deck', []);
+  };
+
+  // Only show buttons when Deck tab is active
+  if (activeTab !== 'deck') {
+    return null;
+  }
+
+  return (
+    <div className={styles.selectionButtons}>
+      <button
+        className={styles.selectionButton}
+        onClick={() => setFiltersExpanded(!filtersExpanded)}
+        type="button"
+        title={filtersExpanded ? 'Collapse filters' : 'Expand filters'}
+      >
+        {filtersExpanded ? (
+          <MdArrowDropDown size={24} />
+        ) : (
+          <MdArrowRight size={24} />
+        )}
+        Filters
+      </button>
+      <button
+        className={styles.selectionButton}
+        onClick={handleSelectAll}
+        type="button"
+        title="Select all cards"
+      >
+        Select All
+      </button>
+      <button
+        className={styles.selectionButton}
+        onClick={handleSelectNone}
+        type="button"
+        title="Deselect all cards"
+      >
+        Select None
+      </button>
+    </div>
+  );
+};
+
+export default Lobby;

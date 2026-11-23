@@ -1,0 +1,26 @@
+[Unit]
+Description=JudgeCall Scheduled Event Planner
+After=network.target
+
+[Service]
+Type=simple
+User=judgecall-sep
+Group=judgecall-sep
+WorkingDirectory=/opt/judgecall-sep/current
+ExecStart=/usr/bin/node /opt/judgecall-sep/current/server.mjs
+Environment=SEP_PORT=3104
+Environment=SEP_ORIGIN=https://sep.judgecall.net
+Environment=SEP_DATA=/var/lib/judgecall-sep/sep.sqlite
+Environment=NODE_ENV=production
+StateDirectory=judgecall-sep
+StateDirectoryMode=0700
+UMask=0077
+Restart=on-failure
+RestartSec=2s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

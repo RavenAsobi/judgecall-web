@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Noto_Sans_SC } from "next/font/google";
+import "./globals.tech.css";
+import "./i18n.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const notoSansCjk = Noto_Sans_SC({ variable: "--font-noto-sans-cjk", subsets: ["latin"], weight: ["400", "700", "900"], display: "swap" });
+
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -15,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: base,
     title: "裁判通 JudgeCall｜TCG 赛事工具与裁判资源",
     description: "裁判通为 TCG 裁判、赛事主办方与玩家提供 Lynx 赛事管理、在线计时器、游戏规则资源、文章与离线应用。",
-    icons: { icon: "/lynx.png", shortcut: "/lynx.png" },
+    icons: { icon: "/jc.png", shortcut: "/jc.png", apple: "/jc.png" },
     openGraph: {
       title: "裁判通 JudgeCall｜让每一场比赛，都被清晰地看见",
       description: "面向 TCG 裁判、赛事主办方与玩家的赛事工具与规则资源平台。",
@@ -33,5 +34,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="zh-CN"><body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body></html>;
+  return <html lang="zh-CN"><body className={notoSansCjk.variable}>{children}</body></html>;
 }

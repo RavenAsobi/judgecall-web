@@ -1,0 +1,109 @@
+<?php
+
+class Arsenal {
+
+  // Properties
+  private $arsenal = [];
+  private $player;
+
+  // Constructor
+  function __construct($playerID) {
+    $this->arsenal = &GetArsenal($playerID);
+    $this->player = $playerID;
+  }
+
+  // Methods
+  function Empty() {
+    return count($this->arsenal) == 0;
+  }
+
+	function NumCards() {
+		return intdiv(count($this->arsenal), ArsenalPieces());
+	}
+
+	function Card($index, $cardNumber=false) {
+    if($cardNumber) $index *= ArsenalPieces();
+    return new ArsenalCard($index, $this->player);
+  }
+
+	function DestroyAll($effectController=0) {
+		$cardIDs = [];
+		for ($i = $this->NumCards() - 1; $i >= 0; --$i) {
+			$Card = $this->Card($i, true);
+			$cardIDs[] = $Card->CardID();
+			$Card->Destroy($effectController);
+		}
+		$this->arsenal = [];
+		return implode(",", $cardIDs);
+	}
+
+	function BanishAll($effectController=0) {
+		$cardIDs = [];
+		for ($i = $this->NumCards() - 1; $i >= 0; --$i) {
+			$Card = $this->Card($i, true);
+			$cardIDs[] = $Card->CardID();
+			$Card->Banish($effectController);
+		}
+		$this->arsenal = [];
+		return implode(",", $cardIDs);
+	}
+}
+
+class ArsenalCard {
+	private $pieces = [];
+  private $controller;
+	private $index;
+
+  // Constructor
+  function __construct($index, $playerID) {
+    $this->pieces = &GetArsenal($playerID);
+    $this->controller = $playerID;
+		$this->index = $index;
+  }
+
+	function CardID() {
+		return $this->pieces[$this->index] ?? "-";
+	}
+
+	function Facing() {
+		return $this->pieces[$this->index + 1] ?? "UP";
+	}
+
+	// Nothing for offset of 2 for some reason
+
+	function Counters() {
+		return $this->pieces[$this->index + 2] ?? 0;
+	}
+
+	function Frozen() {
+		return $this->pieces[$this->index + 3] ?? 0;
+	}
+
+	function UniqueID() {
+		return $this->pieces[$this->index + 5] ?? "-";
+	}
+
+	function NumPowerCounters() {
+		return $this->pieces[$this->index + 6] ?? 0;
+	}
+
+	function Remove() {
+		$cardID = $this->CardID();
+		array_splice($this->pieces, $this->index, ArsenalPieces());
+		return $cardID;
+	}
+
+	function Destroy($effectController=0) {
+		$slotIndex = intdiv($this->index, ArsenalPieces());
+		AddEvent("ARSENALDESTROY", $this->controller . ":" . $this->CardID() . ":" . $slotIndex);
+		WriteLog(CardLink($this->CardID(), $this->CardID()) . " was destroyed from the arsenal");
+		AddGraveyard($this->CardID(), $this->controller, "ARS", $effectController);
+		$this->Remove();
+	}
+
+	function Banish($effectController=0) {
+		WriteLog(CardLink($this->CardID(), $this->CardID()) . " was banished from the arsenal");
+		BanishCardForPlayer($this->CardID(), $this->controller, "ARS", banisher:$effectController);
+		$this->Remove();
+	}
+}

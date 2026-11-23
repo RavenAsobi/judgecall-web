@@ -1,0 +1,528 @@
+import React, { useState, useEffect } from 'react';
+import styles from './ManualModePanel.module.css';
+import useSetting from 'hooks/useSetting';
+import { MANUAL_MODE } from 'features/options/constants';
+import { useAppDispatch, useAppSelector } from 'app/Hooks';
+import { submitButton, getGameInfo } from 'features/game/GameSlice';
+import { updateOptions } from 'features/options/optionsSlice';
+import { PROCESS_INPUT } from 'appConstants';
+import { shallowEqual } from 'react-redux';
+import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
+import { RootState } from 'app/Store';
+import { usePanelContext } from '../PanelContext';
+
+export default function ManualModePanel() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setIsManualModeOpen, isDevToolOpen, isManualModeOpen } =
+    usePanelContext();
+  const isManualMode = useSetting({ settingName: MANUAL_MODE })?.value === '1';
+  const isLocalEnvironment =
+    import.meta.env.MODE === 'development' ||
+    window.location.hostname === 'localhost';
+  const isPracticeDummy = useAppSelector(
+    (state: RootState) => state.game.playerTwo.Name === 'Practice Dummy'
+  );
+  const isReplay = useAppSelector(
+    (state: RootState) => state.game.gameInfo.isReplay
+  );
+
+  useEffect(() => {
+    if (isManualMode) {
+      setIsOpen(true);
+    }
+  }, [isManualMode]);
+
+  useEffect(() => {
+    setIsOpen(isManualModeOpen);
+  }, [isManualModeOpen]);
+
+  // In local environment, always show the tab. In production, hide if manual mode is off (unless against Practice Dummy)
+  if (isReplay || (!isLocalEnvironment && !isManualMode && !isPracticeDummy)) {
+    return null;
+  }
+
+  return (
+    <>
+      <button
+        className={`${styles.manualModeTab} ${
+          isOpen || isDevToolOpen ? styles.hidden : ''
+        }`}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setIsManualModeOpen(!isOpen);
+        }}
+        title="Toggle Manual Mode"
+      >
+        Manual Mode
+      </button>
+      {isOpen && (
+        <ManualModeContent
+          onClose={() => {
+            setIsOpen(false);
+            setIsManualModeOpen(false);
+          }}
+          isPracticeDummy={isPracticeDummy}
+        />
+      )}
+    </>
+  );
+}
+
+function ManualModeContent({
+  onClose,
+  isPracticeDummy
+}: {
+  onClose: () => void;
+  isPracticeDummy: boolean;
+}) {
+  const [cardInput, setCardInput] = useState('');
+  const [opponentHealthInput, setOpponentHealthInput] = useState('');
+  const [weaponPowerInput, setWeaponPowerInput] = useState('4');
+  const [isCardLoading, setIsCardLoading] = useState(false);
+  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
+  const [showCardTooltip, setShowCardTooltip] = useState(false);
+  const dispatch = useAppDispatch();
+  const gameInfo = useAppSelector(getGameInfo, shallowEqual);
+  const playerHealth = useAppSelector(
+    (state: RootState) => state.game.playerOne.Health
+  );
+  const opponentHealth = useAppSelector(
+    (state: RootState) => state.game.playerTwo.Health
+  );
+  const playerActionPoints = useAppSelector(
+    (state: RootState) => state.game.playerOne.ActionPoints ?? 0
+  );
+  const playerResources = useAppSelector(
+    (state: RootState) => state.game.playerOne.PitchRemaining ?? 0
+  );
+  const opponentResources = useAppSelector(
+    (state: RootState) => state.game.playerTwo.PitchRemaining ?? 0
+  );
+  const aiHasInfiniteHP = useAppSelector(
+    (state: RootState) => state.game.aiHasInfiniteHP ?? false
+  );
+  const practiceDummyWeaponPower = useAppSelector(
+    (state: RootState) => state.game.practiceDummyWeaponPower ?? 4
+  );
+
+  useEffect(() => {
+    if (isPracticeDummy) {
+      setOpponentHealthInput(String(opponentHealth));
+    }
+  }, [opponentHealth, isPracticeDummy]);
+
+  useEffect(() => {
+    setWeaponPowerInput(String(practiceDummyWeaponPower));
+  }, [practiceDummyWeaponPower]);
+
+  const handleClose = () => {
+    dispatch(
+      updateOptions({
+        game: gameInfo,
+        settings: [
+          {
+            name: MANUAL_MODE,
+            value: '0'
+          }
+        ]
+      })
+    );
+    onClose();
+  };
+
+  const handleDispatch = (mode: number) => {
+    if (isRequestInProgress) return;
+    setIsRequestInProgress(true);
+    dispatch(
+      submitButton({
+        button: { mode }
+      })
+    ).finally(() => setIsRequestInProgress(false));
+  };
+
+  const handleDispatchWithParam = (mode: number, param: string | number) => {
+    if (isRequestInProgress) return;
+    setIsRequestInProgress(true);
+    dispatch(
+      submitButton({
+        button: {
+          mode,
+          ...(typeof param === 'string'
+            ? { cardID: param.toLowerCase() }
+            : { numMode: param })
+        }
+      })
+    ).finally(() => setIsRequestInProgress(false));
+  };
+
+  const handleAddCard = () => {
+    if (cardInput === '' || isCardLoading) {
+      return;
+    }
+    setIsCardLoading(true);
+    handleDispatchWithParam(PROCESS_INPUT.ADD_CARD_TO_HAND_SELF, cardInput);
+    setTimeout(() => setIsCardLoading(false), 300);
+  };
+
+  const handleWeaponPowerChange = () => {
+    const parsedPower = Number.parseInt(weaponPowerInput, 10);
+    const power = Number.isNaN(parsedPower)
+      ? practiceDummyWeaponPower
+      : Math.max(0, Math.min(100, parsedPower));
+    setWeaponPowerInput(String(power));
+    if (power !== practiceDummyWeaponPower) {
+      handleDispatchWithParam(
+        PROCESS_INPUT.SET_PRACTICE_DUMMY_WEAPON_POWER,
+        power
+      );
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    if (e.key === 'Enter') {
+      handleAddCard();
+    }
+  };
+
+  return (
+    <div className={styles.manualModePanel}>
+      <div className={styles.header}>
+        <h3>Manual Mode</h3>
+        <button className={styles.closeButton} onClick={handleClose}>
+          ×
+        </button>
+      </div>
+      <div className={styles.content}>
+        {/* AI Infinite HP Toggle - Only show against Practice Dummy */}
+        {isPracticeDummy && (
+          <>
+            <div className={styles.toggleGroup}>
+              <label className={styles.toggleLabel}>
+                <input
+                  type="checkbox"
+                  checked={aiHasInfiniteHP}
+                  onChange={() => {
+                    if (!isRequestInProgress) {
+                      handleDispatchWithParam(
+                        PROCESS_INPUT.TOGGLE_AI_INFINITE_HP,
+                        aiHasInfiniteHP ? 0 : 1
+                      );
+                    }
+                  }}
+                  className={styles.toggleCheckbox}
+                  disabled={isRequestInProgress}
+                />
+                <span>AI Infinite HP</span>
+              </label>
+            </div>
+            <div className={styles.controlGroup}>
+              <span className={styles.label}>Wrench-tastic! Power</span>
+              <div className={styles.controlRow}>
+                <button
+                  className={styles.buttonSmall}
+                  onClick={() =>
+                    handleDispatchWithParam(
+                      PROCESS_INPUT.SET_PRACTICE_DUMMY_WEAPON_POWER,
+                      Math.max(0, practiceDummyWeaponPower - 1)
+                    )
+                  }
+                  title="Reduce Wrench-tastic power by 1"
+                  disabled={
+                    isRequestInProgress || practiceDummyWeaponPower <= 0
+                  }
+                >
+                  <AiOutlineMinus />
+                </button>
+                <input
+                  className={styles.numberInput}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={weaponPowerInput}
+                  onChange={(event) =>
+                    setWeaponPowerInput(event.target.value)
+                  }
+                  onBlur={handleWeaponPowerChange}
+                  onKeyDown={(event) => {
+                    event.stopPropagation();
+                    if (event.key === 'Enter') {
+                      event.currentTarget.blur();
+                    }
+                  }}
+                  aria-label="Wrench-tastic power"
+                  disabled={isRequestInProgress}
+                />
+                <button
+                  className={styles.buttonSmall}
+                  onClick={() =>
+                    handleDispatchWithParam(
+                      PROCESS_INPUT.SET_PRACTICE_DUMMY_WEAPON_POWER,
+                      Math.min(100, practiceDummyWeaponPower + 1)
+                    )
+                  }
+                  title="Increase Wrench-tastic power by 1"
+                  disabled={
+                    isRequestInProgress || practiceDummyWeaponPower >= 100
+                  }
+                >
+                  <AiOutlinePlus />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Player Life */}
+        <div className={styles.controlGroup}>
+          <span className={styles.label}>Player Life</span>
+          <div className={styles.controlRow}>
+            <button
+              className={styles.buttonSmall}
+              onClick={() => handleDispatch(PROCESS_INPUT.SUBTRACT_1_HP_SELF)}
+              title="Remove 1 HP from player"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlineMinus />
+            </button>
+            <span className={styles.value}>{playerHealth}</span>
+            <button
+              className={styles.buttonSmall}
+              onClick={() => handleDispatch(PROCESS_INPUT.ADD_1_HP_SELF)}
+              title="Add 1 HP to player"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlinePlus />
+            </button>
+          </div>
+        </div>
+
+        {/* Opponent Life */}
+        <div className={styles.controlGroup}>
+          <span className={styles.label}>Opponent Life</span>
+          <div className={styles.controlRow}>
+            <button
+              className={styles.buttonSmall}
+              onClick={() =>
+                handleDispatch(PROCESS_INPUT.SUBTRACT_1_HP_OPPONENT)
+              }
+              title="Remove 1 HP from opponent"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlineMinus />
+            </button>
+            <span className={styles.value}>{opponentHealth}</span>
+            <button
+              className={styles.buttonSmall}
+              onClick={() => handleDispatch(PROCESS_INPUT.ADD_1_HP_OPPONENT)}
+              title="Add 1 HP to opponent"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlinePlus />
+            </button>
+          </div>
+        </div>
+
+        {/* Player Action Points */}
+        <div className={styles.controlGroup}>
+          <span className={styles.label}>Action Points</span>
+          <div className={styles.controlRow}>
+            <button
+              className={styles.buttonSmall}
+              onClick={() =>
+                handleDispatch(PROCESS_INPUT.SUBTRACT_ACTION_POINT)
+              }
+              title="Remove 1 Action Point"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlineMinus />
+            </button>
+            <span className={styles.value}>{playerActionPoints}</span>
+            <button
+              className={styles.buttonSmall}
+              onClick={() => handleDispatch(PROCESS_INPUT.ADD_ACTION_POINT)}
+              title="Add 1 Action Point"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlinePlus />
+            </button>
+          </div>
+        </div>
+
+        {/* Player Resources */}
+        <div className={styles.controlGroup}>
+          <span className={styles.label}>Player Resources</span>
+          <div className={styles.controlRow}>
+            <button
+              className={styles.buttonSmall}
+              onClick={() =>
+                handleDispatch(PROCESS_INPUT.REMOVE_RESOURCE_FROM_POOL_SELF)
+              }
+              title="Remove 1 resource from player pool"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlineMinus />
+            </button>
+            <span className={styles.value}>{playerResources}</span>
+            <button
+              className={styles.buttonSmall}
+              onClick={() =>
+                handleDispatch(PROCESS_INPUT.ADD_RESOURCE_TO_POOL_SELF)
+              }
+              title="Add 1 resource to player pool"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlinePlus />
+            </button>
+          </div>
+        </div>
+
+        {/* Opponent Resources */}
+        <div className={styles.controlGroup}>
+          <span className={styles.label}>Opponent Resources</span>
+          <div className={styles.controlRow}>
+            <button
+              className={styles.buttonSmall}
+              onClick={() =>
+                handleDispatch(PROCESS_INPUT.REMOVE_RESOURCE_FROM_POOL_OPPONENT)
+              }
+              title="Remove 1 resource from opponent pool"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlineMinus />
+            </button>
+            <span className={styles.value}>{opponentResources}</span>
+            <button
+              className={styles.buttonSmall}
+              onClick={() =>
+                handleDispatch(PROCESS_INPUT.ADD_RESOURCE_TO_POOL_OPPONENT)
+              }
+              title="Add 1 resource to opponent pool"
+              disabled={isRequestInProgress}
+            >
+              <AiOutlinePlus />
+            </button>
+          </div>
+        </div>
+
+        {/* Draw Card */}
+        <div className={styles.buttonGroup}>
+          <button
+            className={styles.buttonFull}
+            onClick={() => handleDispatch(PROCESS_INPUT.DRAW_CARD_SELF)}
+            title="Draw a card"
+            disabled={isRequestInProgress}
+          >
+            Draw Card (Player)
+          </button>
+          <button
+            className={styles.buttonFull}
+            onClick={() => handleDispatch(PROCESS_INPUT.DRAW_CARD_OPPONENT)}
+            title="Draw a card for opponent"
+            disabled={isRequestInProgress}
+          >
+            Draw Card (Opp.)
+          </button>
+        </div>
+
+        {/* Add Card */}
+        <div className={styles.formGroup}>
+          <div className={styles.formLabelRow}>
+            <label htmlFor="cardInput">Add Card</label>
+            <button
+              className={styles.tooltipTrigger}
+              onClick={() => setShowCardTooltip((v) => !v)}
+              type="button"
+              aria-label="Show card input help"
+            >
+              ?
+            </button>
+          </div>
+          {showCardTooltip && (
+            <div className={styles.tooltip}>
+              <p className={styles.tooltipTitle}>Input Examples Guide</p>
+              <ul className={styles.tooltipList}>
+                <li>
+                  <span className={styles.tooltipCode}>Ironrot Gauntlet</span>
+                  <span>Equipment - Equip to your hero in the arena</span>
+                </li>
+                <li>
+                  <span className={styles.tooltipCode}>Runechant</span>
+                  <span>Tokens - places them directly into the arena</span>
+                </li>
+                <li>
+                  <span className={styles.tooltipCode}>Runechant|5</span>
+                  <span>
+                    Token + Pipe + Number - Creates that many copies in the
+                    arena
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.tooltipCode}>Snatch|2</span>
+                  <span>
+                    Card Name + Pipe + Number also works for non-token cards
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.tooltipCode}>Snatch blue</span>
+                  <span>
+                    Card Name + color will put the specific color version in
+                    your hand. By default it adds the first version found. (Red
+                    normally)
+                  </span>
+                </li>
+              </ul>
+              <p className={styles.tooltipNote}>
+                The destination (hand, play, equipment zone) is determined
+                automatically by the card type.
+              </p>
+            </div>
+          )}
+          <input
+            id="cardInput"
+            type="text"
+            value={cardInput}
+            onChange={(e) => setCardInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+            onKeyDownCapture={(e) => {
+              e.stopPropagation();
+            }}
+            placeholder="e.g. Snatch or Vigor|5"
+            disabled={isCardLoading || isRequestInProgress}
+          />
+          <button
+            className={styles.buttonFull}
+            onClick={handleAddCard}
+            disabled={isCardLoading || isRequestInProgress || cardInput === ''}
+          >
+            {isCardLoading ? 'Adding...' : 'Add'}
+          </button>
+        </div>
+
+        {/* Remove Arsenal */}
+        <div className={styles.buttonGroup}>
+          <button
+            className={styles.buttonFull}
+            onClick={() =>
+              handleDispatch(PROCESS_INPUT.REMOVE_ARSENAL_FROM_SELF)
+            }
+            title="Remove arsenal from player"
+            disabled={isRequestInProgress}
+          >
+            Remove Arsenal (Player)
+          </button>
+          <button
+            className={styles.buttonFull}
+            onClick={() =>
+              handleDispatch(PROCESS_INPUT.REMOVE_ARSENAL_FROM_OPPONENT)
+            }
+            title="Remove arsenal from opponent"
+            disabled={isRequestInProgress}
+          >
+            Remove Arsenal (Opp.)
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

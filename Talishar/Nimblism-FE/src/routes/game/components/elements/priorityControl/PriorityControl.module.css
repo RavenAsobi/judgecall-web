@@ -1,0 +1,151 @@
+.btn {
+  margin-bottom: 0;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  padding: 0.2em;
+  font-size: 1.1em;
+  background-color: var(--theme-primary);
+  color: black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 3vh;
+  height: 3vh;
+  min-width: 3vh;
+  border-radius: 0.4em;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  flex-basis: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.btn svg {
+  font-size: 1.3em !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.btn:hover {
+  background-color: black;
+  color: var(--theme-primary);
+  border: 2px solid var(--theme-primary);
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 215, 0, 0.3);
+  transform: translateY(-1px);
+  z-index: 10;
+}
+
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.menuList {
+  margin-top: 0.5em;
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .btn {
+    width: 2.6vh;
+    height: 2.6vh;
+    min-width: 0;
+    padding: 0.15em;
+    font-size: 1em;
+    flex-shrink: 1;
+  }
+
+  .btn svg {
+    font-size: 1.1em !important;
+  }
+
+  .menuList {
+    gap: 0.3em;
+    margin-top: 0.3em;
+  }
+}
+
+@media (max-width: 1000px) {
+  .btn {
+    width: 2.4vh;
+    height: 2.4vh;
+    padding: 0.1em;
+    font-size: 0.9em;
+  }
+
+  .menuList {
+    gap: 0.2em;
+    margin-top: 0.25em;
+  }
+}
+
+.buttonActive {
+  background-color: var(--alarm);
+  border-color: rgba(0, 0, 0, 0.3);
+  color: var(--snow);
+  box-shadow: 0 2px 4px rgba(220, 20, 60, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 8px rgba(220, 20, 60, 0.3);
+  z-index: 1;
+}
+
+.buttonActive:hover {
+  background-color: var(--snow);
+  color: var(--alarm);
+  border: 2px solid var(--alarm);
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(220, 20, 60, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(220, 20, 60, 0.4);
+  transform: translateY(-1px);
+  z-index: 10;
+}
+
+.buttonActive:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Fix tooltip positioning to prevent off-screen issues */
+.btn[data-tooltip]::before,
+.btn[data-tooltip]::after {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  white-space: nowrap !important;
+}
+
+.btn[data-tooltip][data-placement='bottom']::before,
+.btn[data-tooltip][data-placement='bottom']::after {
+  bottom: auto !important;
+  top: 100% !important;
+  margin-top: 0.5em !important;
+}
+
+/* Right-aligned tooltip for last button (top-end) */
+.btn[data-tooltip][data-placement='top-end']::before,
+.btn[data-tooltip][data-placement='top-end']::after {
+  left: auto !important;
+  right: 0 !important;
+  transform: none !important;
+  bottom: 100% !important;
+  top: auto !important;
+  margin-bottom: 0.5em !important;
+}
+
+/* Ensure tooltips appear above buttons */
+.btn[data-tooltip]::before {
+  z-index: 100 !important;
+}
+
+.btn[data-tooltip]::after {
+  z-index: 99 !important;
+}

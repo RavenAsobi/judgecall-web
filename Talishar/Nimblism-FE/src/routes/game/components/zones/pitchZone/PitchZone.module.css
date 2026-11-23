@@ -1,0 +1,20 @@
+.pitchZone {
+  position: relative;
+  border-radius: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(50, 50, 50, 0.5);
+  color: var(--white);
+  grid-area: pitch;
+  min-width: 100%;
+  min-height: 100%;
+  isolation: isolate;
+}
+
+.pitchCard {
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+}

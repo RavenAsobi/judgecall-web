@@ -1,0 +1,474 @@
+.pageWrapper {
+  --landing-surface: var(--theme-contrast-inverse, #000000);
+  background: var(--theme-background);
+  min-height: 100vh;
+}
+
+.aboutContainer {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0 !important;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2em;
+}
+
+.pageHeader {
+  padding: 1.5em 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.content h2 {
+  font-size: 2.2rem;
+  margin: 0 0 0.35rem 0;
+  color: #fff;
+  font-weight: 700;
+}
+
+.tagline {
+  font-size: 1.05rem;
+  color: #888;
+  margin: 0;
+}
+
+.section {
+  padding: 1.5em 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.section:last-of-type {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: 1.35rem;
+  color: #fff;
+  margin: 0 0 1em 0;
+  font-weight: 600;
+}
+
+.bodyText {
+  font-size: 0.975rem;
+  line-height: 1.75;
+  color: #bbb;
+  margin: 0 0 0.9em 0;
+}
+
+.bodyText:last-child {
+  margin-bottom: 0;
+}
+
+.bodyText a {
+  color: #64b5f6;
+  text-decoration: none;
+}
+
+.bodyText a:hover {
+  text-decoration: underline;
+}
+
+.introGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5em;
+  align-items: start;
+}
+
+.introLeft .sectionTitle {
+  font-size: 1.6rem;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1em;
+}
+
+.featureItem {
+  display: flex;
+  gap: 0.75em;
+  align-items: flex-start;
+}
+
+.featureIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.15em;
+}
+
+.featureText strong {
+  display: block;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  margin-bottom: 0.2em;
+  font-weight: 600;
+}
+
+.featureText p {
+  margin: 0;
+  color: #888;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.statsRow {
+  display: flex;
+  gap: 4em;
+  padding: 1.5em 0 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.statNumber {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.78rem;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.contributorInfo {
+  margin-top: 1.25em;
+  padding-top: 1em;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.6;
+}
+
+.contributorInfo a {
+  color: #64b5f6;
+  text-decoration: none;
+}
+
+.contributorInfo a:hover {
+  text-decoration: underline;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin-bottom: 0.75em;
+}
+
+.sectionHeader .sectionTitle {
+  margin-bottom: 0;
+}
+
+.contributeButtons {
+  display: flex;
+  gap: 0.75em;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.githubButton {
+  display: inline-block;
+  background: #24292e;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.6em 1.6em;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 0.2s ease;
+}
+
+.githubButton:hover {
+  background: #3a3f45;
+  color: #fff;
+}
+
+.discordButton {
+  display: inline-block;
+  background: #5865f2;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.6em 1.6em;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.discordButton:hover {
+  background: #4752c4;
+  color: #fff;
+}
+
+.lssGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5em;
+  margin-bottom: 1em;
+}
+
+.metafyButton {
+  display: inline-block;
+  background: var(--theme-primary, #d4af37);
+  color: var(--theme-primaryText, #111);
+  font-weight: 700;
+  padding: 0.875em 2.25em;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+  margin-bottom: 1em;
+}
+
+.metafyButton:hover {
+  background: var(--theme-primary-hover, #dfa50e);
+  color: var(--theme-primary-text, #000);
+}
+
+.resourcesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9em;
+  margin: 1.5em 0;
+}
+
+.resourceCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1.25em;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.resourceCard:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.resourceCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+  margin: 0 0 0.7em;
+}
+
+.resourceCardHeader h4 {
+  margin: 0;
+  font-size: 0.975rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.resourceLogo {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.resourceCardBody p {
+  margin: 0;
+  color: #888;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.linkIcon {
+  color: #555;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  margin-left: 0.5em;
+  margin-top: 0.1em;
+  transition: color 0.2s ease;
+}
+
+.resourceCard:hover .linkIcon {
+  color: #999;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+}
+
+.faqItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.faqItem:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.faqQuestion {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 1.1em 0.75em;
+  color: #ccc;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  text-align: left;
+  border-radius: 6px;
+}
+
+.faqQuestion:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.055);
+  border-color: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.faqToggle {
+  font-size: 1.1rem;
+  color: #555;
+  flex-shrink: 0;
+  margin-left: 1em;
+  transition: color 0.2s ease;
+}
+
+.faqQuestion:hover .faqToggle {
+  color: #aaa;
+}
+
+.faqAnswer {
+  padding: 0 0 1.1em 0;
+  animation: slideDown 0.2s ease;
+}
+
+.faqAnswer p {
+  margin: 0;
+  color: #888;
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+
+.faqAnswer a {
+  color: #64b5f6;
+  text-decoration: none;
+}
+
+.faqAnswer a:hover {
+  text-decoration: underline;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ad row */
+.adRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 16px;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.disclaimer {
+  font-size: 0.82rem;
+  color: #555;
+  text-align: center;
+  padding: 1.5em 0;
+  line-height: 1.7;
+}
+
+.disclaimer p {
+  margin: 0 0 0.5em 0;
+}
+
+.disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+.disclaimer strong {
+  color: #777;
+}
+
+.disclaimer a {
+  color: #64b5f6;
+  text-decoration: none;
+}
+
+.disclaimer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 960px) {
+  .introGrid {
+    grid-template-columns: 1fr;
+    gap: 2em;
+  }
+
+  .lssGrid {
+    grid-template-columns: 1fr;
+    gap: 2em;
+  }
+
+  .resourcesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .content {
+    padding: 0 1.25em;
+  }
+
+  .content h2 {
+    font-size: 1.75rem;
+  }
+
+  .section {
+    padding: 1.5em 0;
+  }
+
+  .statsRow {
+    gap: 2em;
+    flex-wrap: wrap;
+  }
+
+  .statNumber {
+    font-size: 2rem;
+  }
+
+  .resourcesGrid {
+    grid-template-columns: 1fr;
+  }
+}

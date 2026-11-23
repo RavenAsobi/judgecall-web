@@ -1,0 +1,208 @@
+.panel {
+  max-width: 900px;
+  border: none;
+  border-radius: 0;
+  margin: 1.5em auto;
+  margin-bottom: 0;
+  padding: 1.25rem 1.5rem 1rem;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--theme-text, #ededed);
+  flex: 1;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: var(--theme-text, #ededed);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+.toggleButton:hover {
+  transform: scale(1.1);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--theme-text, #ededed);
+}
+
+.labelText {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.textInput {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0 !important;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.toggleLabel input[type='checkbox'] {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* Error box mirrors the look of existing fieldError patterns */
+.errorBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  color: var(--alarm, red);
+  font-size: 0.875rem;
+  background: rgba(200, 0, 0, 0.08);
+  border: 1px solid rgba(200, 0, 0, 0.25);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+}
+
+.errorIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.joiningText {
+  font-size: 0.875rem;
+  color: var(--theme-primary, #d4af37);
+  margin: 0;
+  text-align: center;
+}
+
+.hint {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .panel {
+    border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.2));
+    border-radius: 10px;
+    margin: 1em 0;
+  }
+}
+
+/* ── Deck source tabs ─────────────────────────────────────────── */
+
+.tabBar {
+  display: flex;
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.15));
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.tab {
+  flex: 1;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--theme-text-muted, rgba(237, 237, 237, 0.55));
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+  text-align: center;
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--theme-text, #ededed);
+}
+
+.tab + .tab {
+  border-left: 1px solid var(--theme-border, rgba(255, 255, 255, 0.15));
+}
+
+.tabActive {
+  background: color-mix(in srgb, var(--theme-primary, #d4af37) 20%, transparent);
+  color: var(--theme-primary, #d4af37);
+  font-weight: 600;
+}
+
+.tabDisabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  /* Pico CSS sets pointer-events: none on button:disabled, which prevents cursor: not-allowed.
+     Restoring pointer-events here is safe - the HTML disabled attribute still blocks clicks. */
+  pointer-events: auto !important;
+}
+
+.tabDisabled:hover {
+  background: transparent !important;
+  color: var(--theme-text-muted, rgba(237, 237, 237, 0.55)) !important;
+}
+
+.comingSoonBadge {
+  font-size: 0.75rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bazaarMessage {
+  font-size: 0.875rem;
+  color: var(--theme-text-muted, rgba(237, 237, 237, 0.6));
+  margin: 0.25rem 0;
+  text-align: center;
+}
+
+.bazaarMessage a {
+  color: var(--theme-primary, #d4af37);
+  text-decoration: underline;
+}
+
+.bazaarError {
+  font-size: 0.8rem;
+  color: var(--alarm, red);
+  margin-top: 0.25rem;
+}

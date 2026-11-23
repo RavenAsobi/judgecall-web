@@ -1,0 +1,509 @@
+
+/* ── Container - real arena environment ──────────────────────────── */
+
+.introContainer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* Dark cinematic overlay */
+.arenaOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  pointer-events: none;
+}
+
+/* Directional key light from overhead center - warm, tight, no team color */
+.arenaKeyLight {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52%;
+  height: 80%;
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(255, 240, 195, 0.14) 0%,
+    rgba(255, 220, 145, 0.06) 42%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Cool rim fill from sides - no team color, just arena bounce */
+.arenaRimLeft {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 22%;
+  background: linear-gradient(to right, rgba(175, 205, 255, 0.07), transparent);
+  pointer-events: none;
+}
+
+.arenaRimRight {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 22%;
+  background: linear-gradient(to left, rgba(175, 205, 255, 0.07), transparent);
+  pointer-events: none;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 58% 52% at center,
+    transparent 20%,
+    rgba(0, 0, 0, 0.58) 60%,
+    rgba(0, 0, 0, 0.96) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Particles ───────────────────────────────────────────────────── */
+
+.particleField {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, transparent 65%);
+  animation: particleFloat linear infinite;
+}
+
+@keyframes particleFloat {
+  0%   { transform: translateY(0) translateX(0);    opacity: 0; }
+  8%   { opacity: 0.65; }
+  50%  { transform: translateY(-52vh) translateX(14px); }
+  88%  { opacity: 0.3; }
+  100% { transform: translateY(-105vh) translateX(-8px); opacity: 0; }
+}
+
+/* ── Layout ──────────────────────────────────────────────────────── */
+
+.introContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+}
+
+/* ── Hero card ───────────────────────────────────────────────────── */
+
+.heroCardOuter {
+  --bleed: 36px;
+  --radius: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  isolation: isolate;
+}
+
+/* Arena key-light halo above the character's head (premium only) */
+.ambientGlow {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center bottom,
+    rgba(255, 215, 120, 0.42) 0%,
+    rgba(200, 148, 45, 0.20) 42%,
+    transparent 70%
+  );
+  filter: blur(36px);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.85s ease-out;
+}
+
+.glowActive {
+  opacity: 1;
+  animation: ambientPulse 3.8s ease-in-out 0.85s infinite alternate;
+}
+
+@keyframes ambientPulse {
+  from { filter: blur(32px) brightness(0.85); }
+  to   { filter: blur(46px) brightness(1.18); }
+}
+
+/*
+ * clip-path inset with a negative top value lets the portrait overflow upward
+ * by exactly --bleed pixels while hard-clipping sides and bottom.
+ */
+.heroCardVisual {
+  position: relative;
+  width: 420px;
+  height: 300px;
+  clip-path: inset(calc(-1 * var(--bleed)) 0px 0px 0px round var(--radius));
+  cursor: default;
+  will-change: transform;
+}
+
+.heroImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 115%;
+  top: -15%;
+  object-fit: cover;
+  object-position: center top;
+  user-select: none;
+  pointer-events: none;
+  display: block;
+}
+
+/* Atmospheric ground fade */
+.groundFade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52%;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.48));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Premium shimmer loop */
+.sheenLoop {
+  position: absolute;
+  top: -15%;
+  left: -55%;
+  width: 52%;
+  height: 115%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 242, 170, 0.11),
+    rgba(255, 255, 255, 0.07),
+    transparent
+  );
+  transform: skewX(-10deg) translateX(0%);
+  animation: sheenPass 7s ease-in-out 0.8s infinite;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+}
+
+@keyframes sheenPass {
+  0%,  4%  { transform: skewX(-10deg) translateX(0%);   opacity: 0; }
+  6%        { transform: skewX(-10deg) translateX(0%);   opacity: 1; }
+  28%       { transform: skewX(-10deg) translateX(380%); opacity: 1; }
+  32%, 100% { transform: skewX(-10deg) translateX(380%); opacity: 0; }
+}
+
+.frameGlow {
+  position: absolute;
+  top: calc(-1 * var(--bleed, 36px));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius, 8px);
+  pointer-events: none;
+  z-index: 4;
+  box-shadow:
+    inset 0 0 28px rgba(212, 165, 38, 0.12),
+    inset 0 3px 0 rgba(255, 240, 180, 0.20);
+}
+
+.heroCardBorder {
+  position: absolute;
+  top: calc(-1 * var(--bleed));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.heroCardBorderPremium {
+  border-color: rgba(212, 165, 38, 0.45);
+}
+
+
+.heroLabel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  text-align: center;
+  padding: 3rem 0.75rem 0.6rem;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 0, 0, 0.68) 40%,
+    rgba(0, 0, 0, 0.86)
+  );
+  z-index: 2;
+  pointer-events: none;
+  word-break: break-word;
+}
+
+.heroLabelPremium {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(4, 3, 0, 0.70) 40%,
+    rgba(8, 5, 0, 0.88)
+  );
+}
+
+.heroName {
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-family: 'Black Ops One', 'Arial Black', sans-serif;
+  color: rgba(228, 230, 240, 0.92);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  display: block;
+}
+
+.heroLabelPremium .heroName {
+  color: rgba(245, 235, 205, 0.95);
+  text-shadow:
+    0 0 14px rgba(200, 155, 35, 0.35),
+    0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.premiumBadge {
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-family: 'Black Ops One', sans-serif;
+  color: rgba(212, 168, 40, 1);
+}
+
+/* ── VS ──────────────────────────────────────────────────────────── */
+
+.vsWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.vsContainer {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vsFlash {
+  position: absolute;
+  inset: -64px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.04) 55%,
+    transparent 70%
+  );
+  animation: flashBurst 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes flashBurst {
+  0%   { transform: scale(0.35); opacity: 1; }
+  65%  { opacity: 0.12; transform: scale(1.7); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+.vsText {
+  font-size: 3.25rem;
+  font-weight: 900;
+  font-family: 'Black Ops One', 'Arial Black', sans-serif;
+  background: linear-gradient(162deg, #ffffff 0%, #e8e8e8 25%, #aaa 55%, #ffffff 85%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}
+
+.shockwaveRing {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Close button ────────────────────────────────────────────────── */
+
+.closeButton {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 1;
+  z-index: 10000;
+  transition: background 0.18s, color 0.18s;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .introContent { gap: 2.5rem; }
+
+  .heroCardOuter { --bleed: 28px; }
+
+  .heroCardVisual {
+    width: 300px;
+    height: 231px;
+  }
+
+  .vsText { font-size: 1.6rem; }
+  .vsWrapper { width: 48px; }
+
+  .ambientGlow {
+    width: 240px;
+    height: 190px;
+    top: -42px;
+  }
+}
+
+/* Large mobile */
+@media (max-width: 768px) {
+  .introContent { gap: 1.5rem; }
+
+  .heroCardOuter { --bleed: 20px; }
+
+  .heroCardVisual {
+    width: 210px;
+    height: 162px;
+  }
+
+  .heroName { font-size: 0.9rem; }
+  .vsText { font-size: 1.15rem; }
+  .vsWrapper { width: 38px; }
+
+  .ambientGlow {
+    width: 185px;
+    height: 155px;
+    top: -32px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .introContent { gap: 0.75rem; }
+
+  .heroCardOuter { --bleed: 16px; }
+
+  .heroCardVisual {
+    width: 165px;
+    height: 127px;
+  }
+
+  .heroLabel { padding: 2rem 0.5rem 0.45rem; }
+
+  .heroName { font-size: 0.8rem; }
+
+  .vsText { font-size: 0.92rem; }
+  .vsWrapper { width: 32px; }
+
+  .ambientGlow {
+    width: 152px;
+    height: 128px;
+    top: -26px;
+  }
+
+  .closeButton {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    top: 0.85rem;
+    right: 0.85rem;
+  }
+}
+
+/* Extra small */
+@media (max-width: 360px) {
+  .heroCardOuter { --bleed: 12px; }
+
+  .heroCardVisual {
+    width: 132px;
+    height: 102px;
+  }
+
+  .heroLabel { padding: 1.6rem 0.4rem 0.35rem; }
+
+  .heroName { font-size: 0.7rem; }
+
+  .vsText { font-size: 0.76rem; }
+}
+
+/* Landscape + short viewport */
+@media (orientation: landscape) and (max-height: 500px) {
+  .heroCardOuter { --bleed: 14px; }
+
+  .heroCardVisual {
+    width: 154px;
+    height: 119px;
+  }
+
+  .heroLabel { padding: 1.8rem 0.5rem 0.4rem; }
+
+  .heroName { font-size: 0.8rem; }
+  .vsText { font-size: 0.88rem; }
+}

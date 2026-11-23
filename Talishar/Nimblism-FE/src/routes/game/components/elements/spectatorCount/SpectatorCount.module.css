@@ -1,0 +1,93 @@
+.spectatorCountStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2em 0.5em;
+  font-size: 0.9em;
+  font-weight: 400;
+  color: var(--secondary-inverse);
+  border-radius: 0.4em;
+  background-color: var(--theme-secondary);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  height: 3vh;
+  box-sizing: border-box;
+}
+
+.spectatorCountContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: var(--tooltip-background-color);
+  color: var(--tooltip-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: var(--font-weight);
+  white-space: nowrap;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.tooltip div + div {
+  margin-top: 0.25em;
+}
+
+@media (max-width: 950px) {
+  .spectatorCountStyle {
+    display: none;
+  }
+}
+
+.spectatorCountCompact {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 8px;
+  background-color: var(--theme-secondary);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+  color: var(--secondary-inverse);
+  cursor: default;
+}
+
+.spectatorCountCompact svg {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  display: block;
+  flex-shrink: 0;
+}
+
+.spectatorCountBadge {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  min-width: 12px;
+  height: 13px;
+  padding: 0 2px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 0;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 13px;
+  text-align: center;
+  pointer-events: none;
+  box-sizing: border-box;
+}

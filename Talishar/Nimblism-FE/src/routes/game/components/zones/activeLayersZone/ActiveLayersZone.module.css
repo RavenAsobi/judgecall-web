@@ -1,0 +1,337 @@
+.activeLayersBox {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  min-width: 35vh;
+  top: 8vh;
+  left: 20%;
+  background-color: var(--near-black, #0d0d0f);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.18));
+  border-radius: 10px;
+  max-width: 95vh;
+  max-height: 40vh;
+  z-index: 99;
+  touch-action: none;
+}
+
+.grabbyHandle {
+  width: calc(var(--card-size) * 0.2);
+  background-color: color-mix(in srgb, var(--theme-tertiary) 55%, transparent);
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 0.5em;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-self: stretch;
+  font-size: min(calc(1.5vh - 2px), calc(0.9vw - 1px));
+  font-size: min(calc(1.5dvh - 2px), calc(0.9dvw - 1px));
+}
+
+@media (orientation: portrait) {
+  .grabbyHandle {
+    font-size: calc(1.5vw + 3px);
+    font-size: calc(1.5dvw + 3px);
+  }
+}
+
+@media (orientation: landscape) and (max-aspect-ratio: 3/2) {
+  .grabbyHandle {
+    font-size: calc(1.5vh - 2px);
+    font-size: calc(1.5dvh - 2px);
+  }
+}
+
+.grabbyHandle:active {
+  cursor: grabbing;
+}
+
+.grabbyHandleDragging {
+  background-color: color-mix(in srgb, var(--theme-secondary) 45%, transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.gripIcon {
+  color: var(--white);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.grabbyHandle:hover .gripIcon {
+  opacity: 1;
+}
+
+.activeLayersInner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.5vh;
+  overflow-y: auto;
+  min-width: 0;
+  min-height: 0;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-primary-focus, rgba(212, 175, 55, 0.3)) rgba(0, 0, 0, 0.3);
+}
+
+.activeLayersInner::-webkit-scrollbar {
+  width: 4px;
+}
+
+.activeLayersInner::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.activeLayersInner::-webkit-scrollbar-thumb {
+  background: var(--theme-primary-focus, rgba(212, 175, 55, 0.3));
+  border-radius: 4px;
+}
+
+.activeLayersInner::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary, #d4af37);
+}
+
+.activeLayersContents > div {
+  width: var(--card-size);
+  margin-right: -3.5vh;
+}
+
+.activeLayersContents > div:last-child {
+  margin-right: 0;
+}
+
+.activeLayersTitle {
+  font-size: 0.8em;
+  padding-left: 0.5em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 0.5em;
+  margin-bottom: 0.4em;
+}
+
+.title {
+  font-size: 1.5em;
+  margin: 0 !important;
+  line-height: 1;
+}
+
+.activeLayersContents {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  justify-items: flex-start;
+  align-content: flex-start;
+  align-items: center;
+  gap: 0;
+  min-width: fit-content;
+  max-width: 1920px;
+  margin-bottom: 0;
+  padding-right: 1.5vh;
+}
+
+.orderingExplanation {
+  font-size: 0.8em;
+  margin-top: 0.2em;
+  margin-bottom: 0;
+}
+
+.emptyOutside {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.target {
+  margin-bottom: 0;
+}
+
+.targetContainer {
+  font-size: 1em;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  gap: 4px;
+  padding-top: 10px;
+}
+
+.activeLayersCallToAction {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.8em;
+  padding-left: 0.5em;
+}
+
+.passTurn {
+  position: absolute;
+  top: 0.75vh;
+  right: 3.25vh;
+  width: 6.5vh;
+  font-size: 1.25em;
+  margin-top: 10px;
+  margin-right: 10px;
+  z-index: 1;
+  user-select: none;
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px; 
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-basis: auto;
+  padding: 8px 16px;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.passTurn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.buttonDiv {
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(6dvw * var(--card-scale));
+  height: 32px;
+  border-radius: 6px; 
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-basis: auto;
+  padding: 8px 16px;
+  width: auto;
+  margin-bottom: 0;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  box-shadow: none;
+}
+
+.buttonDiv:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.passTurnBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.groupedCardWrapper {
+  flex-shrink: 0;
+  position: relative;
+  display: inline-flex;
+}
+
+.groupedCardCount {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.groupedCardCountBadge {
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  font-weight: bold;
+  font-size: 1em;
+  line-height: 1;
+  padding: 4px 9px;
+  border-radius: 10px;
+  white-space: nowrap;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+@media only screen and (max-width: 768px) {
+  .activeLayersBox {
+    min-width: min(70dvw, 320px);
+    max-width: 92dvw;
+    max-height: 45dvh;
+    top: 30dvh;
+    left: 50%;
+    translate: -50% 0;
+  }
+
+  .activeLayersInner {
+    padding: 2dvw;
+  }
+
+  .activeLayersContents > div {
+    width: 20dvw;
+    margin-right: -5dvw;
+  }
+
+  .activeLayersContents > div:last-child {
+    margin-right: 0;
+  }
+
+  .activeLayersCallToAction {
+    font-size: 0.7em;
+    gap: 6px;
+    padding-left: 0.25em;
+  }
+
+  .activeLayersTitle {
+    font-size: 0.8em;
+    gap: 6px;
+    padding-left: 0.25em;
+  }
+
+  .title {
+    font-size: 1.1em;
+    margin: 0px;
+  }
+
+  .targetContainer {
+    font-size: 0.85em;
+    gap: 2px;
+    padding-top: 4px;
+  }
+
+  .activeLayersContents {
+    gap: 0;
+  }
+
+  .orderingExplanation {
+    display: none;
+  }
+
+  .passTurnBox {
+    display: none;
+  }
+
+  .buttonDiv {
+    font-size: 0.7em;
+    padding: 5px 8px;
+  }
+}

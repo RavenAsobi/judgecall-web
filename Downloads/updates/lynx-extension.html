@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="Lynx Deck Check view: DC filters, random table selection, per-player check history, and Extension v1.0.1." />
+    <title>Lynx Extension v1.0.1 更新日志</title>
+    <link rel="icon" href="/assets/lynx.png" />
+    <link rel="stylesheet" href="/updates/update.css" />
+  </head>
+  <body data-title-cn="Lynx Extension v1.0.1 更新日志" data-title-en="Lynx Extension v1.0.1 Release Notes">
+    <header class="site-header">
+      <a class="brand" href="/" data-preserve-lang data-cn-aria="返回 JudgeCall 下载页" data-en-aria="Back to JudgeCall downloads" aria-label="返回 JudgeCall 下载页"><span class="brand-logo-crop" aria-hidden="true"><img src="/assets/judgecall.png" alt="" width="4096" height="4096" /></span></a>
+      <div class="header-actions">
+        <nav class="language-switcher" aria-label="Language selector"><a href="?lang=cn" data-lang-option="cn">中文</a><span aria-hidden="true">/</span><a href="?lang=en" data-lang-option="en">EN</a></nav>
+        <a class="header-link" href="/#lynx-title" data-preserve-lang><span data-cn="返回下载页" data-en="Back to Downloads">返回下载页</span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H6m5-6-6 6 6 6" /></svg></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="release-hero" aria-labelledby="release-title">
+        <div class="release-heading"><p class="eyebrow">UPDATE LOG · 2026.11.16</p><h1 id="release-title">Lynx Extension <span>v1.0.1</span></h1><p class="release-meta" data-cn="重点更新：Lynx 网页 Deck Check 视角 · 插件 v1.0.1" data-en="Featured: Lynx web Deck Check view · Extension v1.0.1">重点更新：Lynx 网页 Deck Check 视角 · 插件 v1.0.1</p></div>
+        <img class="release-icon" src="/assets/lynx.png" data-cn-alt="Lynx Extension 图标" data-en-alt="Lynx Extension icon" alt="Lynx Extension 图标" width="1254" height="1254" />
+      </section>
+
+      <article class="release-content" data-language-content="cn">
+        <p class="lead">本次版本说明重点介绍 Lynx 网页的 <strong>Deck Check 套牌检查视角</strong>：查看每桌检查历史，按 DC 状态和积分圈定候选桌，随机抽选，并按玩家保存检查记录。插件 v1.0.1 提供配对、赛果与可验证的玩家 ID；Deck Check 功能运行在 Lynx 网页中。</p>
+        <aside class="important-note" aria-labelledby="lynx-note-title"><p class="note-label">先认识 DC</p><h2 id="lynx-note-title">DC 指 Deck Check，不是 Drop</h2><p>DC 次数来自本场赛事已保存的套牌检查记录，按玩家跨轮累计；同一玩家在同一轮最多标记一次。切换巡场／套牌检查视角不会改变登录权限。</p></aside>
+
+        <section class="log-section" aria-labelledby="lynx-plugin-title"><p class="section-number">01</p><div><h2 id="lynx-plugin-title">切换视角，一眼掌握桌台情况</h2><ul><li>在 Lynx 网页点击用户名，可在“巡场裁判”和“套牌检查”之间切换。套牌检查视角把桌号方块换为列表；原有巡场功能仍留在巡场视角。</li><li>每行直接显示桌号、双方玩家、各自累计 DC 次数、积分，以及已归档的胜／负／平场次。点击一行即可查看两位玩家的检查详情。</li><li>积分来自 Lynx 逐轮自动结算或管理人员校正；首轮按 0 分显示。积分无法匹配时会显示“积分未匹配”，不会把未知积分当成 0 分。</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-web-title"><p class="section-number">02</p><div><h2 id="lynx-web-title">快速筛选，随机抽选桌号</h2><ul><li>顶部可输入“抽选桌数”（默认 1）和“最低分数”（默认 0）。设定最低分数后，须双方玩家都达到门槛才进入候选池；首轮所有玩家按 0 分计算。</li><li>三个快捷按钮分别是“双方均未DC”（两位玩家都没有检查记录）、“仅一方有DC”（恰好一位有记录）和“无限制”（不按 DC 历史限制）。<strong>这些条件只筛选随机抽选候选池，不隐藏桌台列表。</strong></li><li>未录齐双方玩家或标为 Ghost 的桌台不会进入候选池。点击“随机抽选”后，一次抽选内不重复桌号；结果会列出桌号并在列表中高亮。符合条件的桌数不足时，页面会提示调整条件。</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-flow-title"><p class="section-number">03</p><div><h2 id="lynx-flow-title">按玩家记录 DC、判罚与补时</h2><ul><li>点击桌号列表项后，可分别为两位玩家选择“标记套牌检查”；提交时保存玩家和轮次，累计次数随之更新。本轮已检查的玩家不可再次标记。</li><li>同一对话框可分别填写玩家备注，查看最近记录，并为玩家打开“添加判罚”；违规类别和判罚选项随 FAB／MTG 赛事类型切换。</li><li>可给该桌添加补时，默认 10 分钟、允许改为 0；已有补时时会提示叠加后的总分钟数，确认后才提交。检查记录、备注与补时由服务器保存。</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-compat-title"><p class="section-number">04</p><div><h2 id="lynx-compat-title">插件与积分如何配合</h2><ul><li>插件 v1.0.1 预览玩家 ID 覆盖情况，保留可验证的 GEM／Melee ID；无已验证 ID 时不按姓名伪造。Melee 明确的双方弃权导出为 <code>LOSSALL</code>，不再误作平局。</li><li>插件只读取来源网站当前可见的桌台，不自动跨分页。Lynx 每轮首次导入会按 JSON 重设总桌数，导入前须核对完整性；普通 JSON 不会自行开新一轮。</li><li>Lynx 开始下一轮时确认赛果并累计积分；插件的积分榜导出仅作为官方核对或恢复备用。管理人员可在 Deck Check 视角进行“积分校正／恢复”，覆盖会留下审计记录；自动积分不等于官方名次。</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-install-title"><p class="section-number">05</p><div><h2 id="lynx-install-title">安装与升级</h2><ul><li>下载并解压 ZIP；在 Chrome 打开 <code>chrome://extensions</code>，开启开发者模式，点击“加载已解压的扩展程序”，选择含 <code>manifest.json</code> 的文件夹。</li><li>升级时先停用旧版，确认 v1.0.1 可以读取桌台后再移除旧版，避免误用两个相同图标。</li></ul></div></section>
+
+        <div class="release-actions"><a class="button button-primary" href="/download/lynx-extension">下载 Lynx Extension v1.0.1<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14" /></svg></a><a class="text-link" href="/#lynx-title" data-preserve-lang>返回下载页</a></div>
+      </article>
+
+      <article class="release-content" data-language-content="en" hidden>
+        <p class="lead">This release note focuses on the Lynx website's <strong>Deck Check view</strong>: review each table's check history, narrow the random-selection pool by DC status and points, draw tables, and save per-player records. Extension v1.0.1 supplies pairings, results, and verified player IDs; Deck Check itself runs in the Lynx website.</p>
+        <aside class="important-note" aria-labelledby="lynx-note-title-en"><p class="note-label">WHAT DC MEANS</p><h2 id="lynx-note-title-en">DC means Deck Check, not Drop</h2><p>DC counts are saved per player across rounds of the event. A player can be marked at most once per round. Switching between Floor Judge and Deck Check views does not change login permissions.</p></aside>
+
+        <section class="log-section" aria-labelledby="lynx-plugin-title-en"><p class="section-number">01</p><div><h2 id="lynx-plugin-title-en">Switch views and scan every table</h2><ul><li>Click your username in Lynx to switch between Floor Judge and Deck Check. Deck Check replaces table tiles with a list; the existing floor-judge features remain in the other view.</li><li>Each row shows table number, both players, their cumulative DC counts, points, and archived win/loss/draw records. Select a row for player-level details.</li><li>Points come from Lynx's round settlement or a manager correction. Round-one players display 0; unmatched points are shown as unavailable rather than silently treated as 0.</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-web-title-en"><p class="section-number">02</p><div><h2 id="lynx-web-title-en">Quick filters and random table selection</h2><ul><li>Set the number of tables to draw (default 1) and minimum points (default 0). With a positive threshold, both players must meet it; all players count as 0 points in round one.</li><li>The quick filters mean “neither player has a DC,” “exactly one player has a DC,” and “no DC restriction.” <strong>They affect the random-selection pool only; the table list stays visible.</strong></li><li>Tables without both player names and Ghost tables are excluded. A single draw does not repeat table numbers; selected rows are highlighted. If too few tables qualify, Lynx asks you to change the conditions.</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-flow-title-en"><p class="section-number">03</p><div><h2 id="lynx-flow-title-en">Record checks, penalties, and time extensions</h2><ul><li>Open a table row to mark either player for Deck Check. Submission saves the player and round, updates the cumulative count, and prevents a second mark for that player in the same round.</li><li>Add separate player notes, inspect recent records, or open Add Penalty for either player. Infraction and penalty choices depend on whether the event is FAB or MTG.</li><li>Add time to the table (default 10 minutes, adjustable to 0). If time was already added, Lynx shows the new total for confirmation. Checks, notes, and time extensions are saved on the server.</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-compat-title-en"><p class="section-number">04</p><div><h2 id="lynx-compat-title-en">How the extension and points work together</h2><ul><li>Extension v1.0.1 previews player ID coverage and preserves verified GEM/Melee IDs without inventing IDs from names. Explicit Melee double forfeitures export as <code>LOSSALL</code>, not draws.</li><li>The extension reads only tables visible on the current source page. Lynx resets its total table list from the first JSON import each round, so check completeness first. Ordinary JSON does not advance the round.</li><li>Lynx confirms results and accumulates points when starting the next round. Standings export is a backup for official checks or recovery. Managers can use “Points correction / recovery” in Deck Check; overrides are audited. Automatic points are not official rankings.</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="lynx-install-title-en"><p class="section-number">05</p><div><h2 id="lynx-install-title-en">Install and upgrade</h2><ul><li>Download and unzip the archive. Open <code>chrome://extensions</code>, enable Developer mode, select “Load unpacked,” and choose the folder containing <code>manifest.json</code>.</li><li>Disable the older extension first. Remove it after verifying that v1.0.1 reads tables, so identical icons cannot be confused.</li></ul></div></section>
+
+        <div class="release-actions"><a class="button button-primary" href="/download/lynx-extension">Download Lynx Extension v1.0.1<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14" /></svg></a><a class="text-link" href="/#lynx-title" data-preserve-lang>Back to Downloads</a></div>
+      </article>
+    </main>
+
+    <footer class="update-footer"><p>© 2026 JudgeCall. All rights reserved.</p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" data-cn="辽ICP备2026017181号" data-en="ICP Filing 辽ICP备2026017181号">辽ICP备2026017181号</a></footer>
+    <script src="/i18n.js"></script>
+  </body>
+</html>

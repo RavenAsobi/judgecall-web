@@ -1,0 +1,289 @@
+.chatInputContainer {
+  height: 3vh;
+  height: 3dvh;
+}
+
+.chatInput.chatInput {
+  font-weight: 400;
+  font-size: max(1em, 14px);
+  flex-shrink: 1;
+  flex-grow: 1;
+  max-width: 100%;
+  border: 2px solid var(--theme-secondary);
+  background-color: black;
+  color: white;
+  padding: 0 0.5em;
+  margin: 0;
+  height: 1.75rem !important;
+  min-width: none;
+}
+
+.flexBox {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25em;
+  max-width: 100%;
+}
+
+.buttonDiv {
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #e0e0e0;
+  padding: 8px 16px;
+  font-size: max(1em, 14px);
+  margin-right: 0.25rem;
+  width: 2rem;
+  height: 1.65rem !important;
+  border-radius: 0.4em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  position: relative;
+}
+
+.buttonDiv:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.buttonDiv:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.quickChatButton {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.2em;
+}
+
+.quickChatButton button {
+  font-size: 0.85em;
+  font-weight: 550;
+  padding: 0.3em;
+  margin: 0;
+  margin-top: 0.1rem;
+  border-radius: 0.4em;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+  position: relative;
+  background-color: var(--theme-primary);
+  color: black;
+}
+
+.quickChatButton button:hover {
+  background-color: black;
+  color: var(--theme-primary);
+  border: 2px solid var(--theme-primary);
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 215, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.quickChatButton button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.quickChatButton button:disabled {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.2);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.popOver {
+  background-color: rgba(12, 14, 18);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 8px 6px;
+  z-index: 100000;
+  overflow-y: auto;
+  max-width: 50vw;
+  max-width: 50dvw;
+  max-height: 70vh;
+  max-height: 70dvh;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.5);
+  min-width: 200px;
+}
+
+.popOver button:last-child {
+  margin-bottom: 0;
+}
+
+.sectionLabel {
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  background-color: transparent;
+  border: none;
+  padding: 2px 0.75em 4px;
+  margin-top: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  user-select: none;
+  border-radius: 4px;
+  transition: color 0.12s ease;
+}
+
+.sectionLabel:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sectionChevron {
+  display: inline-block;
+  font-style: normal;
+  transition: transform 0.18s ease;
+  transform: rotate(0deg);
+  line-height: 1;
+}
+
+.sectionChevronCollapsed {
+  transform: rotate(-90deg);
+}
+
+.sectionDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 4px 0.5em 4px;
+}
+
+.buttonDiv {
+  background-color: var(--theme-secondary) !important;
+  color: var(--secondary-inverse) !important;
+}
+
+.buttonDiv:hover {
+  border: 2px solid var(--theme-secondary) !important;
+}
+
+.quickChatButton button {
+  background-color: var(--theme-secondary) !important;
+  color: var(--secondary-inverse) !important;
+  margin-bottom: 0.25em;
+}
+
+.quickChatButton button:hover {
+  border: 2px solid var(--theme-secondary) !important;
+}
+
+.primaryQuickChatButton button {
+  background-color: var(--theme-primary) !important;
+  color: var(--primary-inverse) !important;
+  margin-bottom: 0.25em;
+}
+
+.primaryQuickChatButton button:hover {
+  border: 2px solid var(--theme-primary) !important;
+}
+
+.floatingOverlay {
+  z-index: 99999;
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1em;
+  height: 1em;
+  font-size: 1em;
+  pointer-events: auto;
+  user-select: none;
+  cursor: pointer;
+}
+
+.chatWheelButton {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  width: 100%;
+  padding: 0.45em 0.75em;
+  text-align: left;
+  background: transparent;
+  border: none;
+  justify-content: left !important;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.88em;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+  white-space: nowrap;
+  margin-bottom: 1px;
+}
+
+.keyHint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35em;
+  height: 1.35em;
+  font-size: 0.75em;
+  font-weight: 600;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+}
+
+.quickChatButton button .keyHint,
+.primaryQuickChatButton button .keyHint {
+  color: inherit;
+  opacity: 0.55;
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
+.quickChatToggleButton::after,
+.primaryQuickChatButton .quickChatToggleButton::after {
+  content: '';
+  font-size: 0.82em;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  margin-left: 0.3em;
+}
+
+.quickChatToggleButton:hover::after {
+  content: '(Q)';
+  opacity: 0.55;
+}
+
+.chatWheelButton:hover,
+.chatWheelButton:focus-visible {
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.95);
+  outline: none;
+}
+
+.chatWheelButton:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media only screen and (max-width: 768px) and (orientation: portrait) {
+  .chatWheelButton {
+    font-size: 13px;
+  }
+
+  .keyHint {
+    display: none;
+  }
+
+  .popOver {
+    max-width: 90dvw;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0 !important;
+    transform: translateX(-50%) !important;
+  }
+}

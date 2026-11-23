@@ -1,0 +1,216 @@
+import { useAppDispatch } from 'app/Hooks';
+import { Card } from 'features/Card';
+import { playCard } from 'features/game/GameSlice';
+import styles from './CardDisplay.module.css';
+import classNames from 'classnames';
+import CountersOverlay from '../countersOverlay/CountersOverlay';
+import CardImage from '../cardImage/CardImage';
+import CardPopUp from '../cardPopUp/CardPopUp';
+import CombatChainLink from 'features/CombatChainLink';
+import { useAppSelector } from 'app/Hooks';
+import { RootState } from 'app/Store';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
+import { useLanguageSelector } from 'hooks/useLanguageSelector';
+import { CARD_SQUARES_PATH, getCollectionCardImagePath } from 'utils';
+
+export interface CardProp {
+  makeMeBigger?: boolean;
+  num?: number;
+  name?: string;
+  preventUseOnClick?: boolean;
+  useCardMode?: number;
+  card?: Card;
+  activeCombatChain?: CombatChainLink;
+  isPlayer?: boolean;
+  isShuffling?: boolean;
+  showCountersOnHover?: boolean;
+  disableTilt?: boolean;
+  children?: React.ReactNode;
+}
+
+export const CardDisplay = (prop: CardProp) => {
+  const {
+    card,
+    preventUseOnClick,
+    activeCombatChain,
+    num,
+    isPlayer,
+    isShuffling,
+    showCountersOnHover,
+    disableTilt,
+    children
+  } = prop;
+  const dispatch = useAppDispatch();
+  const playerID = useAppSelector(
+    (state: RootState) => state.game.gameInfo.playerID
+  );
+  const viewerID = playerID === 2 ? 2 : 1;
+  const isOpponentCard =
+    card?.isOpponent !== undefined
+      ? card.isOpponent
+      : isPlayer !== undefined
+      ? !isPlayer
+      : card?.controller
+      ? card.controller !== viewerID
+      : false;
+  const cardBack = useAppSelector((state: RootState) =>
+    !isOpponentCard ? state.game.playerOne.CardBack : state.game.playerTwo.CardBack
+  ) ?? { cardNumber: '' };
+  const { getLanguage } = useLanguageSelector();
+  const [showSubCards, setShowSubCards] = useState(false);
+  const subCardRef = useRef(null);
+  const handleHoverStart = useCallback(() => setShowSubCards(true), []);
+  const handleHoverEnd = useCallback(() => setShowSubCards(false), []);
+  const subCardsToShow = useMemo(() => {
+    const subcards = card?.subcards;
+    if (!subcards || subcards.length === 0) return [];
+    const validSubcards = subcards.filter((subCard) => !!subCard);
+    return showSubCards
+      ? validSubcards
+      : validSubcards.length
+      ? [validSubcards[0]]
+      : [];
+  }, [card?.subcards, showSubCards]);
+
+  if (card == null || card.cardNumber === '') {
+    return null;
+  }
+
+  const locale = getLanguage();
+  const cardNumber =
+    card.facing === 'DOWN' ? cardBack.cardNumber : card.cardNumber;
+
+  const imageSrc = getCollectionCardImagePath({
+    path: CARD_SQUARES_PATH,
+    locale,
+    cardNumber
+  });
+
+  function onClick() {
+    if (preventUseOnClick) {
+      return;
+    }
+    if (card === undefined) {
+      return;
+    }
+    dispatch(playCard({ cardParams: card }));
+  }
+
+  const isDisabled = card.overlay === 'disabled' || Number(card.overlay) === 1;
+
+  const classStyles = classNames(styles.floatTint, {
+    [styles.disabled]: isDisabled
+  });
+
+  const isTargeted = card.label?.includes('Targeted') ?? false;
+
+  const equipStatus = classNames(
+    styles.floatTint,
+    { [styles.isBroken]: card.isBroken },
+    { [styles.onChain]: card.onChain },
+    { [styles.isFrozen]: card.isFrozen },
+    { [styles.holoCounters]: card.holoCounters },
+    { [styles.marked]: card.marked },
+    { [styles.tapped]: card.tapped },
+    { [styles.isRestricted]: !!card.restriction },
+    { [styles.isTargeted]: isTargeted }
+  );
+
+  const imgStyles = classNames(styles.img, {
+    [styles.border1]: card.borderColor == '1',
+    [styles.border2]: card.borderColor == '2',
+    [styles.border3]: card.borderColor == '3',
+    [styles.border4]: card.borderColor == '4',
+    [styles.border5]: card.borderColor == '5',
+    [styles.border6]: card.borderColor == '6',
+    [styles.border7]: card.borderColor == '7',
+    [styles.border8]: card.borderColor == '8',
+    [styles.border9]: card.borderColor == '9',
+    [styles.border10]: card.borderColor == '10'
+  });
+
+  const cardStyle = classNames(styles.card, styles.normalSize, {
+    [styles.biggerSize]: prop.makeMeBigger,
+    [styles.showCountersOnHover]: showCountersOnHover
+  });
+
+  const renderNumUses = (numUses: number) => {
+    let divs = [];
+    for (let i = 1; i <= numUses; i++) {
+      divs.push(<div className={styles.numUsesCircle} key={i}></div>);
+    }
+    return divs;
+  };
+
+
+  return (
+    <CardPopUp
+      cardNumber={card.cardNumber}
+      containerClass={cardStyle}
+      onClick={onClick}
+      onHoverStart={handleHoverStart}
+      onHoverEnd={handleHoverEnd}
+      isOpponent={isOpponentCard}
+      disableTilt={disableTilt}
+    >
+      {subCardsToShow.map((subCardNumber, ix) => {
+        if (
+          !subCardNumber ||
+          typeof subCardNumber !== 'string' ||
+          subCardNumber.trim() === ''
+        )
+          return null;
+        const subCardKey = `subcard-${card.cardNumber}-${subCardNumber}-${ix}`;
+
+        return (
+          <div
+            key={subCardKey}
+            ref={subCardRef}
+            style={{
+              top: `calc(-0.15 * ${ix + 1} * var(--card-size))`,
+              zIndex: `-${ix + 1}`,
+              animationDelay: `${ix * 40}ms`
+            }}
+            className={styles.subCard}
+          >
+            <CardDisplay
+              card={{ cardNumber: subCardNumber }}
+              preventUseOnClick
+              isPlayer={!isOpponentCard}
+            />
+          </div>
+        );
+      })}
+
+      <CardImage
+        src={imageSrc}
+        className={classNames(imgStyles, { [styles.tapped]: card.tapped })}
+        isShuffling={isShuffling}
+        isOpponent={isOpponentCard}
+      />
+      {isDisabled && <div className={classStyles}></div>}
+      {(card.isBroken ||
+        card.onChain ||
+        card.isFrozen ||
+        card.marked ||
+        card.holoCounters ||
+        !!card.restriction ||
+        isTargeted) && <div className={equipStatus}></div>}
+      {card.numUses && card.numUses > 1 && card.numUses < 10 && (
+        <div className={styles.numUses}>{renderNumUses(card.numUses)}</div>
+      )}
+      <CountersOverlay
+        {...card}
+        label={isTargeted ? card.label?.replace('Targeted', '').replace(/^\/|\/$|^\s*\/\s*/g, '').trim() : card.label}
+        num={num}
+        activeCombatChain={activeCombatChain}
+      />
+      {children}
+    </CardPopUp>
+  );
+};
+
+// Memoized: game-state updates keep references stable for unchanged cards
+// (see utils/PreserveIdentities), so cards that didn't change skip re-render
+// even when another card in the same zone did.
+export default React.memo(CardDisplay);

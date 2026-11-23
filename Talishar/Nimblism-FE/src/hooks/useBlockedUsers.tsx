@@ -1,0 +1,59 @@
+import { useState, useEffect } from 'react';
+import useAuth from 'hooks/useAuth';
+import { BACKEND_URL } from 'appConstants';
+
+export const useBlockedUsers = () => {
+  const { isLoggedIn } = useAuth();
+  const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchBlockedUsers = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${BACKEND_URL}APIs/BlockedUsersAPI.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'getBlockedUsers' }),
+        credentials: 'include'
+      });
+
+      // Handle error statuses silently
+      if (!response.ok) {
+        setBlockedUsers([]);
+        setError(null);
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data && data.blockedUsers && Array.isArray(data.blockedUsers)) {
+        setBlockedUsers(data.blockedUsers.map((u: any) => u.username));
+        setError(null);
+      } else {
+        setBlockedUsers([]);
+        setError(null);
+      }
+    } catch (err) {
+      setBlockedUsers([]);
+      setError(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchBlockedUsers();
+    } else {
+      setIsLoading(false);
+    }
+  }, [isLoggedIn]);
+
+  return {
+    blockedUsers,
+    isLoading,
+    error,
+    refetch: fetchBlockedUsers
+  };
+};

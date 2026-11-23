@@ -1,0 +1,4 @@
+JudgeCall is in no way affiliated with Legend Story Studios®. Flesh and Blood™ is a registered trademark of Legend Story Studios. Flesh and Blood™ and all associated images are copyright © Legend Story Studios. All rights reserved.
+Portions of JudgeCall are unofficial Fan Content permitted under the Wizards of the Coast Fan Content Policy. The literal and graphical information presented on this site about Magic: The Gathering, including card images and mana symbols, is copyright Wizards of the Coast, LLC. JudgeCall is not produced by or endorsed by Wizards of the Coast.
+JudgeCall was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.
+The information presented on this site about Disney Lorcana, both literal and graphical, is copyrighted by Disney and Ravensburger. JudgeCall is not produced, supported, or affiliated with Disney or Ravensburger.

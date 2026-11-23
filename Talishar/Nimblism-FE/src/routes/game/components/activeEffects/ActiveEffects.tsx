@@ -1,0 +1,13 @@
+import styles from './ActiveEffects.module.css';
+import Effects from '../elements/effects/Effects';
+import LandmarkZone from '../zones/LandmarkZone';
+
+export default function ActiveEffects() {
+  return (
+    <div className={styles.activeEffects}>
+      <Effects isPlayer={false} />
+      <LandmarkZone />
+      <Effects isPlayer />
+    </div>
+  );
+}

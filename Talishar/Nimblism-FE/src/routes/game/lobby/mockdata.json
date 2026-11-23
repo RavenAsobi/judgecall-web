@@ -1,0 +1,31 @@
+{
+  "badges": [],
+  "amIActive": false,
+  "nameColor": "",
+  "displayName": "",
+  "overlayURL": "",
+  "format": "",
+  "deck": {
+    "hero": "UNKNOWNHERO",
+    "heroName": "",
+    "weapons": [],
+    "head": [],
+    "chest": [],
+    "arms": [],
+    "legs": [],
+    "modular": [],
+    "offhand": [],
+    "cards": [],
+    "headSB": [],
+    "chestSB": [],
+    "armsSB": [],
+    "legsSB": [],
+    "offhandSB": [],
+    "weaponSB": [],
+    "cardsSB": [],
+    "quiver": [],
+    "quiverSB": [],
+    "hands": [],
+    "handsSB": []
+  }
+}

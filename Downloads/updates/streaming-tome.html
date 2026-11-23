@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="Streaming Tome v1.2 beta release notes." />
+    <title>Streaming Tome v1.2 beta 更新日志</title>
+    <link rel="icon" href="/assets/tome.png" />
+    <link rel="stylesheet" href="/updates/update.css" />
+  </head>
+  <body data-title-cn="Streaming Tome v1.2 beta 更新日志" data-title-en="Streaming Tome v1.2 beta Release Notes">
+    <header class="site-header">
+      <a class="brand" href="/" data-preserve-lang data-cn-aria="返回 JudgeCall 下载页" data-en-aria="Back to JudgeCall downloads" aria-label="返回 JudgeCall 下载页"><span class="brand-logo-crop" aria-hidden="true"><img src="/assets/judgecall.png" alt="" width="4096" height="4096" /></span></a>
+      <div class="header-actions">
+        <nav class="language-switcher" aria-label="Language selector"><a href="?lang=cn" data-lang-option="cn">中文</a><span aria-hidden="true">/</span><a href="?lang=en" data-lang-option="en">EN</a></nav>
+        <a class="header-link" href="/#streaming-tome-title" data-preserve-lang><span data-cn="返回下载页" data-en="Back to Downloads">返回下载页</span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H6m5-6-6 6 6 6" /></svg></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="release-hero" aria-labelledby="release-title">
+        <div class="release-heading"><p class="eyebrow">UPDATE LOG · 03</p><h1 id="release-title">Streaming Tome <span>v1.2 beta</span></h1><p class="release-meta" data-cn="Windows 10 / 11 · EXE · Beta 版本" data-en="Windows 10 / 11 · EXE · Beta release">Windows 10 / 11 · EXE · Beta 版本</p></div>
+        <img class="release-icon" src="/assets/tome.png" alt="Streaming Tome logo" width="512" height="512" />
+      </section>
+
+      <article class="release-content" data-language-content="cn">
+        <p class="lead">Streaming Tome v1.2 Beta 聚焦于<strong>卡牌内容扩充、直播画面易读性、品牌统一和现场操作效率</strong>。在保留本地运行、局域网 Life Tracker 与 OBS Browser Source 工作方式的基础上，进一步完善比赛控制、卡牌展示和多语言选手姓名支持。</p>
+        <aside class="important-note" aria-labelledby="important-note-title"><p class="note-label">版本信息</p><h2 id="important-note-title">2026 年 8 月 20 日发布</h2><p>适用平台：<strong>Windows 10 / Windows 11</strong>。软件继续坚持离线优先与局域网运行原则，比赛状态不会上传或持久化到外部服务。</p></aside>
+
+        <section class="log-section" aria-labelledby="highlights-title"><p class="section-number">01</p><div><h2 id="highlights-title">版本亮点</h2><ul><li>MPW 与 AOL 系列卡牌内容已整合进本地卡库。</li><li>Match Overlay 的英雄头像、生命值、计时器和左右对称布局全面优化。</li><li>卡牌文字现可正确解析 Markdown，并显示 Flesh and Blood 属性图标。</li><li>软件品牌视觉已统一，桌面窗口、网页、EXE 与任务栏均使用新版 logo。</li><li>Card Reference Console 改为按需加载，软件启动更轻量。</li><li>Match Control 与 Overlay 现可正确显示中文、日文、韩文等非英文选手姓名。</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="cards-title"><p class="section-number">02</p><div><h2 id="cards-title">卡牌内容更新</h2><div class="feature-block"><h3>MPW 与 AOL 系列</h3><p>两个系列的卡牌数据与卡图已按照现有离线卡库标准完成更新和整合，可用于 Card Reference Console 搜索、独立卡图展示、本地卡牌文字查询，以及英雄选择与 Match Overlay 头像显示。</p><p>当前本地数据库包含 <strong>2,926 条卡牌记录</strong>，并已完成缺图、无效文件与重复记录检查。软件完全使用本地数据，不需要连接外部卡牌 API。</p></div><div class="feature-block"><h3>英雄头像显示优化</h3><p>Overlay 中的英雄头像现在会以正方形区域显示并自动截取卡图主体，不再露出卡牌边框、名称或其他文字信息，使直播画面更接近正式赛事转播风格。</p></div></div></section>
+
+        <section class="log-section" aria-labelledby="overlay-title"><p class="section-number">03</p><div><h2 id="overlay-title">Match Control 与直播 Overlay</h2><div class="feature-block"><h3>生命值区域重新设计</h3><ul><li>原有的 HP 文字已替换为 Health 图标，并按左右玩家方向分别放置。</li><li>图标与生命值数字保留清晰间距；移除区域边框并扩大可用空间，降低数字被遮挡或裁切的风险。</li><li>比赛记录位置同步向两侧调整，使左右玩家信息保持轴对称。</li><li>修复生命值变化动画放大时超出显示区域的问题。</li></ul></div><div class="feature-block"><h3>计时器与布局</h3><p>放大 ROUND TIMER 标签字号，提高远距离观看时的辨识度；保留原有计时、加时、Untimed Round、主题、自定义颜色与尺寸调整功能。</p></div><div class="feature-block"><h3>多语言选手姓名</h3><p>中文、日文、韩文及其他非英文姓名会自动切换为“微软雅黑”，避免缺字或方框；纯英文姓名仍使用原有字体。字体选择在 Overlay 缩放、主题切换和比赛状态同步后仍会正确保留。</p></div></div></section>
+
+        <section class="log-section" aria-labelledby="text-title"><p class="section-number">04</p><div><h2 id="text-title">卡牌文字显示</h2><div class="feature-block"><h3>Markdown 解析修复</h3><p>卡牌规则文字现可正确显示标题、斜体与粗体等常用 Markdown 格式。</p></div><div class="feature-block"><h3>Flesh and Blood 属性图标</h3><p>规则文字中的属性标记会转换为对应图标，并与文本基线对齐，适用于英文及本地翻译内容（本地翻译内容待更新）。</p><div class="keyword-list" aria-label="属性标记映射"><code>{h} Health</code><code>{p} Power</code><code>{i} Intellect</code><code>{d} Defense</code><code>{t} Tap</code><code>{u} Untap</code><code>{c} Chi</code><code>{r} Resource</code></div></div></div></section>
+
+        <section class="log-section" aria-labelledby="brand-title"><p class="section-number">05</p><div><h2 id="brand-title">品牌视觉更新</h2><p>新版 Streaming Tome logo 已应用至 Match Control、Card Reference Console、卡牌文字窗口、网页 Life Tracker、浏览器页签、Windows 窗口与任务栏，以及最终发布的 EXE 文件。</p><p>深色界面使用白色圆角矩形地衬以保持对比；Card Reference Console 中的 logo 调整为更紧凑的尺寸。Windows 运行时图标与 EXE 内嵌图标使用同一品牌资源和新的应用身份配置，减少任务栏继续显示旧图标的情况。</p></div></section>
+
+        <section class="log-section" aria-labelledby="launch-title"><p class="section-number">06</p><div><h2 id="launch-title">启动与窗口操作改进</h2><div class="feature-block"><h3>Card Reference Console 按需加载</h3><p>软件启动时默认只打开 Match Control。卡牌数据库、翻译表和 Card Reference Console 相关窗口会在首次点击 OPEN CARD CONSOLE 时加载，减少启动阶段不必要的初始化工作。</p></div><div class="feature-block"><h3>独立窗口开关</h3><ul><li>关闭 Card Reference Console 不再关闭整个程序或停止 Life Tracker。</li><li>可通过 Match Control 随时重新打开；若窗口已打开或最小化，按钮会将其恢复至前端。</li><li>Card Reference Console 中仍可使用 OPEN LIFE TRACKER 返回 Match Control。</li></ul></div></div></section>
+
+        <section class="log-section" aria-labelledby="stability-title"><p class="section-number">07</p><div><h2 id="stability-title">稳定性与兼容性</h2><ul><li>保留现有 LAN Life Tracker、WebSocket 同步和 OBS Browser Source 地址格式。</li><li>保留 Overlay 透明背景、16:1 比例、Always on Top 与自定义尺寸功能。</li><li>网页静态资源加入版本标识，覆盖升级后会自动刷新样式，降低旧浏览器缓存造成的显示异常。</li><li>已完成 29 项自动化测试，以及桌面窗口、网页 Life Tracker、直播 Overlay 和打包版 EXE 的实际运行验证。</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="upgrade-title"><p class="section-number">08</p><div><h2 id="upgrade-title">升级说明</h2><ol><li>关闭正在运行的旧版 Streaming Tome。</li><li>使用 v1.2 Beta 的 Streaming Tome.exe 替换旧版本并重新启动。</li><li>原有 OBS Browser Source 地址和常用设置可以继续使用。</li><li>若任务栏固定的旧快捷方式仍显示旧图标，请先取消固定，再运行新版 EXE 并重新固定。</li></ol></div></section>
+
+        <div class="release-actions"><a class="button button-primary" href="/download/streaming-tome">下载 Streaming Tome v1.2 beta<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14" /></svg></a><a class="text-link" href="/#streaming-tome-title" data-preserve-lang>返回下载页</a></div>
+      </article>
+
+      <article class="release-content" data-language-content="en" hidden>
+        <p class="lead">Streaming Tome v1.2 Beta focuses on <strong>expanded card content, broadcast readability, unified branding, and more efficient live operation</strong>. It preserves the local-first workflow, LAN Life Tracker, and OBS Browser Source setup while improving match control, card presentation, and multilingual player-name support.</p>
+        <aside class="important-note" aria-labelledby="important-note-title-en"><p class="note-label">RELEASE INFORMATION</p><h2 id="important-note-title-en">Released August 20, 2026</h2><p>Supported platforms: <strong>Windows 10 / Windows 11</strong>. Streaming Tome remains offline-first and LAN-based; match state is never uploaded to or persisted by an external service.</p></aside>
+
+        <section class="log-section" aria-labelledby="highlights-title-en"><p class="section-number">01</p><div><h2 id="highlights-title-en">Highlights</h2><ul><li>MPW and AOL card content is now integrated into the local library.</li><li>Hero portraits, life totals, the timer, and the symmetrical Match Overlay layout have been refined.</li><li>Card text now renders Markdown correctly and displays Flesh and Blood attribute icons.</li><li>Branding is unified across desktop windows, web pages, the EXE, and the Windows taskbar.</li><li>Card Reference Console now loads on demand for a lighter startup.</li><li>Match Control and Overlay correctly display Chinese, Japanese, Korean, and other non-Latin player names.</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="cards-title-en"><p class="section-number">02</p><div><h2 id="cards-title-en">Card Content</h2><div class="feature-block"><h3>MPW and AOL sets</h3><p>Card data and images for both sets have been integrated to the existing offline-library standard. They are available in Card Reference Console search, standalone card-image windows, local card-text lookup, hero selection, and Match Overlay portraits.</p><p>The local database now contains <strong>2,926 card records</strong> and has been checked for missing images, invalid files, and duplicates. Runtime data is fully local and does not require an external card API.</p></div><div class="feature-block"><h3>Improved hero portraits</h3><p>Overlay hero portraits now use a square crop focused on the artwork, without card borders, names, or other printed text, giving broadcasts a more professional tournament look.</p></div></div></section>
+
+        <section class="log-section" aria-labelledby="overlay-title-en"><p class="section-number">03</p><div><h2 id="overlay-title-en">Match Control and Broadcast Overlay</h2><div class="feature-block"><h3>Redesigned life totals</h3><ul><li>The HP label is replaced by a Health icon positioned according to each player's side.</li><li>Clear spacing, wider usable areas, and borderless totals reduce clipping and obstruction.</li><li>Match records move outward to preserve a symmetrical two-player layout.</li><li>Fixed life-change animations expanding outside their display areas.</li></ul></div><div class="feature-block"><h3>Timer and layout</h3><p>The ROUND TIMER label is larger and easier to read from a distance. Timing, overtime, Untimed Round, themes, custom colors, and size controls remain available.</p></div><div class="feature-block"><h3>Multilingual player names</h3><p>Chinese, Japanese, Korean, and other non-Latin names automatically use Microsoft YaHei to prevent missing glyphs. English-only names keep the original broadcast font, and the selection persists through scaling, theme changes, and match-state synchronization.</p></div></div></section>
+
+        <section class="log-section" aria-labelledby="text-title-en"><p class="section-number">04</p><div><h2 id="text-title-en">Card Text Rendering</h2><div class="feature-block"><h3>Markdown parsing</h3><p>Rules text now correctly renders common Markdown headings, italics, and bold text.</p></div><div class="feature-block"><h3>Flesh and Blood attribute icons</h3><p>Attribute markers are converted to inline icons aligned with the text baseline. This works with English and local translations; updated translation content will follow.</p><div class="keyword-list" aria-label="Attribute marker mapping"><code>{h} Health</code><code>{p} Power</code><code>{i} Intellect</code><code>{d} Defense</code><code>{t} Tap</code><code>{u} Untap</code><code>{c} Chi</code><code>{r} Resource</code></div></div></div></section>
+
+        <section class="log-section" aria-labelledby="brand-title-en"><p class="section-number">05</p><div><h2 id="brand-title-en">Brand Refresh</h2><p>The new Streaming Tome logo now appears in Match Control, Card Reference Console, card-text windows, the web Life Tracker, browser tabs, Windows windows and taskbar, and the distributed EXE.</p><p>A white rounded background preserves contrast on dark interfaces, while a more compact Console logo leaves more space for search. Windows runtime and embedded EXE icons now share the same brand asset and application identity to reduce stale taskbar icons.</p></div></section>
+
+        <section class="log-section" aria-labelledby="launch-title-en"><p class="section-number">06</p><div><h2 id="launch-title-en">Startup and Window Management</h2><div class="feature-block"><h3>On-demand Card Reference Console</h3><p>Streaming Tome now starts with Match Control only. The card database, translations, and Console windows load the first time OPEN CARD CONSOLE is selected, reducing unnecessary startup work.</p></div><div class="feature-block"><h3>Independent windows</h3><ul><li>Closing Card Reference Console no longer exits the app or stops Life Tracker.</li><li>Match Control can reopen it at any time; an open or minimized window is restored to the foreground.</li><li>OPEN LIFE TRACKER remains available in the Console to return to Match Control.</li></ul></div></div></section>
+
+        <section class="log-section" aria-labelledby="stability-title-en"><p class="section-number">07</p><div><h2 id="stability-title-en">Stability and Compatibility</h2><ul><li>LAN Life Tracker, WebSocket synchronization, and OBS Browser Source URL formats are unchanged.</li><li>Transparent Overlay backgrounds, the 16:1 ratio, Always on Top, and custom dimensions remain available.</li><li>Versioned web assets automatically refresh styles after an in-place upgrade and reduce stale-browser-cache issues.</li><li>The release passed 29 automated tests plus hands-on checks of desktop windows, web Life Tracker, broadcast Overlay, and the packaged EXE.</li></ul></div></section>
+
+        <section class="log-section" aria-labelledby="upgrade-title-en"><p class="section-number">08</p><div><h2 id="upgrade-title-en">Upgrade Instructions</h2><ol><li>Close the currently running version of Streaming Tome.</li><li>Replace it with the v1.2 Beta Streaming Tome.exe and restart.</li><li>Existing OBS Browser Source URLs and commonly used settings remain compatible.</li><li>If a pinned taskbar shortcut still shows the old icon, unpin it, launch the new EXE, and pin it again.</li></ol></div></section>
+
+        <div class="release-actions"><a class="button button-primary" href="/download/streaming-tome">Download Streaming Tome v1.2 beta<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14" /></svg></a><a class="text-link" href="/#streaming-tome-title" data-preserve-lang>Back to Downloads</a></div>
+      </article>
+    </main>
+
+    <footer class="update-footer"><p>© 2026 JudgeCall. All rights reserved.</p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" data-cn="辽ICP备2026017181号" data-en="ICP Filing 辽ICP备2026017181号">辽ICP备2026017181号</a></footer>
+    <script src="/i18n.js"></script>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+import { useAppDispatch, useAppSelector } from 'app/Hooks';
+import {
+  useLoginWithCookieQuery,
+  useLogOutMutation
+} from 'features/api/apiSlice';
+import {
+  selectCurrentUser,
+  selectCurrentUserName,
+  selectCurrentDisplayName,
+  selectIsPatron,
+  selectIsMod,
+  selectMetafyId,
+  selectMetafyHash,
+  selectMetafyTimestamp,
+  setCredentialsReducer,
+  logOutReducer
+} from 'features/auth/authSlice';
+import { useEffect, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+
+// List of mod usernames - should match backend list
+const MOD_USERNAMES = [
+  'OotTheMonk',
+  'LaustinSpayce',
+  'Tower',
+  'PvtVoid',
+  'Aegisworn'
+];
+
+export default function useAuth() {
+  const currentUserId = useAppSelector(selectCurrentUser);
+  const currentUserName = useAppSelector(selectCurrentUserName);
+  const currentDisplayName = useAppSelector(selectCurrentDisplayName);
+  const reduxIsPatron = useAppSelector(selectIsPatron);
+  const reduxIsMod = useAppSelector(selectIsMod);
+  const metafyId = useAppSelector(selectMetafyId);
+  const metafyHash = useAppSelector(selectMetafyHash);
+  const metafyTimestamp = useAppSelector(selectMetafyTimestamp);
+  // const { refetch } = useGetFavoriteDecksQuery(undefined);
+  const [logOutAPI, logOutData] = useLogOutMutation();
+  const {
+    isLoading: isQueryLoading,
+    isFetching,
+    error,
+    data,
+    refetch: refetchAuth
+  } = useLoginWithCookieQuery({}, { refetchOnMountOrArgChange: 600 });
+  const [authCheckTimedOut, setAuthCheckTimedOut] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const setLoggedIn = useCallback(
+    (
+      user: string,
+      userName: string,
+      token: string,
+      patron: string,
+      isMod?: boolean,
+      metafyId?: string | number | null,
+      metafyHash?: string | null,
+      metafyTimestamp?: number | null,
+      displayName?: string | null
+    ) => {
+      dispatch(
+        setCredentialsReducer({
+          user: user,
+          userName: userName,
+          displayName: displayName ?? userName,
+          accessToken: token,
+          isPatron: patron,
+          isMod: isMod || false,
+          metafyId: metafyId ?? null,
+          metafyHash: metafyHash ?? null,
+          metafyTimestamp: metafyTimestamp ?? null
+        })
+      );
+    },
+    [dispatch]
+  );
+
+  const logOut = async () => {
+    try {
+      await logOutAPI({}).unwrap();
+      dispatch(logOutReducer());
+      toast.success('Logged Out', { position: 'top-center' });
+      navigate('/');
+    } catch (err) {
+      console.warn(err);
+      toast.error('Error Logging Out', { position: 'top-center' });
+      // Still redirect on error to clear state
+      navigate('/');
+    }
+  };
+
+  // Auth check is complete when we have data (even if user is not logged in) or there's an error
+  // OR if the auth check has timed out (to prevent infinite loading state)
+  const isLoading =
+    !authCheckTimedOut && data === undefined && error === undefined;
+
+  // isLoggedIn should be based on the query result if available, otherwise use Redux
+  // Use || (not ??) so that a `false` cookie-check result can still be overridden by
+  // a freshly-dispatched Redux credential (e.g. right after a manual login, before the
+  // loginWithCookie query has had a chance to refetch).
+  const isLoggedIn = data?.isUserLoggedIn || !!currentUserId;
+
+  const isPatron = data?.isUserLoggedIn
+    ? (data?.isPatron ?? reduxIsPatron)
+    : reduxIsPatron;
+
+  const isMod = data?.isUserLoggedIn
+    ? MOD_USERNAMES.includes(data.loggedInUserName ?? '')
+    : reduxIsMod;
+
+  // Add a timeout for auth check - if it doesn't complete within 5 seconds, assume user isn't logged in
+  // This prevents infinite loading state when cookies are rejected due to SameSite policy
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (data === undefined && error === undefined) {
+        setAuthCheckTimedOut(true);
+        console.warn(
+          'Auth check timed out after 5s - proceeding without authentication'
+        );
+      }
+    }, 5000);
+
+    // Clear timeout if query completes before timeout
+    if (data !== undefined || error !== undefined) {
+      clearTimeout(timeoutId);
+      setAuthCheckTimedOut(false);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [data, error]);
+
+  useEffect(() => {
+    // Only run when query has completed (data exists or error exists)
+    if (data !== undefined) {
+      if (data?.isUserLoggedIn) {
+        const userIsMod = MOD_USERNAMES.includes(data.loggedInUserName);
+        setLoggedIn(
+          data.loggedInUserID,
+          data.loggedInUserName,
+          '',
+          data.isPatron,
+          userIsMod,
+          data.metafyID ?? data.metafyId ?? null,
+          data.metafyHash ?? null,
+          data.timestamp ?? null,
+          data.loggedInDisplayName ?? null
+        );
+      } else {
+        // User is not logged in, clear any stale auth state
+        dispatch(logOutReducer());
+      }
+    }
+  }, [data, setLoggedIn, dispatch]);
+
+  useEffect(() => {
+    if (isLoggedIn && !isLoading) {
+      const authRefreshInterval = setInterval(() => {
+        refetchAuth();
+      }, 10 * 60 * 1000); // 10 minutes
+
+      return () => clearInterval(authRefreshInterval);
+    }
+  }, [isLoggedIn, isLoading, refetchAuth]);
+
+  return {
+    isLoggedIn,
+    currentUserId,
+    currentUserName,
+    currentDisplayName,
+    isLoading,
+    error,
+    isPatron,
+    isMod,
+    metafyId,
+    metafyHash,
+    metafyTimestamp,
+    refreshAuth: refetchAuth,
+    setLoggedIn,
+    logOut
+  };
+}

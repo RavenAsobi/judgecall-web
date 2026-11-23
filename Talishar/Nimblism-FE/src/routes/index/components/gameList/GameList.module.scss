@@ -1,0 +1,374 @@
+.gameItem {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5em;
+  vertical-align: center;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5em;
+}
+
+.button {
+  background-color: var(--theme-secondary);
+  margin-bottom: 0;
+}
+
+.title {
+  text-align: left;
+  margin: 0 0 0.25rem;
+  white-space: nowrap;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--theme-text, #ededed);
+}
+
+.autoRefreshText {
+  font-size: 0.7em;
+  margin-left: 8px;
+  opacity: 0.6;
+  font-weight: normal;
+}
+
+.subSectionTitle {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.groupDiv {
+  padding-bottom: 0.75em;
+  + .groupDiv {
+    padding-top: 0.75em;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+.gameList img {
+  max-height: 3em;
+}
+
+.gameList {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  margin: 0 auto;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  height: 100%;
+  min-height: 400px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+  .gameList {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    min-height: 0;
+  }
+}
+
+.gameListLoggedOut {
+  height: auto;
+  overflow: visible;
+}
+
+.stickyHeader {
+  flex-shrink: 0;
+  padding: 1.5rem 1.75rem 0;
+  gap: 0.5em;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollableContent {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.5rem 1.75rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: #5a5f66 #1a1d21;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #1a1d21;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #5a5f66;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-primary, #d4af37);
+  }
+}
+
+.viewAllFooter {
+  flex-shrink: 0;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.viewAllButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.reloadButton {
+  display: inline-flex !important;
+  width: auto !important;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--theme-primary, #d4af37);
+  font-size: 0.9em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  margin-bottom: 0 !important;
+
+  &:hover:not(:disabled):not([aria-busy='true']) {
+    opacity: 0.75;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--theme-primary, #d4af37) !important;
+  }
+
+  &:active:not(:disabled):not([aria-busy='true']) {
+    opacity: 0.5;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  &:disabled,
+  &[aria-busy='true'] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: transparent !important;
+    border: none !important;
+    color: var(--theme-primary, #d4af37) !important;
+  }
+}
+
+.refreshIcon {
+  display: inline-block;
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinning {
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 0.75em;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 0.25em;
+  margin-right: 1.5em;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.85) !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: none !important;
+  }
+}
+
+.tabActive {
+  color: var(--theme-primary, #d4af37) !important;
+  border-bottom: 2px solid var(--theme-primary, #d4af37) !important;
+
+  &:hover {
+    color: var(--theme-primary, #d4af37) !important;
+    border-bottom: 2px solid var(--theme-primary, #d4af37) !important;
+  }
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em;
+  height: 1.4em;
+  padding: 0 0.3em;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.tabBadgeActive {
+  background: color-mix(in srgb, var(--theme-primary, #d4af37) 25%, transparent);
+  color: var(--theme-primary, #d4af37);
+}
+
+.filterRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75em;
+  flex-wrap: nowrap;
+}
+
+.filterHeroWrapper {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: visible;
+}
+
+.filterFormatWrapper {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+}
+
+.titleDiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.subSectionTitle {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+
+.groupDiv {
+  padding-bottom: 0.5em;
+  + .groupDiv {
+    padding-top: 0.5em;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+.loginNotice {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin: 0.75rem 0 0;
+  padding: 0.7rem 1rem;
+  background: color-mix(in srgb, var(--theme-primary, #d4af37) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-primary, #d4af37) 25%, transparent);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.4;
+
+  a {
+    color: var(--theme-primary, #d4af37);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.loginNoticeIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .gameList {
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    height: auto;
+    min-height: auto;
+  }
+
+  .stickyHeader {
+    padding: 0.75rem 0.75rem 0;
+  }
+
+  .scrollableContent {
+    padding: 0.25rem 0.75rem 0.5rem;
+    max-height: 60vh;
+  }
+
+  .viewAllFooter {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .titleDiv {
+    gap: 0.25em;
+    flex-wrap: wrap;
+  }
+
+  .reloadButton {
+    font-size: 0.85em;
+  }
+
+  .subSectionTitle {
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+  }
+
+  .groupDiv {
+    padding-bottom: 0.25em;
+    + .groupDiv {
+      padding-top: 0.25em;
+    }
+  }
+}

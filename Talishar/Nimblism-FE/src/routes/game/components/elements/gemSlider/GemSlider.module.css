@@ -1,0 +1,69 @@
+.gem {
+  position: absolute;
+  bottom: -0.3vh;
+  width: 3vh;
+  height: 3vh;
+  background-image: url('../../../../../img/elements/hexagonSlideBG.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 10;
+  overflow: auto;
+}
+
+.gem:hover {
+  cursor: pointer;
+}
+
+.active {
+  position: absolute;
+  left: 1.5vh;
+  height: 3vh;
+  width: 1.5vh;
+  object-fit: cover;
+  transition: all 0.25s ease-out;
+}
+
+.inactive {
+  position: absolute;
+  left: 0vh;
+  height: 3vh;
+  width: 1.5vh;
+  object-fit: cover;
+  transition: all 0.25s ease-out;
+}
+
+@media only screen and (max-width: 768px) {
+  .gem {
+    width: 2.5vh;
+    height: 2.5vh;
+  }
+
+  .active {
+    height: 2.5vh;
+  }
+
+  .inactive {
+    height: 2.5vh;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .gem {
+    width: 4.5dvw;
+    height: 4.5dvw;
+    bottom: -0.3dvw;
+  }
+
+  .active {
+    height: 4.5dvw;
+    width: 2.25dvw;
+    left: 2.25dvw;
+  }
+
+  .inactive {
+    height: 4.5dvw;
+    width: 2.25dvw;
+    left: 0;
+  }
+}

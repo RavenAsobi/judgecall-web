@@ -1,0 +1,83 @@
+.reorderCards {
+  overflow-x: auto;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-grow: 1;
+  gap: 0;
+  padding: 0 0.5em;
+  height: 15dvh;
+  margin: 0;
+}
+
+.reorderItem {
+  height: var(--card-size);
+  width: var(--card-size);
+  margin: 0;
+  margin-right: -3.5vh;
+  flex-shrink: 0;
+}
+
+.reorderItem:last-child {
+  margin-right: 0;
+}
+
+.reorderItem {
+  max-width: var(--card-size);
+  color: rgba(0, 0, 0, 0);
+}
+
+.reorderItem ::marker {
+  visibility: none;
+}
+
+.countersCover {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  inset: 0;
+  z-index: 2;
+  cursor: default;
+}
+
+.number {
+  border-radius: 100%;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2em;
+  width: 2em;
+  font-size: 1.5em;
+  background-color: var(--white);
+  text-align: center;
+  cursor: default;
+}
+
+.text {
+  color: black;
+}
+
+.subtitle {
+  font-size: 1.25em;
+  padding: 0 0 0 0.25em;
+  margin: 0px;
+}
+
+.orderingExplanation {
+  font-size: 0.75em;
+  padding-left: 0.5em;
+  margin-bottom: 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .reorderCards {
+    height: 12dvh;
+  }
+}

@@ -1,0 +1,110 @@
+.overlay {
+  position: fixed;
+  top: 2.5rem;
+  right: 10px;
+  z-index: 950;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background-color: rgba(0, 0, 0, 0.98);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.2));
+  border-radius: 10px;
+  animation: slideIn 0.3s ease-out;
+  max-width: 250px;
+}
+
+/* Urgency is conveyed by the icon and red leave button; the frame stays
+   neutral to match the rest of the board chrome */
+.warning {
+  border-color: var(--theme-border, rgba(255, 255, 255, 0.2));
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.message {
+  color: var(--white, #f4eded);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.leaveButton {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: var(--theme-alarm, #c62828);
+  color: var(--white, #f4eded);
+  border: 1px solid var(--theme-alarm, #c62828);
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.leaveButton:hover {
+  background-color: transparent;
+  color: var(--theme-alarm, #c62828);
+  border: 1px solid var(--theme-alarm, #c62828);
+}
+
+.leaveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stillHereButton {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.stillHereButton:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.stillHereButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 576px) {
+  .overlay {
+    top: auto;
+    bottom: 5rem;
+    right: 0.5rem;
+    left: 0.5rem;
+    max-width: none;
+  }
+}

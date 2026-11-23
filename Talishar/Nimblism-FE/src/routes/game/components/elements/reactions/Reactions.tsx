@@ -1,0 +1,36 @@
+import React from 'react';
+import { useAppSelector } from 'app/Hooks';
+import { RootState } from 'app/Store';
+import { Card } from 'features/Card';
+import CardDisplay from '../cardDisplay/CardDisplay';
+import styles from './Reactions.module.css';
+
+function Reactions() {
+  const activeCombatChain = useAppSelector(
+    (state: RootState) => state.game.activeChainLink?.reactionCards
+  );
+  const playerID = useAppSelector(
+    (state: RootState) => state.game.gameInfo.playerID
+  );
+
+  if (activeCombatChain === undefined) {
+    return <div className={styles.currentAttack}></div>;
+  }
+
+  return (
+    <div className={styles.reactionWrapper}>
+      <div className={styles.reactions}>
+        {activeCombatChain?.map((card: Card, ix: number) => {
+          const isPlayer = playerID === card.controller;
+          return (
+            <div key={ix.toString()} className={styles.cardContainer}>
+              <CardDisplay card={card} isPlayer={isPlayer} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default React.memo(Reactions);

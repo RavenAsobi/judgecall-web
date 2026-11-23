@@ -1,0 +1,38 @@
+.leftColumn {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: column;
+  order: 1;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: min(10vh, 6vw);
+  width: min(10dvh, 6dvw);
+  height: 100vh;
+}
+
+/* Near-square landscape (fold phones): don't cap by vw */
+@media (orientation: landscape) and (max-aspect-ratio: 3/2) {
+  .leftColumn {
+    width: 10vh;
+    width: 10dvh;
+  }
+}
+
+@media (orientation: portrait) {
+  .leftColumn {
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-direction: column;
+    order: 1;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    width: 4vh;
+    width: 4dvh;
+    height: 100vh;
+  }
+}

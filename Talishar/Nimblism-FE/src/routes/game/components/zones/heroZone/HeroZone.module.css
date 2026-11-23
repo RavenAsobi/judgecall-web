@@ -1,0 +1,6 @@
+.heroZone {
+  grid-area: hero;
+  min-width: 100%;
+  min-height: 100%;
+  position: relative;
+}

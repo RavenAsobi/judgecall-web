@@ -1,0 +1,10 @@
+{
+  "name": "scheduled-event-planner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": { "build": "vite build", "start": "node server.mjs", "test": "node --test" },
+  "dependencies": { "react": "19.2.6", "react-dom": "19.2.6" },
+  "devDependencies": { "vite": "8.0.13" }
+}

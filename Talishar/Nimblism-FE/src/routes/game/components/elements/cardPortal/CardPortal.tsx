@@ -1,0 +1,163 @@
+import { useAppSelector } from 'app/Hooks';
+import { useMemo } from 'react';
+import { useLanguageSelector } from 'hooks/useLanguageSelector';
+import { RootState } from 'app/Store';
+import CardImage from '../cardImage/CardImage';
+import styles from './CardPortal.module.css';
+import { doubleFacedCardsMappings } from './constants';
+import classNames from 'classnames';
+import useWindowDimensions from 'hooks/useWindowDimensions';
+import { CARD_IMAGES_PATH, getCollectionCardImagePath } from 'utils';
+import { useCookies } from 'react-cookie';
+import { createPortal } from 'react-dom';
+import { isMeldCard } from 'constants/meldCards';
+import CardKeywordStrip from './CardKeywordStrip';
+
+const popUpGap = 130;
+
+function CardDetails({
+  src,
+  containerClass,
+  containerStyle,
+  isOpponent,
+  isMeld,
+  cardNumber,
+  showKeywords = true
+}: {
+  src: string;
+  containerClass?: string;
+  containerStyle?: Record<string, string>;
+  isOpponent?: boolean;
+  isMeld?: boolean;
+  cardNumber?: string;
+  showKeywords?: boolean;
+}) {
+  const containerClassName = classNames(
+    containerClass != null
+      ? containerClass
+      : classNames(styles.defaultPos, styles.popUp),
+    { [styles.meldWrap]: isMeld }
+  );
+  return (
+    <div className={containerClassName} style={containerStyle}>
+      <div className={styles.popUpInside}>
+        <CardImage
+          src={src}
+          className={classNames(styles.img, { [styles.meldImg]: isMeld })}
+          isOpponent={isOpponent}
+          preferEnglishArt
+        />
+      </div>
+      {showKeywords && <CardKeywordStrip cardNumber={cardNumber} />}
+    </div>
+  );
+}
+
+function getSrcs({
+  locale,
+  cardNumber
+}: {
+  locale: string;
+  cardNumber: string;
+}): Array<string> {
+  const cardNumbers = [cardNumber];
+  if (doubleFacedCardsMappings[cardNumber] != null) {
+    cardNumbers.push(doubleFacedCardsMappings[cardNumber]);
+  }
+  return cardNumbers.map((currentCardNumber) =>
+    getCollectionCardImagePath({
+      path: CARD_IMAGES_PATH,
+      locale,
+      cardNumber: currentCardNumber
+    })
+  );
+}
+
+export default function CardPortal() {
+  const popup = useAppSelector((state: RootState) => state.game.popup);
+  const [cookies] = useCookies(['hoverImageSize']);
+  const hoverImageSize = Number(cookies.hoverImageSize) || 1;
+  const { getLanguage } = useLanguageSelector();
+  const [windowWidth, windowHeight] = useWindowDimensions();
+
+  // useMemo must come before any early return (rules of hooks).
+  // getSrcs only recomputes when the hovered card changes, not on every mouse-position update.
+  const cardNumber = popup?.popupCard?.cardNumber;
+  const isMeld = isMeldCard(cardNumber);
+  const [src, dfcSrc] = useMemo(
+    () =>
+      cardNumber
+        ? getSrcs({ locale: getLanguage(), cardNumber })
+        : (['', undefined] as const),
+    [cardNumber, getLanguage]
+  );
+
+  if (
+    popup === undefined ||
+    popup.popupOn === false ||
+    popup.popupCard === undefined
+  ) {
+    return null;
+  }
+
+  if (popup.xCoord === undefined || popup.yCoord === undefined) {
+    return createPortal(<CardDetails src={src} isMeld={isMeld} cardNumber={cardNumber} />, document.body);
+  }
+
+  const isDFC = dfcSrc != null;
+  const popUpStyle: Record<string, string> = {};
+
+  if (isDFC) {
+    // For DFC cards, position at cursor position and let absolute positioning handle left/right
+    if (popup.xCoord > windowWidth / 2) {
+      popUpStyle.right =
+        (windowWidth - (popup.xCoord - popUpGap * hoverImageSize)).toString() +
+        'px';
+    } else {
+      popUpStyle.left =
+        (popup.xCoord + popUpGap * hoverImageSize * 3.5).toString() + 'px';
+    }
+  } else {
+    // For single cards, use the existing logic to position left or right of cursor
+    if (popup.xCoord > windowWidth / 2) {
+      popUpStyle.right =
+        (windowWidth - (popup.xCoord - popUpGap * hoverImageSize)).toString() +
+        'px';
+    } else {
+      popUpStyle.left =
+        (popup.xCoord + popUpGap * hoverImageSize).toString() + 'px';
+    }
+  }
+
+  if (popup.yCoord < windowHeight / 2) {
+    popUpStyle.top = ((popup.yCoord + popUpGap) / 2).toString() + 'px';
+  } else {
+    if (hoverImageSize < 1.1) {
+      popUpStyle.bottom = (windowHeight - popup.yCoord).toString() + 'px';
+    } else {
+      popUpStyle.bottom = '10vh';
+    }
+  }
+
+  return createPortal(
+    <div className={styles.popUpContainer} style={popUpStyle}>
+      {isDFC && (
+        <CardDetails
+          src={dfcSrc}
+          containerClass={classNames(styles.popUp, styles.doubleFacedCard)}
+          isOpponent={popup.isOpponent}
+          showKeywords={false}
+        />
+      )}
+      <CardDetails
+        src={src}
+        containerClass={styles.popUp}
+        containerStyle={popUpStyle}
+        isOpponent={popup.isOpponent}
+        isMeld={isMeld}
+        cardNumber={cardNumber}
+      />
+    </div>,
+    document.body
+  );
+}
